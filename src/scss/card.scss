@@ -1,0 +1,245 @@
+@import './fonts';
+@import './mixins';
+@import './layout';
+@import './variables';
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid $gray-1;
+  border-radius: 6px;
+  background-color: $white;
+  box-shadow: $box-shadow;
+  overflow: hidden;
+
+  h2 {
+    display: flex;
+    align-items: center;
+  }
+
+  .card--header-count {
+    @include font-size(12px);
+    display: flex;
+    align-items: center;
+    height: 24px;
+    margin-left: 20px;
+    padding: 0px 8px;
+    border-radius: 6px;
+    background-color: $gray-2;
+    color: $gray-4;
+    font-family: $metropolis;
+    font-weight: bold;
+    white-space: nowrap;
+
+    &.card--header-count__success {
+      background-color: #73b183;
+      color: $white;
+    }
+
+    &.card--header-count__error {
+      background-color: $danger;
+      color: $white;
+    }
+  }
+
+  .card--header-info {
+    @include font-size(12px, 12px);
+    margin-left: 20px;
+    font-family: $metropolis;
+  }
+
+  .card--header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    min-height: 50px;
+    margin: 20px 26px 0px 26px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid $gray-1;
+
+    &.card--header__space-between {
+      justify-content: space-between;
+    }
+  }
+
+  p {
+    @include font-size(14px);
+
+    color: $gray-4;
+    font-family: $metropolis;
+  }
+
+  .card--content {
+    padding: 20px 30px;
+  }
+
+  .card--action {
+    @include font-size(12px);
+
+    padding: 11px;
+    border: 1px solid $gray-1;
+    border-radius: 6px;
+    background: transparent;
+    color: $gray-4;
+    font-family: $inter;
+    font-weight: bold;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+  }
+
+  .card--action__busy {
+    @include font-size(12px);
+
+    margin-left: 20px;
+    color: $main-green;
+    font-family: $metropolis;
+    font-weight: bold;
+  }
+
+  .card--action + .card--action {
+    margin-left: 10px;
+  }
+
+  .card--label {
+    @include font-size(12px);
+
+    display: flex;
+    align-items: center;
+    height: 32px;
+    color: $gray-header;
+    font-family: $metropolis;
+    font-weight: bold;
+    text-transform: uppercase;
+    white-space: nowrap;
+
+    button {
+      @include font-size(12px);
+
+      border: 0;
+      background: none;
+      color: inherit;
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      text-align: left;
+      text-transform: inherit;
+      cursor: pointer;
+
+      &:hover {
+        color: $light-green;
+        text-decoration: underline;
+      }
+
+      &:focus {
+        box-shadow: none;
+      }
+    }
+  }
+
+  hr {
+    margin: 20px 0px;
+    border: 0;
+    border-bottom: 1px solid $gray-1;
+  }
+
+  .card--value {
+    @include font-size(12px);
+
+    margin-bottom: 12px;
+    color: $gray-5;
+    font-family: $inter;
+    word-break: break-all;
+
+    .card--value__secondary {
+      @include font-size(12px);
+
+      color: $main-green;
+    }
+
+    .card--value__tertiary {
+      @include font-size(10px);
+
+      color: $main-green;
+      font-weight: normal;
+    }
+
+    &.card--value__light,
+    .card--value__light {
+      color: $gray-4;
+    }
+
+    &.card--value__large,
+    .card--value__large {
+      @include font-size(18px);
+    }
+
+    &.card--value-textarea {
+      max-height: 150px;
+      padding: 10px;
+      background: $gray-1;
+      overflow: auto;
+
+      &.card--value-textarea__ascii {
+        white-space: pre-wrap;
+      }
+
+      &.card--value-textarea__json {
+        font-family: 'Courier New', Courier, monospace;
+        white-space: pre-wrap;
+      }
+    }
+
+    input {
+      &[type='checkbox'] {
+        @include font-size(24px);
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        font-weight: bold;
+        vertical-align: middle;
+        appearance: none;
+
+        &:checked {
+          &::after {
+            position: relative;
+            bottom: 4px;
+            left: 0px;
+            color: $main-green;
+            content: '\2713';
+          }
+        }
+      }
+    }
+
+    button {
+      @include font-size(12px);
+
+      border: 0;
+      background: none;
+      color: inherit;
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      text-align: left;
+      cursor: pointer;
+
+      &:hover {
+        color: $light-green;
+        text-decoration: underline;
+      }
+
+      &:focus {
+        box-shadow: none;
+      }
+
+      &:disabled {
+        cursor: default;
+        opacity: 0.3;
+      }
+    }
+  }
+}

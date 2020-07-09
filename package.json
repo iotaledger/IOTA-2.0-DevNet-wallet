@@ -1,0 +1,94 @@
+{
+    "name": "pollen-wallet",
+    "description": "IOTA Pollen Wallet",
+    "version": "0.1.1",
+    "author": "Martyn Janes <martyn.janes@iota.org>",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iotaledger/pollen-wallet.git"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "@craco/craco": "^5.6.4",
+        "blakejs": "^1.1.0",
+        "classnames": "^2.2.6",
+        "electron-is-dev": "^1.2.0",
+        "electron-window-state": "^5.0.3",
+        "moment": "^2.24.0",
+        "node-fetch": "^2.6.0",
+        "react": "^16.13.1",
+        "react-dom": "^16.13.1",
+        "react-icons": "^3.9.0",
+        "react-router-dom": "^5.1.2",
+        "react-scripts": "^3.4.1",
+        "tweetnacl": "^1.0.3"
+    },
+    "engines": {
+        "node": "10.x.x"
+    },
+    "scripts": {
+        "start": "cross-env PORT=3001 craco start",
+        "lint": "eslint src --ext .tsx,.ts",
+        "build": "craco build",
+        "test": "craco test",
+        "eject": "react-scripts eject",
+        "sass-lint": "sass-lint -v -c ./.sass-lint.yml",
+        "start-electron": "concurrently \"cross-env BROWSER=none npm run start\" \"wait-on http://localhost:3001 && electron .\"",
+        "package": "npm run build && electron-builder",
+        "package-win": "electron-builder --win --x64 --publish=never",
+        "package-mac": "electron-builder --mac --x64 --publish=never",
+        "package-linux": "electron-builder --linux --x64 --publish=never"
+    },
+    "browserslist": [
+        ">0.2%",
+        "not dead",
+        "not ie <= 11",
+        "not op_mini all"
+    ],
+    "devDependencies": {
+        "@types/classnames": "^2.2.10",
+        "@types/jest": "^25.2.1",
+        "@types/node": "^13.11.1",
+        "@types/node-fetch": "^2.5.7",
+        "@types/react": "^16.9.34",
+        "@types/react-dom": "^16.9.6",
+        "@types/react-router-dom": "^5.1.4",
+        "concurrently": "^5.2.0",
+        "cross-env": "^7.0.2",
+        "electron": "^9.0.5",
+        "electron-builder": "^22.7.0",
+        "husky": "^4.2.5",
+        "node-sass": "^4.13.1",
+        "sass-lint": "^1.13.1",
+        "typescript": "^3.8.3",
+        "wait-on": "^5.0.1"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "npm run lint"
+        }
+    },
+    "homepage": "./",
+    "main": "./public/electron.js",
+    "build": {
+        "productName": "IOTA Pollen Wallet",
+        "artifactName": "pollen-wallet-${version}.${ext}",
+        "copyright": "IOTA Foundation",
+        "directories": {
+            "output": "./out"
+        },
+        "files": [
+            "package.json",
+            "!build/**/*.map",
+            "!node_modules",
+            "node_modules/electron-is-dev/**/*.js",
+            "node_modules/electron-window-state/**/*.js",
+            "node_modules/jsonfile/**/*.js",
+            "node_modules/mkdirp/**/*.js"
+        ],
+        "appId": "org.iota.pollen-wallet",
+        "win": {
+            "icon": "./public/logo.png"
+        }
+    }
+}

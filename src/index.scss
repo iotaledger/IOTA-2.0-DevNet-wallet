@@ -1,0 +1,74 @@
+@import './scss/buttons';
+@import './scss/card';
+@import './scss/fonts';
+@import './scss/forms';
+@import './scss/layout';
+@import './scss/media-queries';
+@import './scss/tables';
+@import './scss/variables';
+
+html {
+  height: 100%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+h1 {
+  @include font-size(32px, 40px);
+
+  color: $dark-gray;
+  font-family: $metropolis;
+  font-weight: bold;
+}
+
+h2 {
+  @include font-size(20px, 24px);
+
+  color: $gray-5;
+  font-family: $metropolis;
+  font-weight: bold;
+}
+
+h3 {
+  @include font-size(16px, 20px);
+
+  color: $gray-5;
+  font-family: $metropolis;
+  font-weight: bold;
+}
+
+
+body {
+  height: 100%;
+  background-color: #f6f8fc;
+
+  // sass-lint:disable no-ids
+  #root {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: $phone-width;
+    min-height: 100vh;
+    height: 100%;
+
+    .success {
+      color: $success;
+    }
+
+    .warning {
+      color: $warning;
+    }
+
+    .danger {
+      color: $danger;
+    }
+
+    .info {
+      color: $info;
+    }
+  }
+}

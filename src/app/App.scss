@@ -1,0 +1,95 @@
+@import '../scss/fonts';
+@import '../scss/mixins';
+@import '../scss/media-queries';
+@import '../scss/variables';
+
+.app {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: $dark-gray;
+
+    // sass-lint:disable no-vendor-prefixes
+    -webkit-app-region: drag;
+
+    .brand {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-right: 20px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      outline: none;
+      text-decoration: none;
+
+      // sass-lint:disable no-vendor-prefixes
+      -webkit-app-region: none;
+
+      &:focus {
+        box-shadow: 0 0 3px 0 $light-green;
+      }
+
+      img {
+        height: 48px;
+      }
+
+      h1 {
+        @include font-size(32px);
+
+        color: $white;
+        font-family: $metropolis;
+        white-space: nowrap;
+      }
+    }
+
+    button {
+      @include font-size(28px);
+
+      padding: 6px;
+      border: 0;
+      border-radius: 6px;
+      outline: none;
+      background: none;
+      color: $white;
+      font-family: $metropolis;
+      font-weight: bold;
+      cursor: pointer;
+
+      // sass-lint:disable no-vendor-prefixes
+      -webkit-app-region: none;
+
+      &:focus {
+        box-shadow: 0 0 3px 0 $light-green;
+      }
+    }
+  }
+
+  .content {
+    flex: 1;
+    overflow: auto;
+    padding: 40px;
+
+    @include font-size(16px);
+
+    font-family: $metropolis;
+  }
+
+  footer {
+    display: flex;
+    justify-content: flex-end;
+
+    @include font-size(16px);
+
+    padding: 20px 20px;
+    background-color: $dark-gray;
+    color: $white;
+    font-family: $metropolis;
+  }
+}

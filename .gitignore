@@ -1,0 +1,6 @@
+.now
+.vercel
+out
+build
+node_modules
+http-test
