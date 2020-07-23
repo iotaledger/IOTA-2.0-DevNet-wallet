@@ -2,8 +2,7 @@ name: Build desktop
 
 on:
   push:
-    branches: 
-      - master
+    branches: [master]
     paths:
       - "public/**"
       - "src/**"
