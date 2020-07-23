@@ -2,7 +2,7 @@
 
 IOTA Pollen wallet GUI, a lightweight wallet for the test Pollen network.
 
-This application is a React app wrapped in the Electron runtime.
+The wallet is configured by default to connect to a node running on your local machine. You must change the settings to connect to a remote node.
 
 **Disclaimer** - This wallet is intended to demonstrate how to communicate with the new Pollen network, your seed is **NOT** stored securely.
 

@@ -4,7 +4,10 @@ on:
   push:
     branches: 
       - master
-
+    paths:
+      - "public/**"
+      - "src/**"
+      - ".github/workflows/desktop.yaml"
 jobs:
   build:
     #runs-on: ubuntu-18.04
