@@ -40,25 +40,28 @@ jobs:
       run: npm run package-linux
       if: matrix.os == 'ubuntu-18.04'
 
-    - name: get-npm-version
+    - name: get version
       id: package-version
-      uses: martinbeentjes/npm-get-version-action@v1.1.0
+      uses: notiz-dev/github-action-json-property@release
+      with:
+          path: 'package.json'
+          prop_path: 'version'
     
     - uses: actions/upload-artifact@v2
       with:
-        name: pollen-wallet-win-${{ steps.package-version.outputs.current-version}}
-        path: out/pollen-wallet-${{ steps.package-version.outputs.current-version}}.exe
+        name: pollen-wallet-win-${{ steps.package-version.outputs.prop}}
+        path: out/pollen-wallet-${{ steps.package-version.outputs.prop}}.exe
       if: matrix.os == 'windows-2019'
 
     - uses: actions/upload-artifact@v2
       with:
-        name: pollen-wallet-mac-${{ steps.package-version.outputs.current-version}}
-        path: out/pollen-wallet-${{ steps.package-version.outputs.current-version}}.dmg
+        name: pollen-wallet-mac-${{ steps.package-version.outputs.prop}}
+        path: out/pollen-wallet-${{ steps.package-version.outputs.prop}}.dmg
       if: matrix.os == 'macos-10.15'
 
     - uses: actions/upload-artifact@v2
       with:
-        name: pollen-wallet-linux-${{ steps.package-version.outputs.current-version}}
+        name: pollen-wallet-linux-${{ steps.package-version.outputs.prop}}
         path: |
-          out/pollen-wallet-${{ steps.package-version.outputs.current-version}}.AppImage
+          out/pollen-wallet-${{ steps.package-version.outputs.prop}}.AppImage
       if: matrix.os == 'ubuntu-18.04'
