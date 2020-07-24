@@ -9,7 +9,6 @@ import "./App.scss";
 import { AppProps } from "./AppProps";
 import { AppState } from "./AppState";
 import Settings from "./components/Settings";
-import Spinner from "./components/Spinner";
 import Wallet from "./components/Wallet";
 
 /**
@@ -37,7 +36,6 @@ class App extends Component<AppProps, AppState> {
         this._walletService = ServiceFactory.get<IWalletService>("wallet");
 
         this.state = {
-            isBusy: true,
             displayMode: "wallet"
         };
     }
@@ -50,8 +48,7 @@ class App extends Component<AppProps, AppState> {
         const settings = await this._settingsService.get();
         this.setState({
             wallet,
-            settings,
-            isBusy: false
+            settings
         });
     }
 
@@ -75,9 +72,6 @@ class App extends Component<AppProps, AppState> {
                     )}
                 </header>
                 <div className="content">
-                    {this.state.isBusy && (
-                        <Spinner />
-                    )}
                     {this.state.displayMode === "settings" && (
                         <Settings
                             onClose={settings => this.setState({
@@ -87,8 +81,30 @@ class App extends Component<AppProps, AppState> {
                         />
                     )}
                     {this.state.displayMode === "wallet" && (
-                        <Wallet />
+                        <Wallet onUpdated={
+                            async () => this.setState({
+                                wallet: await this._walletService.get()
+                            })
+                        } />
                     )}
+                    {this.state.displayMode === "wallet" &&
+                        (!this.state.wallet || (this.state.wallet && !this.state.wallet.seed)) &&
+                        this.state.settings?.apiEndpoint === "http://127.0.0.1:8080" && (
+                            <div className="card margin-t-s">
+                                <div className="card--header">
+                                    <h2>Node Connection</h2>
+                                </div>
+                                <div className="card--content">
+                                    <p>By default the wallet is configured to access the API of a Pollen node running on your local machine at http://127.0.0.1:8080</p>
+                                    <br />
+                                    <p>If you don&apos;t have a node running locally you can either:</p>
+                                    <ul className="margin-t-s">
+                                        <li>Configure and run a node locally.</li>
+                                        <li>Change the Settings to connect to a remote node.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
                     {this.state.displayMode === "delete-wallet" && (
                         <div className="card">
                             <div className="card--header">
@@ -138,7 +154,7 @@ class App extends Component<AppProps, AppState> {
                     </div>
 
                 </footer>
-            </div>
+            </div >
         );
     }
 
@@ -148,7 +164,8 @@ class App extends Component<AppProps, AppState> {
     private async deleteWallet(): Promise<void> {
         await this._walletService.delete();
         this.setState({
-            displayMode: "wallet"
+            displayMode: "wallet",
+            wallet: undefined
         });
     }
 }

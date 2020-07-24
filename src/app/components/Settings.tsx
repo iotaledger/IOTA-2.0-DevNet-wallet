@@ -86,8 +86,13 @@ class Settings extends Component<SettingsProps, SettingsState> {
      * Save the settings.
      */
     private async save(): Promise<void> {
+        let newEndpoint = this.state.apiEndpoint ?? "";
+        if (newEndpoint.endsWith("/")) {
+            newEndpoint = newEndpoint.substr(0, newEndpoint.length - 1);
+        }
+
         const newSettings: ISettings = {
-            apiEndpoint: this.state.apiEndpoint ?? ""
+            apiEndpoint: newEndpoint
         };
         await this._settingsService.set(newSettings);
 

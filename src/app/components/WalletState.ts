@@ -27,7 +27,12 @@ export interface WalletState {
     /**
      * Error from the faucet.
      */
-    faucetError?: string;
+    faucetStatus?: string;
+
+    /**
+     * Error from the faucet.
+     */
+    faucetIsError: boolean;
 
     /**
      * Addresses for the wallet.

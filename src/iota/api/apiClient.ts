@@ -22,9 +22,6 @@ export class ApiClient {
      */
     constructor(endPoint: string) {
         this._endpoint = endPoint;
-        if (this._endpoint.endsWith("/")) {
-            this._endpoint = this._endpoint.substr(0, this._endpoint.length - 1);
-        }
     }
 
     /**

@@ -3,11 +3,6 @@ import { IWallet } from "../models/IWallet";
 
 export interface AppState {
     /**
-     * Is the component busy.
-     */
-    isBusy: boolean;
-
-    /**
      * The display mode.
      */
     displayMode: string;

@@ -1,13 +1,15 @@
+import classNames from "classnames";
 import React, { Component, ReactNode } from "react";
 import { ServiceFactory } from "../../factories/serviceFactory";
 import { IWalletService } from "../../models/services/IWalletService";
 import Spinner from "./Spinner";
+import { WalletProps } from "./WalletProps";
 import { WalletState } from "./WalletState";
 
 /**
  * Component which will display wallet.
  */
-class Wallet extends Component<unknown, WalletState> {
+class Wallet extends Component<WalletProps, WalletState> {
     /**
      * Wallet service.
      */
@@ -22,7 +24,7 @@ class Wallet extends Component<unknown, WalletState> {
      * Create a new instance of Wallet.
      * @param props The props.
      */
-    constructor(props: unknown) {
+    constructor(props: WalletProps) {
         super(props);
 
         this._walletService = ServiceFactory.get<IWalletService>("wallet");
@@ -33,6 +35,7 @@ class Wallet extends Component<unknown, WalletState> {
             isBusyFaucet: false,
             isBusyNewAsset: false,
             isBusySendFunds: false,
+            faucetIsError: false,
             errorNewAsset: "",
             sendFundsAmount: "100",
             newAssetAmount: "100"
@@ -418,14 +421,20 @@ class Wallet extends Component<unknown, WalletState> {
                                 >
                                     Request Funds
                                 </button>
-                                {this.state.isBusyFaucet && (
-                                    <Spinner className="margin-t-s" />
-                                )}
-                                {this.state.faucetError && (
-                                    <p className="margin-t-s danger">
-                                        {this.state.faucetError}
-                                    </p>
-                                )}
+                                <div className="row middle margin-t-s">
+                                    {this.state.isBusyFaucet && (
+                                        <Spinner />
+                                    )}
+                                    {this.state.faucetStatus && (
+                                        <p className={
+                                            classNames(
+                                                { "danger": this.state.faucetIsError }
+                                            )
+                                        }>
+                                            {this.state.faucetStatus}
+                                        </p>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </React.Fragment>
@@ -452,6 +461,7 @@ class Wallet extends Component<unknown, WalletState> {
                         addresses: this._walletService.getWalletAddresses(),
                         receiveAddress: this._walletService.getReceiveAddress()
                     });
+                this.props.onUpdated();
             });
     }
 
@@ -462,18 +472,22 @@ class Wallet extends Component<unknown, WalletState> {
         this.setState(
             {
                 isBusyFaucet: true,
-                faucetError: undefined
+                faucetIsError: false,
+                faucetStatus: "Requesting funds, please wait..."
             },
             async () => {
                 try {
                     await this._walletService.requestFunds();
                     this.setState({
-                        isBusyFaucet: false
+                        isBusyFaucet: false,
+                        faucetIsError: false,
+                        faucetStatus: "Faucet request successful, a new balance should appear shortly."
                     });
                 } catch (err) {
                     this.setState({
                         isBusyFaucet: false,
-                        faucetError: err.message
+                        faucetIsError: true,
+                        faucetStatus: err.message
                     });
                 }
             });
