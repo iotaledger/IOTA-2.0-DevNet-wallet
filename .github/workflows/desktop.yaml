@@ -40,20 +40,25 @@ jobs:
       run: npm run package-linux
       if: matrix.os == 'ubuntu-18.04'
 
+    - name: get-npm-version
+      id: package-version
+      uses: martinbeentjes/npm-get-version-action@v1.1.0
+    
     - uses: actions/upload-artifact@v2
       with:
-        name: pollen-wallet-win
-        path: out/pollen-wallet*
+        name: pollen-wallet-win-${{ steps.package-version.outputs.current-version}}
+        path: out/pollen-wallet-${{ steps.package-version.outputs.current-version}}.exe
       if: matrix.os == 'windows-2019'
 
     - uses: actions/upload-artifact@v2
       with:
-        name: pollen-wallet-mac
-        path: out/pollen-wallet*
+        name: pollen-wallet-mac-${{ steps.package-version.outputs.current-version}}
+        path: out/pollen-wallet-${{ steps.package-version.outputs.current-version}}.dmg
       if: matrix.os == 'macos-10.15'
 
     - uses: actions/upload-artifact@v2
       with:
-        name: pollen-wallet-linux
-        path: out/pollen-wallet*
+        name: pollen-wallet-linux-${{ steps.package-version.outputs.current-version}}
+        path: |
+          out/pollen-wallet-${{ steps.package-version.outputs.current-version}}.AppImage
       if: matrix.os == 'ubuntu-18.04'
