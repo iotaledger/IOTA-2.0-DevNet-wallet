@@ -41,6 +41,7 @@ table {
 
         &.break {
           word-break: break-all;
+          // sass-lint:disable no-duplicate-properties
           word-break: break-word;
         }
       }

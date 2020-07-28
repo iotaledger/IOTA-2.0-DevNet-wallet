@@ -30,14 +30,14 @@ button {
   }
 
   &.button--danger {
-    background-color: $danger;
     border-color: $danger;
+    background-color: $danger;
     color: $white;
   }
 
   &.button--secondary {
-    background-color: $white;
     border-color: $dark-green;
+    background-color: $white;
     color: $dark-green;
   }
 }

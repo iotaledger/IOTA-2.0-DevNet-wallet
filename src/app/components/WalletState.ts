@@ -65,6 +65,11 @@ export interface WalletState {
     newAssetSymbol?: string;
 
     /**
+     * New wallet asset color.
+     */
+    newAssetColor?: string;
+
+    /**
      * The amount of tokens to create.
      */
     newAssetAmount: string;

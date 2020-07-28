@@ -67,6 +67,20 @@ export interface IWalletService {
     createAsset(name: string, symbol: string, amount: bigint): Promise<void>;
 
     /**
+     * Update an asset.
+     * @param name The color of the asset to update.
+     * @param name The name for the updated asset.
+     * @param symbol The symbol for the updated asset.
+     */
+    updateAsset(color: string, name: string, symbol: string): Promise<void>;
+
+    /**
+     * Delete an asset.
+     * @param name The color of the asset to delete.
+     */
+    deleteAsset(color: string): Promise<void>;
+
+    /**
      * Send funds to an address.
      * @param address The address to send the funds to.
      * @param color The color of the tokens to send.

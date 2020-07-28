@@ -1,6 +1,8 @@
 import classNames from "classnames";
 import React, { Component, ReactNode } from "react";
 import { ServiceFactory } from "../../factories/serviceFactory";
+import { ClipboardHelper } from "../../helpers/clipboardHelper";
+import { IWalletAsset } from "../../models/IWalletAsset";
 import { IWalletService } from "../../models/services/IWalletService";
 import Spinner from "./Spinner";
 import { WalletProps } from "./WalletProps";
@@ -253,8 +255,14 @@ class Wallet extends Component<WalletProps, WalletState> {
                         </div>
 
                         <div className="card margin-b-s">
-                            <div className="card--header">
+                            <div className="card--header row space-between">
                                 <h2>Addresses</h2>
+                                {this.state.newAssetName === undefined && (
+                                    <button
+                                        onClick={() => this.copyReceiveAddress()}>
+                                        Copy Receive Address
+                                    </button>
+                                )}
                             </div>
                             <div className="card--content">
                                 {(!this.state.addresses || this.state.addresses.length === 0) && (
@@ -294,6 +302,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                                         onClick={() => this.setState({
                                             newAssetName: "",
                                             newAssetSymbol: "",
+                                            newAssetColor: "",
                                             newAssetAmount: "100",
                                             errorNewAsset: ""
                                         })}
@@ -322,7 +331,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                                             </div>
                                             <div className="card--label">
                                                 Symbol
-                                        </div>
+                                            </div>
                                             <div className="card--value margin-b-s">
                                                 <input
                                                     className="fill"
@@ -334,20 +343,24 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                     })}
                                                 />
                                             </div>
-                                            <div className="card--label">
-                                                Amount
-                                        </div>
-                                            <div className="card--value margin-b-s">
-                                                <input
-                                                    className="fill"
-                                                    type="text"
-                                                    disabled={this.state.isBusyNewAsset}
-                                                    value={this.state.newAssetAmount}
-                                                    onChange={e => this.setState({
-                                                        newAssetAmount: e.target.value
-                                                    })}
-                                                />
-                                            </div>
+                                            {!this.state.newAssetColor && (
+                                                <React.Fragment>
+                                                    <div className="card--label">
+                                                        Amount
+                                                    </div>
+                                                    <div className="card--value margin-b-s">
+                                                        <input
+                                                            className="fill"
+                                                            type="text"
+                                                            disabled={this.state.isBusyNewAsset}
+                                                            value={this.state.newAssetAmount}
+                                                            onChange={e => this.setState({
+                                                                newAssetAmount: e.target.value
+                                                            })}
+                                                        />
+                                                    </div>
+                                                </React.Fragment>
+                                            )}
                                             <div className="row">
                                                 <button
                                                     className="margin-r-s"
@@ -365,7 +378,8 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                     disabled={this.state.isBusyNewAsset}
                                                     onClick={() => this.setState({
                                                         newAssetName: undefined,
-                                                        newAssetSymbol: undefined
+                                                        newAssetSymbol: undefined,
+                                                        newAssetColor: undefined
                                                     })}
                                                 >
                                                     Cancel
@@ -393,15 +407,39 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                     <th>Color</th>
                                                     <th>Name</th>
                                                     <th>Symbol</th>
+                                                    <th>&nbsp;</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {this.state.wallet.assets &&
                                                     this.state.wallet.assets.map((asset, idx) => (
-                                                        <tr key={idx}>
+                                                        <tr key={idx} className="middle">
                                                             <td className="break">{asset.color}</td>
                                                             <td className="break">{asset.name}</td>
                                                             <td>{asset.symbol}</td>
+                                                            <td>
+                                                                <button
+                                                                    type="button"
+                                                                    className="margin-r-t"
+                                                                    onClick={() => this.setState({
+                                                                        newAssetName: asset.name,
+                                                                        newAssetSymbol: asset.symbol,
+                                                                        newAssetColor: asset.color,
+                                                                        newAssetAmount: "1",
+                                                                        errorNewAsset: ""
+                                                                    })}
+                                                                >
+                                                                    Edit
+                                                                </button>
+                                                                <button
+                                                                    type="button"
+                                                                    className="button--danger"
+                                                                    disabled={!this.assetHasBalance(asset)}
+                                                                    onClick={() => this.deleteAsset(asset.color)}
+                                                                >
+                                                                    Delete
+                                                                </button>
+                                                            </td>
                                                         </tr>
                                                     ))}
                                             </tbody>
@@ -438,7 +476,8 @@ class Wallet extends Component<WalletProps, WalletState> {
                             </div>
                         </div>
                     </React.Fragment>
-                )}
+                )
+                }
             </div>
         );
     }
@@ -505,17 +544,25 @@ class Wallet extends Component<WalletProps, WalletState> {
             async () => {
                 if (this.state.newAssetName && this.state.newAssetSymbol) {
                     try {
-                        await this._walletService.createAsset(
-                            this.state.newAssetName,
-                            this.state.newAssetSymbol,
-                            BigInt(parseInt(this.state.newAssetAmount, 10))
-                        );
+                        if (this.state.newAssetColor) {
+                            await this._walletService.updateAsset(
+                                this.state.newAssetColor,
+                                this.state.newAssetName,
+                                this.state.newAssetSymbol);
+                        } else {
+                            await this._walletService.createAsset(
+                                this.state.newAssetName,
+                                this.state.newAssetSymbol,
+                                BigInt(parseInt(this.state.newAssetAmount, 10))
+                            );
+                        }
 
                         this.setState({
                             isBusyNewAsset: false,
                             newAssetAmount: "100",
                             newAssetName: undefined,
-                            newAssetSymbol: undefined
+                            newAssetSymbol: undefined,
+                            newAssetColor: undefined
                         });
                     } catch (err) {
                         this.setState({
@@ -523,6 +570,33 @@ class Wallet extends Component<WalletProps, WalletState> {
                             isBusyNewAsset: false
                         });
                     }
+                }
+            }
+        );
+    }
+
+    /**
+     * Delete an asset.
+     * @param color The color of the asset to delete.
+     */
+    private deleteAsset(color: string): void {
+        this.setState(
+            {
+                isBusyNewAsset: true,
+                errorNewAsset: ""
+            },
+            async () => {
+                try {
+                    await this._walletService.deleteAsset(color);
+
+                    this.setState({
+                        isBusyNewAsset: false
+                    });
+                } catch (err) {
+                    this.setState({
+                        errorNewAsset: err.message,
+                        isBusyNewAsset: false
+                    });
                 }
             }
         );
@@ -561,6 +635,26 @@ class Wallet extends Component<WalletProps, WalletState> {
                 }
             }
         );
+    }
+
+    /**
+     * Does the asset have a balance.
+     * @param asset The asset to check.
+     * @returns True if the asset has a balance.
+     */
+    private assetHasBalance(asset: IWalletAsset): boolean {
+        if (this.state.balances) {
+            return this.state.balances.find(b => b.asset.color === asset.color) === undefined;
+        }
+
+        return false;
+    }
+
+    /**
+     * Copy the receive address to the clipboard.
+     */
+    private copyReceiveAddress(): void {
+        ClipboardHelper.copy(this.state.receiveAddress);
     }
 }
 

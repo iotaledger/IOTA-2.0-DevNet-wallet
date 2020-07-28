@@ -201,6 +201,53 @@ export class WalletService implements IWalletService {
     }
 
     /**
+     * Update an asset.
+     * @param name The color of the asset to update.
+     * @param name The name for the updated asset.
+     * @param symbol The symbol for the updated asset.
+     */
+    public async updateAsset(color: string, name: string, symbol: string): Promise<void> {
+        if (this._wallet) {
+            const asset = this._wallet.assets.find(a => a.color === color);
+            if (asset) {
+                asset.name = name;
+                asset.symbol = symbol;
+            } else {
+                this._wallet.assets.push({
+                    color,
+                    name,
+                    symbol,
+                    precision: 0
+                });
+            }
+
+            await this.save();
+        }
+    }
+
+    /**
+     * Delete an asset.
+     * @param name The color of the asset to delete.
+     */
+    public async deleteAsset(color: string): Promise<void> {
+        if (this._wallet) {
+            let hasBalance = false;
+            if (this._balances) {
+                hasBalance = this._balances.findIndex(b => b.asset.color === color) >= 0;
+            }
+
+            if (!hasBalance) {
+                const assetIdx = this._wallet.assets.findIndex(a => a.color === color);
+                if (assetIdx >= 0) {
+                    this._wallet.assets.splice(assetIdx, 1);
+                }
+            }
+
+            await this.save();
+        }
+    }
+
+    /**
      * Send funds to an address.
      * @param address The address to send the funds to.
      * @param color The color of the tokens to send.
@@ -630,7 +677,7 @@ export class WalletService implements IWalletService {
      */
     private async doUpdates(): Promise<void> {
         this._unspentOutputs = await this.getUnspentOutputs();
-        this.calculateAddressesAndBalances();
+        await this.calculateAddressesAndBalances();
 
         for (const id in this._subscribers) {
             this._subscribers[id]();
@@ -644,20 +691,21 @@ export class WalletService implements IWalletService {
     private async initialiseWallet(): Promise<void> {
         this._unspentOutputs = await this.getUnspentOutputs();
         this._spentOutputTransactions = [];
-        this.calculateAddressesAndBalances();
+        await this.calculateAddressesAndBalances();
     }
 
     /**
      * Calculate balances from the address outputs.
      * @param addressOutputs The address outputs to calculate balance from.
      */
-    private calculateAddressesAndBalances(): void {
+    private async calculateAddressesAndBalances(): Promise<void> {
         if (this._wallet && this._unspentOutputs) {
             this._balances = [];
             this._addresses = [];
             const colorMap: { [id: string]: IWalletBalance } = {};
             const addressMap: { [id: string]: IWalletAddress } = {};
             const assetsMap: { [id: string]: IWalletAsset } = {};
+            const addedAssets: IWalletAsset[] = [];
 
             for (let i = 0; i <= this._wallet.lastAddressIndex; i++) {
                 const addr = Seed.generateAddress(Base58.decode(this._wallet.seed), BigInt(i));
@@ -685,6 +733,19 @@ export class WalletService implements IWalletService {
                 for (const output of addressOutput.outputs) {
                     for (const balance of output.balances) {
                         if (!colorMap[balance.color]) {
+                            if (!assetsMap[balance.color]) {
+                                // We have received an asset we don't recognise
+                                // so create a dummy entry, in the future this
+                                // will be looked up from a central registry
+                                const asset = {
+                                    color: balance.color,
+                                    name: "Unknown",
+                                    symbol: "",
+                                    precision: 0
+                                };
+                                addedAssets.push(asset);
+                                assetsMap[balance.color] = asset;
+                            }
                             colorMap[balance.color] = {
                                 asset: assetsMap[balance.color],
                                 confirmed: BigInt(0),
@@ -705,6 +766,11 @@ export class WalletService implements IWalletService {
 
             if (!lastUnspent) {
                 this.newReceiveAddress();
+            }
+
+            if (addedAssets.length > 0) {
+                this._wallet.assets = this._wallet.assets.concat(addedAssets);
+                await this.save();
             }
         }
     }
