@@ -15,6 +15,7 @@ import { IWalletOutput } from "../models/IWalletOutput";
 import { IJsonStorageService } from "../models/services/IJsonStorageService";
 import { IWalletService } from "../models/services/IWalletService";
 import { SettingsService } from "./settingsService";
+import { IUnlockBlock } from "../models/IUnlockBlock";
 
 /**
  * Service to manage a wallet.
@@ -273,6 +274,12 @@ export class WalletService implements IWalletService {
         if (this._wallet && this._addresses) {
             await this.doUpdates();
 
+            const version = 0;
+            const time = new Date().getTime();
+            const timestamp = BigInt(time);
+            const manaPledge = "11111111111111111111111111111111";
+            const aManaPledge = manaPledge;
+            const cManaPledge = manaPledge;
             // Calculate the spending requirements
             const consumedOutputs = this.determineOutputsToConsume(sendFundsOptions);
 
@@ -281,24 +288,46 @@ export class WalletService implements IWalletService {
 
             const seed = Base58.decode(this._wallet.seed);
 
+            const unlockBlocks: IUnlockBlock[] = [];
             const tx: ITransaction = {
+                version,
+                timestamp,
+                aManaPledge,
+                cManaPledge,
                 inputs,
                 outputs,
-                signatures: {}
+                unlockBlocks: unlockBlocks
             };
 
             const txEssence = Transaction.essence(tx);
-
+            
+            const addressByOutputID: { [outputID: string]: string } = {};
             for (const address in consumedOutputs) {
-                const addr = this._addresses.find(a => a.address === address);
-                if (addr) {
-                    const keyPair = Seed.generateKeyPair(seed, addr.index);
-                    tx.signatures[address] = {
-                        keyPair,
-                        signature: Transaction.sign(keyPair, txEssence)
-                    };
+                for (const outputID in consumedOutputs[address]){
+                    addressByOutputID[outputID] = address;
+                    console.log("addressByOutputID", outputID, address);
                 }
             }
+
+            const existingUnlockBlocks: { [address: string]: number } = {};
+            console.log("inputs:", inputs);
+            for (const index in inputs) {
+                const addr = this._addresses.find(a => a.address === addressByOutputID[inputs[index]]);
+                if (addr) {
+                    if (existingUnlockBlocks[addr.address]) {
+                        unlockBlocks.push({type:1, referenceIndex:existingUnlockBlocks[addr.address], publicKey: Buffer.alloc(0), signature: Buffer.alloc(0) });
+                        continue;
+                    }
+                    console.log("SIGNING");
+                    const keyPair = Seed.generateKeyPair(seed, addr.index);
+                    const signatureUnlockBlock = {type:0, referenceIndex:0, publicKey: keyPair.publicKey, signature: Transaction.sign(keyPair, txEssence)};
+                    existingUnlockBlocks[addr.address] = unlockBlocks.length; 
+                    unlockBlocks.push(signatureUnlockBlock);
+                    console.log("unlock block:", unlockBlocks);
+                }
+            }
+
+            tx.unlockBlocks = unlockBlocks;
 
             const apiClient = await this.buildApiClient();
             const response = await apiClient.sendTransaction({
@@ -388,7 +417,7 @@ export class WalletService implements IWalletService {
                 unspentOutputs = unspentOutputs.concat(usedAddresses.map(uo => ({
                     address: uo.address,
                     outputs: uo.output_ids.map(uid => ({
-                        transactionId: uid.id,
+                        id: uid.id,
                         balances: uid.balances.map(b => ({
                             color: b.color,
                             value: BigInt(b.value)
@@ -429,9 +458,9 @@ export class WalletService implements IWalletService {
      * @returns The output that we need to consume.
      */
     private determineOutputsToConsume(sendFundOptions: ISendFundsOptions): {
-        [address: string]: { [transactionId: string]: IWalletOutput };
+        [address: string]: { [outputID: string]: IWalletOutput };
     } {
-        const outputsToConsume: { [address: string]: { [transactionId: string]: IWalletOutput } } = {};
+        const outputsToConsume: { [address: string]: { [outputID: string]: IWalletOutput } } = {};
 
         const requiredFunds: { [color: string]: bigint } = {};
 
@@ -455,7 +484,7 @@ export class WalletService implements IWalletService {
                 // scan the outputs on this address for required funds
                 for (const output of unspentOutput.outputs.filter(o =>
                     !this._spentOutputTransactions ||
-                    !this._spentOutputTransactions.includes(o.transactionId))) {
+                    !this._spentOutputTransactions.includes(o.id))) {
                     // keeps track if the output contains any usable funds
                     let requiredColorFoundInOutput = false;
 
@@ -475,7 +504,7 @@ export class WalletService implements IWalletService {
                     if (requiredColorFoundInOutput) {
                         // store the output in the outputs to use for the transfer
                         outputsToConsume[unspentOutput.address] = {};
-                        outputsToConsume[unspentOutput.address][output.transactionId] = output;
+                        outputsToConsume[unspentOutput.address][output.id] = output;
 
                         // mark address as spent
                         outputsFromAddressSpent = true;
@@ -486,7 +515,7 @@ export class WalletService implements IWalletService {
                 // (we want to spend only once from every address if we are not using a reusable address)
                 if (outputsFromAddressSpent && !this._reusableAddresses) {
                     for (const output of unspentOutput.outputs) {
-                        outputsToConsume[unspentOutput.address][output.transactionId] = output;
+                        outputsToConsume[unspentOutput.address][output.id] = output;
                     }
                 }
             }
@@ -519,7 +548,7 @@ export class WalletService implements IWalletService {
      * @param outputsToUseAsInputs The output to use in the transfer.
      * @returns The inputs and consumed funds.
      */
-    private buildInputs(outputsToUseAsInputs: { [address: string]: { [transactionId: string]: IWalletOutput } }): {
+    private buildInputs(outputsToUseAsInputs: { [address: string]: { [outputID: string]: IWalletOutput } }): {
         /**
          * The inputs to send.
          */
@@ -533,19 +562,26 @@ export class WalletService implements IWalletService {
         const consumedFunds: { [color: string]: bigint } = {};
 
         for (const address in outputsToUseAsInputs) {
-            for (const transactionId in outputsToUseAsInputs[address]) {
-                inputs.push(transactionId);
+            console.log("outputsToUseAsInputs - address", address);
+            for (const outputID in outputsToUseAsInputs[address]) {
+                console.log("outputID", outputID);
+                inputs.push(outputID);
 
-                for (const balance of outputsToUseAsInputs[address][transactionId].balances) {
+                for (const balance of outputsToUseAsInputs[address][outputID].balances) {
                     if (!consumedFunds[balance.color]) {
                         consumedFunds[balance.color] = balance.value;
+                        console.log("!balance value", balance.value);
                     } else {
                         consumedFunds[balance.color] += balance.value;
+                        console.log("balance value", balance.value);
                     }
                 }
             }
         }
 
+        if (inputs.length > 1) {
+            inputs.sort((a, b) => Base58.decode(a).compare(Base58.decode(b)));
+        }
         return { inputs, consumedFunds };
     }
 
@@ -576,6 +612,7 @@ export class WalletService implements IWalletService {
             }
 
             for (const color in sendFundsOptions.destinations[address]) {
+                console.log("---------", color);
                 const amount = sendFundsOptions.destinations[address][color];
                 if (!outputsByColor[address][color]) {
                     outputsByColor[address][color] = BigInt(0);

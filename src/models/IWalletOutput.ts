@@ -5,7 +5,7 @@ export interface IWalletOutput {
     /**
      * The id.
      */
-    transactionId: string;
+    id: string;
 
     /**
      * The balances.

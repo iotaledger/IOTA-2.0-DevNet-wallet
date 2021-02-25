@@ -1,6 +1,26 @@
-import { IKeyPair } from "./IKeyPair";
+import { IUnlockBlock } from "../../models/IUnlockBlock";
 
 export interface ITransaction {
+     /**
+     * The transaction's version.
+     */
+    version: number;
+    
+    /**
+     * The transaction's timestamp.
+     */
+    timestamp: bigint;
+
+    /**
+     * The nodeID to pledge access mana.
+     */
+    aManaPledge: string;
+
+     /**
+     * The nodeID to pledge consensus mana.
+     */
+    cManaPledge: string;
+
     /**
      * The inputs to send.
      */
@@ -25,16 +45,5 @@ export interface ITransaction {
     /**
      * The signatures to send.
      */
-    signatures: {
-        [address: string]: {
-            /**
-             * Key pair that generated the signature.
-             */
-            keyPair: IKeyPair;
-            /**
-             * The signature.
-             */
-            signature: Buffer;
-        };
-    };
+    unlockBlocks: IUnlockBlock[];
 }

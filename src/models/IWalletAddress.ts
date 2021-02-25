@@ -3,7 +3,7 @@ export interface IWalletAddress {
      * The index.
      */
     index: bigint;
-
+    
     /**
      * The address.
      */

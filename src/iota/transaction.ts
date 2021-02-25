@@ -25,36 +25,77 @@ export class Transaction {
      */
     public static essence(tx: ITransaction): Buffer {
         const buffers: Buffer[] = [];
+        const bufferColors: Buffer[] = [];
+
+        // version
+        const version = Buffer.alloc(1);
+        version.writeUInt8(tx.version);
+        buffers.push(version);
+        
+        // timestamp
+        const timestamp = Buffer.alloc(8);
+        timestamp.writeBigInt64LE(tx.timestamp);
+        console.log("timestamp", tx.timestamp);
+        buffers.push(timestamp);
+
+        // aManaPledge
+        buffers.push(Base58.decode(tx.aManaPledge));
+
+        // cManaPledge
+        buffers.push(Base58.decode(tx.cManaPledge));
 
         // Input Size
-        const inputsSize = Buffer.alloc(4);
-        inputsSize.writeUInt32LE(tx.inputs.length);
-        buffers.push(inputsSize);
+        const inputsCount = Buffer.alloc(2);
+        inputsCount.writeUInt16LE(tx.inputs.length);
+        console.log("inputs count", tx.inputs.length);
+        buffers.push(inputsCount);
 
         // Inputs
         for (const input of tx.inputs) {
-            buffers.push(Base58.decode(input));
+            const inputType = Buffer.alloc(1);
+            inputType.writeUInt8(0);
+            buffers.push(inputType);
+
+            const decodedInput = Base58.decode(input);
+            buffers.push(decodedInput);
+            console.log("input", input);
         }
 
-        // Output Size
-        const outputsSize = Buffer.alloc(4);
-        outputsSize.writeUInt32LE(Object.keys(tx.outputs).length);
-        buffers.push(outputsSize);
+        // Output count
+        const outputsCount = Buffer.alloc(2);
+        outputsCount.writeUInt16LE(Object.keys(tx.outputs).length);
+        console.log("outputs count", Object.keys(tx.outputs).length);
+        buffers.push(outputsCount);
 
         // Outputs
-        for (const output in tx.outputs) {
-            buffers.push(Base58.decode(output));
+        for (const address in tx.outputs) {
+            const outputType = Buffer.alloc(1);
+            outputType.writeUInt8(1);
+            buffers.push(outputType);
 
-            const balancesSize = Buffer.alloc(4);
-            balancesSize.writeUInt32LE(tx.outputs[output].length);
-            buffers.push(balancesSize);
+            const balancesCount = Buffer.alloc(4);
+            balancesCount.writeUInt32LE(tx.outputs[address].length);
+            console.log("DEBUG: balancesCount", tx.outputs[address].length);
+            buffers.push(balancesCount);
 
-            for (const balance of tx.outputs[output]) {
+            for (const balance of tx.outputs[address]) {
+                const color = balance.color === Colors.IOTA_NAME ? Colors.IOTA_BUFFER : Base58.decode(balance.color);
+                console.log("COLOR:", Base58.encode(color));
+                
                 const colorValueBuffer = Buffer.alloc(8);
                 colorValueBuffer.writeBigUInt64LE(balance.value);
-                buffers.push(colorValueBuffer);
-                buffers.push(balance.color === Colors.IOTA_NAME ? Colors.IOTA_BUFFER : Base58.decode(balance.color));
+                bufferColors.push(Buffer.concat([color, colorValueBuffer]));
+                console.log("Value:", balance.value);
+                
+                // buffers.push(color);
+                // buffers.push(colorValueBuffer);
             }
+            bufferColors.sort((a, b) => a.compare(b));
+            buffers.push(Buffer.concat(bufferColors));
+
+            const decodedAddress = Base58.decode(address);
+            buffers.push(decodedAddress);
+            console.log("address", Base58.encode(decodedAddress));
         }
 
         // dataPayload size
@@ -74,18 +115,44 @@ export class Transaction {
     public static bytes(tx: ITransaction, essence?: Buffer): Buffer {
         const buffers: Buffer[] = [];
 
-        buffers.push(essence ? essence : Transaction.essence(tx));
+        const payloadType = Buffer.alloc(4);
+        payloadType.writeUInt32LE(1337);
+        console.log("payloadType", 1337);
+        buffers.push(payloadType);
 
-        for (const address in tx.signatures) {
-            const sigBuffer = Buffer.alloc(1);
-            sigBuffer.writeUInt8(ED25519.VERSION);
-            buffers.push(sigBuffer);
-            buffers.push(tx.signatures[address].keyPair.publicKey);
-            buffers.push(tx.signatures[address].signature);
+        const essenceBytes = Transaction.essence(tx);
+        buffers.push(essenceBytes);
+
+        const unlockBlocksCount = Buffer.alloc(2);
+        unlockBlocksCount.writeUInt16LE(tx.unlockBlocks.length);
+        buffers.push(unlockBlocksCount);
+
+        for (const index in tx.unlockBlocks) {
+            const ubType = tx.unlockBlocks[index].type;
+
+            const unlockBlockType = Buffer.alloc(1);
+            unlockBlockType.writeUInt8(ubType);
+            buffers.push(unlockBlockType);
+
+            if (ubType === 0){
+                const ED25519Type = Buffer.alloc(1);
+                ED25519Type.writeUInt8(0);
+                buffers.push(ED25519Type);
+                buffers.push(tx.unlockBlocks[index].publicKey);
+                buffers.push(tx.unlockBlocks[index].signature);
+                continue;
+            }
+
+            const referencedIndex = Buffer.alloc(2);
+            referencedIndex.writeUInt16LE(tx.unlockBlocks[index].referenceIndex);
+            buffers.push(referencedIndex);
         }
 
-        // trailing 0 to indicate the end of signatures
-        buffers.push(Buffer.alloc(1).fill(0));
+        const payloadSize = Buffer.concat(buffers).length; 
+        const payloadSizeBuffer = Buffer.alloc(4);
+        payloadSizeBuffer.writeUInt32LE(payloadSize);
+        console.log("payloadSize", payloadSize);
+        buffers.unshift(payloadSizeBuffer);
 
         return Buffer.concat(buffers);
     }
