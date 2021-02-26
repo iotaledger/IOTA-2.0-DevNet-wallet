@@ -16,6 +16,7 @@ import { IJsonStorageService } from "../models/services/IJsonStorageService";
 import { IWalletService } from "../models/services/IWalletService";
 import { SettingsService } from "./settingsService";
 import { IUnlockBlock } from "../models/IUnlockBlock";
+import { blake2b } from "blakejs";
 
 /**
  * Service to manage a wallet.
@@ -184,7 +185,7 @@ export class WalletService implements IWalletService {
 
             if (receiveAddress) {
                 const txId = await this.sendFundsWithOptions(
-                    this.createSendFundOptions(receiveAddress, amount, Colors.NEW)
+                    this.createSendFundOptions(receiveAddress, amount, Colors.MINT)
                 );
 
                 if (txId) {
@@ -275,11 +276,12 @@ export class WalletService implements IWalletService {
             await this.doUpdates();
 
             const version = 0;
-            const time = new Date().getTime();
-            const timestamp = BigInt(time);
+            const time = Date.now();
+            const timestamp = BigInt(time*1000000);
             const manaPledge = "11111111111111111111111111111111";
             const aManaPledge = manaPledge;
             const cManaPledge = manaPledge;
+
             // Calculate the spending requirements
             const consumedOutputs = this.determineOutputsToConsume(sendFundsOptions);
 
@@ -305,12 +307,10 @@ export class WalletService implements IWalletService {
             for (const address in consumedOutputs) {
                 for (const outputID in consumedOutputs[address]){
                     addressByOutputID[outputID] = address;
-                    console.log("addressByOutputID", outputID, address);
                 }
             }
 
             const existingUnlockBlocks: { [address: string]: number } = {};
-            console.log("inputs:", inputs);
             for (const index in inputs) {
                 const addr = this._addresses.find(a => a.address === addressByOutputID[inputs[index]]);
                 if (addr) {
@@ -318,12 +318,10 @@ export class WalletService implements IWalletService {
                         unlockBlocks.push({type:1, referenceIndex:existingUnlockBlocks[addr.address], publicKey: Buffer.alloc(0), signature: Buffer.alloc(0) });
                         continue;
                     }
-                    console.log("SIGNING");
                     const keyPair = Seed.generateKeyPair(seed, addr.index);
                     const signatureUnlockBlock = {type:0, referenceIndex:0, publicKey: keyPair.publicKey, signature: Transaction.sign(keyPair, txEssence)};
                     existingUnlockBlocks[addr.address] = unlockBlocks.length; 
                     unlockBlocks.push(signatureUnlockBlock);
-                    console.log("unlock block:", unlockBlocks);
                 }
             }
 
@@ -358,7 +356,16 @@ export class WalletService implements IWalletService {
                 }
             }
 
-            return response.transaction_id;
+            const txID = response.transaction_id;
+            if (txID) {
+                const index = Transaction.mintIndex(tx.outputs);
+                const indexBytes = Buffer.alloc(2);
+                indexBytes.writeUInt16LE(index);
+                const txIDBytes = Base58.decode(txID);
+                return Base58.encode(Buffer.from(blake2b(Buffer.concat([txIDBytes, indexBytes]), undefined, 32 /* Blake256 */)));
+            }
+
+            return undefined;
         }
     }
 
@@ -467,7 +474,7 @@ export class WalletService implements IWalletService {
         for (const dest in sendFundOptions.destinations) {
             for (const color in sendFundOptions.destinations[dest]) {
                 // if we want to color something then we need fresh IOTA
-                const col = color === Colors.NEW ? "IOTA" : color;
+                const col = color === Colors.MINT ? "IOTA" : color;
                 if (!requiredFunds[col]) {
                     requiredFunds[col] = sendFundOptions.destinations[dest][color];
                 } else {
@@ -562,26 +569,21 @@ export class WalletService implements IWalletService {
         const consumedFunds: { [color: string]: bigint } = {};
 
         for (const address in outputsToUseAsInputs) {
-            console.log("outputsToUseAsInputs - address", address);
             for (const outputID in outputsToUseAsInputs[address]) {
-                console.log("outputID", outputID);
                 inputs.push(outputID);
 
                 for (const balance of outputsToUseAsInputs[address][outputID].balances) {
                     if (!consumedFunds[balance.color]) {
                         consumedFunds[balance.color] = balance.value;
-                        console.log("!balance value", balance.value);
                     } else {
                         consumedFunds[balance.color] += balance.value;
-                        console.log("balance value", balance.value);
                     }
                 }
             }
         }
 
-        if (inputs.length > 1) {
-            inputs.sort((a, b) => Base58.decode(a).compare(Base58.decode(b)));
-        }
+        inputs.sort((a, b) => Base58.decode(a).compare(Base58.decode(b)));
+        
         return { inputs, consumedFunds };
     }
 
@@ -612,14 +614,13 @@ export class WalletService implements IWalletService {
             }
 
             for (const color in sendFundsOptions.destinations[address]) {
-                console.log("---------", color);
                 const amount = sendFundsOptions.destinations[address][color];
                 if (!outputsByColor[address][color]) {
                     outputsByColor[address][color] = BigInt(0);
                 }
                 outputsByColor[address][color] += amount;
 
-                const col = color === Colors.NEW ? "IOTA" : color;
+                const col = color === Colors.MINT ? "IOTA" : color;
 
                 consumedFunds[col] -= amount;
                 if (consumedFunds[col] === BigInt(0)) {
