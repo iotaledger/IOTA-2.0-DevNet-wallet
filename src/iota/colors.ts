@@ -27,5 +27,5 @@ export class Colors {
     /**
      * Color for new Colors.
      */
-    public static NEW: string = Base58.encode(Buffer.from(new Uint8Array(Colors.SIZE).fill(255)));
+    public static MINT: string = Base58.encode(Buffer.from(new Uint8Array(Colors.SIZE).fill(255)));
 }

@@ -19,6 +19,59 @@ export class Transaction {
     }
 
     /**
+     * Get the index of the MINT output.
+     * @param outputs The ouputs of the transaction.
+     * @returns The index of the MINT output.
+     */
+    public static mintIndex(outputs: { [address: string]: {color: string; value: bigint }[] }): number {
+        let mintOutput = "";
+        let mintAddress = "";
+        let mintOutputIndex = 0;
+
+        const bufferOutputs: Buffer[] = [];
+        for (const address in outputs) {
+            const outputType = Buffer.alloc(1);
+            outputType.writeUInt8(1);
+
+            const balancesCount = Buffer.alloc(4);
+            balancesCount.writeUInt32LE(outputs[address].length);
+
+            const bufferColors: Buffer[] = [];
+            for (const balance of outputs[address]) {
+                const color = balance.color === Colors.IOTA_NAME ? Colors.IOTA_BUFFER : Base58.decode(balance.color);
+                if (balance.color === Colors.MINT) {
+                    mintAddress = address;
+                }
+                
+                const colorValueBuffer = Buffer.alloc(8);
+                colorValueBuffer.writeBigUInt64LE(balance.value);
+                bufferColors.push(Buffer.concat([color, colorValueBuffer]));
+            }
+            bufferColors.sort((a, b) => a.compare(b));
+
+            const decodedAddress = Base58.decode(address);
+            const output = Buffer.concat([outputType, balancesCount, Buffer.concat(bufferColors), decodedAddress]);
+            bufferOutputs.push(output);
+
+            if (mintAddress === address) {
+                mintOutput = output.toString("hex");
+            }
+        }
+
+        bufferOutputs.sort((a, b) => a.compare(b));
+
+        let i = 0;
+        for (const index in bufferOutputs) {
+            if (bufferOutputs[index].toString("hex") === mintOutput) {
+                mintOutputIndex = i;
+            }
+            i += 1;
+        }
+        
+        return mintOutputIndex;
+    }
+
+    /**
      * Get the essence for a transaction.
      * @param tx The tx to get the essence for.
      * @returns The essence of the transaction.
@@ -26,42 +79,73 @@ export class Transaction {
     public static essence(tx: ITransaction): Buffer {
         const buffers: Buffer[] = [];
 
+        // version
+        const version = Buffer.alloc(1);
+        version.writeUInt8(tx.version);
+        buffers.push(version);
+        
+        // timestamp
+        const timestamp = Buffer.alloc(8);
+        timestamp.writeBigInt64LE(tx.timestamp);
+        buffers.push(timestamp);
+
+        // aManaPledge
+        buffers.push(Base58.decode(tx.aManaPledge));
+
+        // cManaPledge
+        buffers.push(Base58.decode(tx.cManaPledge));
+
         // Input Size
-        const inputsSize = Buffer.alloc(4);
-        inputsSize.writeUInt32LE(tx.inputs.length);
-        buffers.push(inputsSize);
+        const inputsCount = Buffer.alloc(2);
+        inputsCount.writeUInt16LE(tx.inputs.length);
+        buffers.push(inputsCount);
 
         // Inputs
         for (const input of tx.inputs) {
-            buffers.push(Base58.decode(input));
+            const inputType = Buffer.alloc(1);
+            inputType.writeUInt8(0);
+            buffers.push(inputType);
+
+            const decodedInput = Base58.decode(input);
+            buffers.push(decodedInput);
         }
 
-        // Output Size
-        const outputsSize = Buffer.alloc(4);
-        outputsSize.writeUInt32LE(Object.keys(tx.outputs).length);
-        buffers.push(outputsSize);
+        // Output count
+        const outputsCount = Buffer.alloc(2);
+        outputsCount.writeUInt16LE(Object.keys(tx.outputs).length);
+        buffers.push(outputsCount);
 
         // Outputs
-        for (const output in tx.outputs) {
-            buffers.push(Base58.decode(output));
+        const bufferOutputs: Buffer[] = [];
+        for (const address in tx.outputs) {
+            const outputType = Buffer.alloc(1);
+            outputType.writeUInt8(1);
 
-            const balancesSize = Buffer.alloc(4);
-            balancesSize.writeUInt32LE(tx.outputs[output].length);
-            buffers.push(balancesSize);
+            const balancesCount = Buffer.alloc(4);
+            balancesCount.writeUInt32LE(tx.outputs[address].length);
 
-            for (const balance of tx.outputs[output]) {
+            const bufferColors: Buffer[] = [];
+            for (const balance of tx.outputs[address]) {
+                const color = balance.color === Colors.IOTA_NAME ? Colors.IOTA_BUFFER : Base58.decode(balance.color);
                 const colorValueBuffer = Buffer.alloc(8);
                 colorValueBuffer.writeBigUInt64LE(balance.value);
-                buffers.push(colorValueBuffer);
-                buffers.push(balance.color === Colors.IOTA_NAME ? Colors.IOTA_BUFFER : Base58.decode(balance.color));
+                bufferColors.push(Buffer.concat([color, colorValueBuffer]));
             }
+            bufferColors.sort((a, b) => a.compare(b));
+
+            const decodedAddress = Base58.decode(address);
+            const output = Buffer.concat([outputType, balancesCount, Buffer.concat(bufferColors), decodedAddress]);
+            bufferOutputs.push(output);
         }
+
+        bufferOutputs.sort((a, b) => a.compare(b));
+        buffers.push(Buffer.concat(bufferOutputs));
 
         // dataPayload size
         const dataPayloadSize = Buffer.alloc(4);
         dataPayloadSize.writeUInt32LE(0);
         buffers.push(dataPayloadSize);
-
+        
         return Buffer.concat(buffers);
     }
 
@@ -74,18 +158,42 @@ export class Transaction {
     public static bytes(tx: ITransaction, essence?: Buffer): Buffer {
         const buffers: Buffer[] = [];
 
-        buffers.push(essence ? essence : Transaction.essence(tx));
+        const payloadType = Buffer.alloc(4);
+        payloadType.writeUInt32LE(1337);
+        buffers.push(payloadType);
 
-        for (const address in tx.signatures) {
-            const sigBuffer = Buffer.alloc(1);
-            sigBuffer.writeUInt8(ED25519.VERSION);
-            buffers.push(sigBuffer);
-            buffers.push(tx.signatures[address].keyPair.publicKey);
-            buffers.push(tx.signatures[address].signature);
+        const essenceBytes = Transaction.essence(tx);
+        buffers.push(essenceBytes);
+
+        const unlockBlocksCount = Buffer.alloc(2);
+        unlockBlocksCount.writeUInt16LE(tx.unlockBlocks.length);
+        buffers.push(unlockBlocksCount);
+
+        for (const index in tx.unlockBlocks) {
+            const ubType = tx.unlockBlocks[index].type;
+
+            const unlockBlockType = Buffer.alloc(1);
+            unlockBlockType.writeUInt8(ubType);
+            buffers.push(unlockBlockType);
+
+            if (ubType === 0){
+                const ED25519Type = Buffer.alloc(1);
+                ED25519Type.writeUInt8(0);
+                buffers.push(ED25519Type);
+                buffers.push(tx.unlockBlocks[index].publicKey);
+                buffers.push(tx.unlockBlocks[index].signature);
+                continue;
+            }
+
+            const referencedIndex = Buffer.alloc(2);
+            referencedIndex.writeUInt16LE(tx.unlockBlocks[index].referenceIndex);
+            buffers.push(referencedIndex);
         }
 
-        // trailing 0 to indicate the end of signatures
-        buffers.push(Buffer.alloc(1).fill(0));
+        const payloadSize = Buffer.concat(buffers).length; 
+        const payloadSizeBuffer = Buffer.alloc(4);
+        payloadSizeBuffer.writeUInt32LE(payloadSize);
+        buffers.unshift(payloadSizeBuffer);
 
         return Buffer.concat(buffers);
     }

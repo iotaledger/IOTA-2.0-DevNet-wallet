@@ -8,7 +8,7 @@ export class ED25519 {
     /**
      * Version for signature scheme.
      */
-    public static VERSION: number = 1;
+    public static VERSION: number = 0;
 
     /**
      * Public Key size.
