@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.3
+
+New ledger state
+
 ## v0.1.2
 
 Fix crash on unknown asset
