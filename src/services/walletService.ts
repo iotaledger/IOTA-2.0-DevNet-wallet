@@ -274,14 +274,38 @@ export class WalletService implements IWalletService {
     public async sendFundsWithOptions(sendFundsOptions: ISendFundsOptions): Promise<string | undefined> {
         if (this._wallet && this._addresses) {
             await this.doUpdates();
+            const apiClient = await this.buildApiClient();
+            
+            const settingsService = ServiceFactory.get<SettingsService>("settings");
+            const settings = await settingsService.get();
+
+            let aManaPledge = settings.accessManaPledgeID;
+            let cManaPledge = settings.consensusManaPledgeID;
+
+            const allowedManaPledgeResp = await apiClient.allowedManaPledge();
+            if (aManaPledge === "" && allowedManaPledgeResp.accessMana.allowed != null) {
+                aManaPledge = allowedManaPledgeResp.accessMana.allowed[0];
+            }
+            if (cManaPledge === "" && allowedManaPledgeResp.consensusMana.allowed != null) {
+                cManaPledge = allowedManaPledgeResp.consensusMana.allowed[0];
+            }
+            
+            const aManaPledgeBytes = Base58.decode(aManaPledge);
+            if (aManaPledgeBytes.length !== 32) {
+                throw new Error("accessManaPledgeID is not valid");
+                return undefined;
+            }
+
+            const cManaPledgeBytes = Base58.decode(cManaPledge);
+            if (cManaPledgeBytes.length !== 32) {
+                throw new Error("consensusManaPledgeID is not valid");
+                return undefined;
+            }
 
             const version = 0;
             const time = Date.now();
             const timestamp = BigInt(time*1000000);
-            const manaPledge = "11111111111111111111111111111111";
-            const aManaPledge = manaPledge;
-            const cManaPledge = manaPledge;
-
+ 
             // Calculate the spending requirements
             const consumedOutputs = this.determineOutputsToConsume(sendFundsOptions);
 
@@ -327,7 +351,6 @@ export class WalletService implements IWalletService {
 
             tx.unlockBlocks = unlockBlocks;
 
-            const apiClient = await this.buildApiClient();
             const response = await apiClient.sendTransaction({
                 // eslint-disable-next-line @typescript-eslint/camelcase
                 txn_bytes: Transaction.bytes(tx, txEssence).toString("base64")

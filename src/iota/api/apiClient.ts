@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 import { IFaucetRequest } from "./models/IFaucetRequest";
 import { IFaucetResponse } from "./models/IFaucetResponse";
+import { IAllowedManaPledgeResponse } from "./models/IAllowedManaResponse";
 import { ISendTransactionRequest } from "./models/ISendTransactionRequest";
 import { ISendTransactionResponse } from "./models/ISendTransactionResponse";
 import { IUnspentOutputsRequest } from "./models/IUnspentOutputsRequest";
@@ -15,13 +16,22 @@ export class ApiClient {
      * The end point of the api.
      */
     private readonly _endpoint: string;
-
+    
     /**
      * Create a new instance of ApiClient.
      * @param endPoint The endpoint for the API.
      */
     constructor(endPoint: string) {
         this._endpoint = endPoint;
+    }
+
+        /**
+     * AllowedPledge represents the nodes that mana is allowed to be pledged to.
+     * @returns The response from the request.
+     */
+    public async allowedManaPledge(): Promise<IAllowedManaPledgeResponse> {
+        return this.sendRequest<null, IAllowedManaPledgeResponse>(
+            "get", "value/allowedManaPledge");
     }
 
     /**
