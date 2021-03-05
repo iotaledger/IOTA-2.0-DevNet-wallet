@@ -17,18 +17,12 @@ export class ApiClient {
      */
     private readonly _endpoint: string;
     
-    public accessManaPledgeID: string;
-    
-    public consensusManaPledgeID: string;
-
     /**
      * Create a new instance of ApiClient.
      * @param endPoint The endpoint for the API.
      */
-    constructor(endPoint: string, accessManaPledgeID: string, consensusManaPledgeID: string) {
+    constructor(endPoint: string) {
         this._endpoint = endPoint;
-        this.accessManaPledgeID = accessManaPledgeID;
-        this.consensusManaPledgeID = accessManaPledgeID;
     }
 
         /**

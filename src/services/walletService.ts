@@ -276,8 +276,11 @@ export class WalletService implements IWalletService {
             await this.doUpdates();
             const apiClient = await this.buildApiClient();
             
-            let aManaPledge = apiClient.accessManaPledgeID;
-            let cManaPledge = apiClient.consensusManaPledgeID;
+            const settingsService = ServiceFactory.get<SettingsService>("settings");
+            const settings = await settingsService.get();
+
+            let aManaPledge = settings.accessManaPledgeID;
+            let cManaPledge = settings.consensusManaPledgeID;
 
             const allowedManaPledgeResp = await apiClient.allowedManaPledge();
             if (aManaPledge === "" && allowedManaPledgeResp.accessMana.allowed != null) {
@@ -884,6 +887,6 @@ export class WalletService implements IWalletService {
     private async buildApiClient(): Promise<ApiClient> {
         const settingsService = ServiceFactory.get<SettingsService>("settings");
         const settings = await settingsService.get();
-        return new ApiClient(settings.apiEndpoint, settings.accessManaPledgeID, settings.consensusManaPledgeID);
+        return new ApiClient(settings.apiEndpoint);
     }
 }
