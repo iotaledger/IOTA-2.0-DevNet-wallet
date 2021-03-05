@@ -15,4 +15,14 @@ export interface SettingsState {
      * The api endpoint.
      */
     apiEndpoint?: string;
+
+    /**
+     * The nodeID of the access Mana pledge.
+     */
+    accessManaPledgeID?: string;
+
+    /**
+     * The nodeID of the consensus Mana pledge.
+     */
+    consensusManaPledgeID?: string;
 }

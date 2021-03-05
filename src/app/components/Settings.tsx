@@ -36,6 +36,8 @@ class Settings extends Component<SettingsProps, SettingsState> {
         this.setState({
             settings,
             apiEndpoint: settings.apiEndpoint,
+            accessManaPledgeID: settings.accessManaPledgeID,
+            consensusManaPledgeID: settings.consensusManaPledgeID,
             isBusy: false
         });
     }
@@ -61,6 +63,28 @@ class Settings extends Component<SettingsProps, SettingsState> {
                                 type="text"
                                 value={this.state.apiEndpoint}
                                 onChange={e => this.setState({ apiEndpoint: e.target.value })}
+                            />
+                        </div>
+                        <div className="card--label">
+                            Access Mana Pledge ID
+                        </div>
+                        <div className="card--value">
+                            <input
+                                className="fill"
+                                type="text"
+                                value={this.state.accessManaPledgeID}
+                                onChange={e => this.setState({ accessManaPledgeID: e.target.value })}
+                            />
+                        </div>
+                        <div className="card--label">
+                            Consensus Mana Pledge ID
+                        </div>
+                        <div className="card--value">
+                            <input
+                                className="fill"
+                                type="text"
+                                value={this.state.consensusManaPledgeID}
+                                onChange={e => this.setState({ consensusManaPledgeID: e.target.value })}
                             />
                         </div>
                         <div className="margin-t-s">
@@ -91,8 +115,13 @@ class Settings extends Component<SettingsProps, SettingsState> {
             newEndpoint = newEndpoint.substr(0, newEndpoint.length - 1);
         }
 
+        const accessManaPledgeID = this.state.accessManaPledgeID ?? "";
+        const consensusManaPledgeID = this.state.consensusManaPledgeID ?? "";
+
         const newSettings: ISettings = {
-            apiEndpoint: newEndpoint
+            apiEndpoint: newEndpoint,
+            accessManaPledgeID: accessManaPledgeID,
+            consensusManaPledgeID: consensusManaPledgeID
         };
         await this._settingsService.set(newSettings);
 
