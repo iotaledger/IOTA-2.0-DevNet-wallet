@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.5.1
+
+Fixed dissapearing addresses when > 20
+
 ## v0.5.0
 
 Mana
