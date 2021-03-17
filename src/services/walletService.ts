@@ -442,7 +442,7 @@ export class WalletService implements IWalletService {
                 });
                 const usedAddresses = response.unspent_outputs.filter(u => u.output_ids.length > 0);
                 addressOutputCount = usedAddresses.length;
-                blockIdx += 1;
+                blockIdx++;
 
                 unspentOutputs = unspentOutputs.concat(usedAddresses.map(uo => ({
                     address: uo.address,
