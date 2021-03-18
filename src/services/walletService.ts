@@ -429,7 +429,7 @@ export class WalletService implements IWalletService {
             const bufferSeed = Base58.decode(this._wallet.seed);
             const BLOCK_COUNT = 20;
             let blockIdx = 0;
-            let addressOutputCount;
+            let spentAddresses;
             let unspentOutputs: IWalletAddressOutput[] = [];
 
             do {
@@ -440,8 +440,8 @@ export class WalletService implements IWalletService {
                 const response = await apiClient.unspentOutputs({
                     addresses
                 });
+                spentAddresses = response.unspent_outputs.filter(u => this._wallet && this._wallet.spentAddresses.includes(u.address));
                 const usedAddresses = response.unspent_outputs.filter(u => u.output_ids.length > 0);
-                addressOutputCount = usedAddresses.length;
                 blockIdx++;
 
                 unspentOutputs = unspentOutputs.concat(usedAddresses.map(uo => ({
@@ -455,7 +455,7 @@ export class WalletService implements IWalletService {
                         inclusionState: uid.inclusion_state
                     }))
                 })));
-            } while (addressOutputCount > BLOCK_COUNT - 2);
+            } while (spentAddresses.length > BLOCK_COUNT - 2);
 
             return unspentOutputs;
         } catch (err) {
@@ -606,7 +606,7 @@ export class WalletService implements IWalletService {
         }
 
         inputs.sort((a, b) => Base58.decode(a).compare(Base58.decode(b)));
-        
+
         return { inputs, consumedFunds };
     }
 
