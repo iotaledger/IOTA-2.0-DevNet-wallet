@@ -338,7 +338,7 @@ export class WalletService implements IWalletService {
             for (const index in inputs) {
                 const addr = this._addresses.find(a => a.address === addressByOutputID[inputs[index]]);
                 if (addr) {
-                    if (existingUnlockBlocks[addr.address]) {
+                    if (existingUnlockBlocks[addr.address] !== undefined) {
                         unlockBlocks.push({type:1, referenceIndex:existingUnlockBlocks[addr.address], publicKey: Buffer.alloc(0), signature: Buffer.alloc(0) });
                         continue;
                     }
