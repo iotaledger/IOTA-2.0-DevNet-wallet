@@ -293,13 +293,11 @@ export class WalletService implements IWalletService {
             const aManaPledgeBytes = Base58.decode(aManaPledge);
             if (aManaPledgeBytes.length !== 32) {
                 throw new Error("accessManaPledgeID is not valid");
-                return undefined;
             }
 
             const cManaPledgeBytes = Base58.decode(cManaPledge);
             if (cManaPledgeBytes.length !== 32) {
                 throw new Error("consensusManaPledgeID is not valid");
-                return undefined;
             }
 
             const version = 0;
@@ -810,12 +808,15 @@ export class WalletService implements IWalletService {
                             colorMap[balance.color] = {
                                 asset: assetsMap[balance.color],
                                 confirmed: BigInt(0),
-                                unConfirmed: BigInt(0)
+                                unConfirmed: BigInt(0),
+                                rejected: BigInt(0)
                             };
                             this._balances.push(colorMap[balance.color]);
                         }
                         if (output.inclusionState.confirmed) {
                             colorMap[balance.color].confirmed += balance.value;
+                        } else if (output.inclusionState.rejected) {
+                            colorMap[balance.color].rejected += balance.value;
                         } else {
                             colorMap[balance.color].unConfirmed += balance.value;
                         }
