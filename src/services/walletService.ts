@@ -516,7 +516,6 @@ export class WalletService implements IWalletService {
                
                 // scan the outputs on this address for required funds
                 for (const output of confirmedUnspentOutputs) {
-                    console.log("output", output.id, output.inclusionState.confirmed ,output.inclusionState.rejected);
                     // keeps track if the output contains any usable funds
                     let requiredColorFoundInOutput = false;
 
