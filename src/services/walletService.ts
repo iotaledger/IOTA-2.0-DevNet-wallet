@@ -508,11 +508,15 @@ export class WalletService implements IWalletService {
         if (this._unspentOutputs) {
             for (const unspentOutput of this._unspentOutputs) {
                 let outputsFromAddressSpent = false;
-
+               
+                const confirmedUnspentOutputs = unspentOutput.outputs.filter(o =>
+                    (!this._spentOutputTransactions ||
+                    !this._spentOutputTransactions.includes(o.id)) && 
+                    o.inclusionState.confirmed);
+               
                 // scan the outputs on this address for required funds
-                for (const output of unspentOutput.outputs.filter(o =>
-                    !this._spentOutputTransactions ||
-                    !this._spentOutputTransactions.includes(o.id))) {
+                for (const output of confirmedUnspentOutputs) {
+                    console.log("output", output.id, output.inclusionState.confirmed ,output.inclusionState.rejected);
                     // keeps track if the output contains any usable funds
                     let requiredColorFoundInOutput = false;
 
@@ -542,7 +546,7 @@ export class WalletService implements IWalletService {
                 // if outputs from this address were spent add the remaining outputs as well
                 // (we want to spend only once from every address if we are not using a reusable address)
                 if (outputsFromAddressSpent && !this._reusableAddresses) {
-                    for (const output of unspentOutput.outputs) {
+                    for (const output of confirmedUnspentOutputs) {
                         outputsToConsume[unspentOutput.address][output.id] = output;
                     }
                 }
