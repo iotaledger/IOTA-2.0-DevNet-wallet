@@ -1,4 +1,10 @@
 # Changelog
+## v0.5.3
+
+Fixes unlock blocks
+Add rejected balance
+Add better error reporting for API calls
+Add user/password support for API
 
 ## v0.5.2
 
