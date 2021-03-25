@@ -887,6 +887,6 @@ export class WalletService implements IWalletService {
     private async buildApiClient(): Promise<ApiClient> {
         const settingsService = ServiceFactory.get<SettingsService>("settings");
         const settings = await settingsService.get();
-        return new ApiClient(settings.apiEndpoint);
+        return new ApiClient(settings.apiEndpoint, settings.user, settings.password);
     }
 }

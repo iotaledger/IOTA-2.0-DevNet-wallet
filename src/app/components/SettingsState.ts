@@ -17,6 +17,16 @@ export interface SettingsState {
     apiEndpoint?: string;
 
     /**
+     * API Endpoint username.
+     */
+    user?: string;
+
+    /**
+     * API Endpoint password.
+     */
+    password?: string;
+
+    /**
      * The nodeID of the access Mana pledge.
      */
     accessManaPledgeID?: string;

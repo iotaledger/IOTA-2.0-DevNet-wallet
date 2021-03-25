@@ -5,10 +5,20 @@ export interface ISettings {
     apiEndpoint: string;
 
     /**
+     * API Endpoint username.
+     */
+    user?: string;
+
+    /**
+     * API Endpoint password.
+     */
+    password?: string;
+
+    /**
      * Access Mana Pledge ID.
      */
     accessManaPledgeID: string;
-    
+
     /**
      * Access Mana Pledge ID.
      */
