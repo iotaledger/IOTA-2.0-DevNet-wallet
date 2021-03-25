@@ -15,4 +15,9 @@ export interface IWalletBalance {
      * Unconfirmed Balance.
      */
     unConfirmed: bigint;
+
+    /**
+     * Rejected Balance.
+     */
+    rejected: bigint;
 }

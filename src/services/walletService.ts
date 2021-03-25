@@ -293,13 +293,11 @@ export class WalletService implements IWalletService {
             const aManaPledgeBytes = Base58.decode(aManaPledge);
             if (aManaPledgeBytes.length !== 32) {
                 throw new Error("accessManaPledgeID is not valid");
-                return undefined;
             }
 
             const cManaPledgeBytes = Base58.decode(cManaPledge);
             if (cManaPledgeBytes.length !== 32) {
                 throw new Error("consensusManaPledgeID is not valid");
-                return undefined;
             }
 
             const version = 0;
@@ -338,7 +336,7 @@ export class WalletService implements IWalletService {
             for (const index in inputs) {
                 const addr = this._addresses.find(a => a.address === addressByOutputID[inputs[index]]);
                 if (addr) {
-                    if (existingUnlockBlocks[addr.address]) {
+                    if (existingUnlockBlocks[addr.address] !== undefined) {
                         unlockBlocks.push({type:1, referenceIndex:existingUnlockBlocks[addr.address], publicKey: Buffer.alloc(0), signature: Buffer.alloc(0) });
                         continue;
                     }
@@ -510,11 +508,14 @@ export class WalletService implements IWalletService {
         if (this._unspentOutputs) {
             for (const unspentOutput of this._unspentOutputs) {
                 let outputsFromAddressSpent = false;
-
+               
+                const confirmedUnspentOutputs = unspentOutput.outputs.filter(o =>
+                    (!this._spentOutputTransactions ||
+                    !this._spentOutputTransactions.includes(o.id)) && 
+                    o.inclusionState.confirmed);
+               
                 // scan the outputs on this address for required funds
-                for (const output of unspentOutput.outputs.filter(o =>
-                    !this._spentOutputTransactions ||
-                    !this._spentOutputTransactions.includes(o.id))) {
+                for (const output of confirmedUnspentOutputs) {
                     // keeps track if the output contains any usable funds
                     let requiredColorFoundInOutput = false;
 
@@ -544,7 +545,7 @@ export class WalletService implements IWalletService {
                 // if outputs from this address were spent add the remaining outputs as well
                 // (we want to spend only once from every address if we are not using a reusable address)
                 if (outputsFromAddressSpent && !this._reusableAddresses) {
-                    for (const output of unspentOutput.outputs) {
+                    for (const output of confirmedUnspentOutputs) {
                         outputsToConsume[unspentOutput.address][output.id] = output;
                     }
                 }
@@ -810,12 +811,15 @@ export class WalletService implements IWalletService {
                             colorMap[balance.color] = {
                                 asset: assetsMap[balance.color],
                                 confirmed: BigInt(0),
-                                unConfirmed: BigInt(0)
+                                unConfirmed: BigInt(0),
+                                rejected: BigInt(0)
                             };
                             this._balances.push(colorMap[balance.color]);
                         }
                         if (output.inclusionState.confirmed) {
                             colorMap[balance.color].confirmed += balance.value;
+                        } else if (output.inclusionState.rejected) {
+                            colorMap[balance.color].rejected += balance.value;
                         } else {
                             colorMap[balance.color].unConfirmed += balance.value;
                         }

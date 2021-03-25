@@ -122,7 +122,12 @@ export class ApiClient {
             if (!fetchResponse) {
                 throw new Error("No data was returned from the API");
             } else {
-                response = await fetchResponse.json();
+                try {
+                    response = await fetchResponse.json();
+                } catch (err) {
+                    const text = await fetchResponse.text();
+                    throw new Error(err.message + "   ---   " + text);
+                }
                 if (!fetchResponse.ok) {
                     if (response.error) {
                         throw new Error(response.error);
