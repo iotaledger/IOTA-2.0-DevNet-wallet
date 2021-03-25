@@ -36,6 +36,8 @@ export class SettingsService implements ISettingsService {
         if (!this._settings) {
             this._settings = {
                 apiEndpoint: "http://127.0.0.1:8080",
+                user: "",
+                password: "",
                 accessManaPledgeID: "",
                 consensusManaPledgeID: ""
             };

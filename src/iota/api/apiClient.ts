@@ -18,14 +18,28 @@ export class ApiClient {
     private readonly _endpoint: string;
     
     /**
+     * The user of the api.
+     */
+     private readonly _user?: string;
+    
+    /**
+     * The password of the api.
+     */
+     private readonly _password?: string;
+    
+     /**
      * Create a new instance of ApiClient.
      * @param endPoint The endpoint for the API.
+     * @param user The user for the API.
+     * @param password The password for the API.
      */
-    constructor(endPoint: string) {
+    constructor(endPoint: string, user?: string, password?: string) {
         this._endpoint = endPoint;
+        this._user = user;
+        this._password = password;
     }
 
-        /**
+    /**
      * AllowedPledge represents the nodes that mana is allowed to be pledged to.
      * @returns The response from the request.
      */
@@ -80,6 +94,10 @@ export class ApiClient {
         try {
             const headers: { [id: string]: string } = {};
             headers["Content-Type"] = "application/json";
+
+            if (this._user && this._password) {
+                headers.Authorization = `Basic ${btoa(`${this._user}:${this._password}`)}`;
+            }
 
             let fetchResponse;
 
