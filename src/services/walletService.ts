@@ -462,7 +462,7 @@ export class WalletService implements IWalletService {
 
                 unspentOutputs = unspentOutputs.concat(usedAddresses.map(uo => ({
                     address: uo.address.base58,
-                    outputs: uo.outputs.map(uid => ({
+                    outputs: uo.outputs.filter(o => o.output.type === "SigLockedColoredOutputType").map(uid => ({
                         id: uid.output.outputID.base58,
                         balances: this.mapToArray(uid.output.output.balances),
                         inclusionState: uid.inclusionState
