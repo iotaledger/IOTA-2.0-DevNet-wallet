@@ -51,7 +51,7 @@ export interface IUnspentOutputsResponse extends IResponse {
             /**
              *  InclusionState represents the different states of an OutputID.
              */
-            inclusion_state: {
+            inclusionState: {
                 /**
                  * Is the output confirmed.
                  */

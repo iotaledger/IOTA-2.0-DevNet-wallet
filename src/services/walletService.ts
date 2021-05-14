@@ -418,9 +418,13 @@ export class WalletService implements IWalletService {
         const balances: IWalletOutputBalance[] = [];
    
         for (const [color, value] of Object.entries(b)) {
+            let colorName = color;
+            if (color === Colors.IOTA_BASE58) {
+                colorName = Colors.IOTA_NAME;
+            }
             balances.push({
-                color:color, 
-                value:value
+                color: colorName, 
+                value: BigInt(value)
             });
         }
         return balances;
@@ -461,12 +465,19 @@ export class WalletService implements IWalletService {
                     outputs: uo.outputs.map(uid => ({
                         id: uid.output.outputID.base58,
                         balances: this.mapToArray(uid.output.output.balances),
-                        inclusionState: uid.inclusion_state
+                        inclusionState: uid.inclusionState
                     }))
                 })));
             } while (spentAddresses.length > BLOCK_COUNT - 2);
 
-            unspentOutputs.forEach(o => console.log(o.address));
+            // unspentOutputs.forEach(o => {
+            //     console.log("address: ", o.address)
+            //     o.outputs.forEach(output => {
+            //         console.log("output:", output.id)
+            //         console.log("inclusion state:", output.inclusionState)
+            //     })
+            // });
+
             return unspentOutputs;
         } catch (err) {
             console.error(err);
