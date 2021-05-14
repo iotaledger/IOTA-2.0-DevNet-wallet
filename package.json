@@ -33,7 +33,7 @@
         "test": "craco test",
         "eject": "react-scripts eject",
         "sass-lint": "sass-lint -v -c ./.sass-lint.yml",
-        "start-electron": "concurrently \"cross-env BROWSER=none npm run start\" \"wait-on http://localhost:3001 && electron .\"",
+        "start-electron": "concurrently \"cross-env BROWSER=none npm run start\" \"wait-on http://localhost:3001 && electron --enable-logging .\"",
         "package": "npm run build && electron-builder",
         "package-win": "electron-builder --win --x64 --publish=never",
         "package-mac": "electron-builder --mac --x64 --publish=never",

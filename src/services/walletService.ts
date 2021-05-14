@@ -17,6 +17,7 @@ import { IWalletService } from "../models/services/IWalletService";
 import { SettingsService } from "./settingsService";
 import { IUnlockBlock } from "../models/IUnlockBlock";
 import { blake2b } from "blakejs";
+import { IWalletOutputBalance } from "../models/IWalletOutputBalance";
 
 /**
  * Service to manage a wallet.
@@ -413,6 +414,18 @@ export class WalletService implements IWalletService {
         }
     }
 
+    private mapToArray(b: {[color: string]: bigint}): (IWalletOutputBalance[]) {
+        const balances: IWalletOutputBalance[] = [];
+   
+        for (const [color, value] of Object.entries(b)) {
+            balances.push({
+                color:color, 
+                value:value
+            });
+        }
+        return balances;
+    }
+
     /**
      * Get unspent outputs data.
      * @returns The unspent output data.
@@ -438,23 +451,22 @@ export class WalletService implements IWalletService {
                 const response = await apiClient.unspentOutputs({
                     addresses
                 });
-                spentAddresses = response.unspent_outputs.filter(u => this._wallet && this._wallet.spentAddresses.includes(u.address));
-                const usedAddresses = response.unspent_outputs.filter(u => u.output_ids.length > 0);
+
+                spentAddresses = response.unspentOutputs.filter(u => this._wallet && this._wallet.spentAddresses.includes(u.address.base58));
+                const usedAddresses = response.unspentOutputs.filter(u => u.outputs.length > 0);
                 blockIdx++;
 
                 unspentOutputs = unspentOutputs.concat(usedAddresses.map(uo => ({
-                    address: uo.address,
-                    outputs: uo.output_ids.map(uid => ({
-                        id: uid.id,
-                        balances: uid.balances.map(b => ({
-                            color: b.color,
-                            value: BigInt(b.value)
-                        })),
+                    address: uo.address.base58,
+                    outputs: uo.outputs.map(uid => ({
+                        id: uid.output.outputID.base58,
+                        balances: this.mapToArray(uid.output.output.balances),
                         inclusionState: uid.inclusion_state
                     }))
                 })));
             } while (spentAddresses.length > BLOCK_COUNT - 2);
 
+            unspentOutputs.forEach(o => console.log(o.address));
             return unspentOutputs;
         } catch (err) {
             console.error(err);
