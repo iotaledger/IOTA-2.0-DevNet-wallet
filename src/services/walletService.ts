@@ -18,6 +18,8 @@ import { SettingsService } from "./settingsService";
 import { IUnlockBlock } from "../models/IUnlockBlock";
 import { blake2b } from "blakejs";
 import { IWalletOutputBalance } from "../models/IWalletOutputBalance";
+import { PoW } from "../iota/crypto/pow";
+import { Worker } from "worker_threads";
 
 /**
  * Service to manage a wallet.
@@ -477,6 +479,30 @@ export class WalletService implements IWalletService {
             //         console.log("inclusion state:", output.inclusionState)
             //     })
             // });
+
+            // const worker = new Worker("../utils/worker.js", {
+            //     workerData: {
+            //       path: "./worker.ts"
+            //     }
+            //   });
+
+            const worker = new Worker("../utils/worker.js", {
+                workerData: {
+                  value: 15,
+                  path: "../utils/worker.ts"
+                }
+              });
+               
+              worker.on("message", (result) => {
+                console.log("HELLLLLLOOOOOOO", result);
+              });
+
+            const data = Buffer.alloc(1);
+            data.writeUInt8(255); 
+        
+
+            const start = performance.now();
+            console.log("----------------- PoW", PoW.calculateProofOfWork(1, data), performance.now()-start);
 
             return unspentOutputs;
         } catch (err) {

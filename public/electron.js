@@ -25,6 +25,7 @@ function createWindow() {
       title: "Pollen Wallet",
       webPreferences: {
         nodeIntegration: true,
+        nodeIntegrationInWorker: true,
         webSecurity: false
       }
     });
