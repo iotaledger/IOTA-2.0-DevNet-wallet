@@ -353,7 +353,6 @@ export class WalletService implements IWalletService {
             tx.unlockBlocks = unlockBlocks;
 
             const response = await apiClient.sendTransaction({
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 txn_bytes: Transaction.bytes(tx, txEssence).toString("base64")
             });
 
@@ -402,6 +401,25 @@ export class WalletService implements IWalletService {
             const receiveAddress = this.getReceiveAddress();
 
             if (receiveAddress) {
+
+                const worker = new Worker("../utils/worker.js", {
+                    workerData: {
+                    value: 15,
+                    path: "../utils/worker.ts"
+                    }
+                });
+                
+                worker.on("message", (result) => {
+                    console.log("HELLLLLLOOOOOOO", result);
+                });
+
+                const data = Buffer.alloc(1);
+                data.writeUInt8(255); 
+                const start = performance.now();
+                await PoW.calculateProofOfWork(20, data);
+                console.log("----------------- PoW", performance.now()-start);
+
+
                 const apiClient = await this.buildApiClient();
                 const response = await apiClient.faucet({
                     address: receiveAddress
@@ -479,30 +497,6 @@ export class WalletService implements IWalletService {
             //         console.log("inclusion state:", output.inclusionState)
             //     })
             // });
-
-            // const worker = new Worker("../utils/worker.js", {
-            //     workerData: {
-            //       path: "./worker.ts"
-            //     }
-            //   });
-
-            const worker = new Worker("../utils/worker.js", {
-                workerData: {
-                  value: 15,
-                  path: "../utils/worker.ts"
-                }
-              });
-               
-              worker.on("message", (result) => {
-                console.log("HELLLLLLOOOOOOO", result);
-              });
-
-            const data = Buffer.alloc(1);
-            data.writeUInt8(255); 
-        
-
-            const start = performance.now();
-            console.log("----------------- PoW", PoW.calculateProofOfWork(1, data), performance.now()-start);
 
             return unspentOutputs;
         } catch (err) {

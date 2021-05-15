@@ -9,10 +9,10 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@craco/craco": "^5.9.0",
+        "@craco/craco": "^6.1.2",
         "blakejs": "^1.1.0",
         "classnames": "^2.3.1",
-        "electron-is-dev": "^1.2.0",
+        "electron-is-dev": "^2.0.0",
         "electron-window-state": "^5.0.3",
         "moment": "^2.29.1",
         "node-fetch": "^2.6.1",
@@ -20,7 +20,7 @@
         "react-dom": "^16.14.0",
         "react-icons": "^3.11.0",
         "react-router-dom": "^5.1.2",
-        "react-scripts": "^3.4.4",
+        "react-scripts": "^4.0.3",
         "tweetnacl": "^1.0.3"
     },
     "engines": {
@@ -33,7 +33,7 @@
         "test": "craco test",
         "eject": "react-scripts eject",
         "sass-lint": "sass-lint -v -c ./.sass-lint.yml",
-        "start-electron": "concurrently \"cross-env BROWSER=none npm run start\" \"wait-on http://localhost:3001 && electron --enable-logging .\"",
+        "start-electron": "concurrently \"cross-env BROWSER=none npm run start \" \"wait-on http://localhost:3001 && electron --enable-logging .\"",
         "package": "npm run build && electron-builder",
         "package-win": "electron-builder --win --x64 --publish=never",
         "package-mac": "electron-builder --mac --x64 --publish=never",
@@ -56,7 +56,7 @@
         "concurrently": "^5.3.0",
         "cross-env": "^7.0.3",
         "electron": "^9.4.4",
-        "electron-builder": "^22.10.5",
+        "electron-builder": "^22.11.4",
         "husky": "^4.3.8",
         "node-sass": "^4.13.1",
         "sass-lint": "^1.13.1",
@@ -84,7 +84,8 @@
             "node_modules/electron-is-dev/**/*.js",
             "node_modules/electron-window-state/**/*.js",
             "node_modules/jsonfile/**/*.js",
-            "node_modules/mkdirp/**/*.js"
+            "node_modules/mkdirp/**/*.js",
+            "utils/worker.js"
         ],
         "appId": "org.iota.pollen-wallet",
         "win": {
