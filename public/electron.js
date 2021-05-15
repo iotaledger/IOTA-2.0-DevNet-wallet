@@ -25,8 +25,10 @@ function createWindow() {
       title: "Pollen Wallet",
       webPreferences: {
         nodeIntegration: true,
+        contextIsolation: false,
         nodeIntegrationInWorker: true,
-        webSecurity: false
+        webSecurity: false,
+        enableRemoteModule: true
       }
     });
 
