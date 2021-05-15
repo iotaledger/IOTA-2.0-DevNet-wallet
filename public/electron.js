@@ -2,6 +2,7 @@ const { app, nativeImage, BrowserWindow } = require("electron");
 const path = require("path");
 const isDev = require("electron-is-dev");
 const windowStateKeeper = require('electron-window-state');
+require("@electron/remote/main").initialize();
 
 app.commandLine.appendSwitch('disable-web-security');;
 
