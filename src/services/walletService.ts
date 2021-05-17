@@ -85,8 +85,8 @@ export class WalletService implements IWalletService {
         
             const apiClient = await this.buildApiClient();
             const response = await apiClient.faucet({
-                aManaPledge: aManaPledge,
-                cManaPledge: cManaPledge,
+                accessManaPledgeID: aManaPledge,
+                consensusManaPledgeID: cManaPledge,
                 address: addrress,
                 nonce: nonce
             });
@@ -460,13 +460,13 @@ export class WalletService implements IWalletService {
                 faucetRequestType.writeUInt32LE(2);
                 buffers.push(faucetRequestType);
 
+                const addressBytes = Base58.decode(receiveAddress);
+                buffers.push(addressBytes);
+
                 const aManaPledgeBytes = Base58.decode(aManaPledge);
                 buffers.push(aManaPledgeBytes);
                 const cManaPledgeBytes = Base58.decode(cManaPledge);
                 buffers.push(cManaPledgeBytes);
-
-                const addressBytes = Base58.decode(receiveAddress);
-                buffers.push(addressBytes);
 
                 const data = Buffer.concat(buffers);
 
