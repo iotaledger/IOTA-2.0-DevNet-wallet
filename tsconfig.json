@@ -16,12 +16,13 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "preserve",
+    "jsx": "react",
     "forceConsistentCasingInFileNames": true,
     "typeRoots": [
-        "./src/typings",
-        "./node_modules/@types"
-    ]
+      "./src/typings",
+      "./node_modules/@types"
+    ],
+    "noFallthroughCasesInSwitch": true
   },
   "include": [
     "src"

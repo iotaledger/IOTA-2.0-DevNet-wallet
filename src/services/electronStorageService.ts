@@ -1,8 +1,8 @@
 import { IStorageService } from "../models/services/IStorageService";
 
-const elec = window.require("electron");
-const fs = elec.remote.require("fs");
-const path = elec.remote.require("path");
+const elec = window.require("@electron/remote");
+const fs = elec.require("fs");
+const path = elec.require("path");
 
 /**
  * Storage service implementation for Electron.
@@ -73,7 +73,7 @@ export class ElectronStorageService implements IStorageService {
      * @returns The full path to the file.
      */
     private async createFullPath(name: string): Promise<string> {
-        const appDataPath = elec.remote.app.getPath("appData");
+        const appDataPath = elec.app.getPath("appData");
         const fullPath = path.join(appDataPath, this._appName, name);
         try {
             const dir = path.dirname(fullPath);
