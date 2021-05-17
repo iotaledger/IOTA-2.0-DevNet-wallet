@@ -63,7 +63,7 @@ function createWorkerWindow() {
       : `file://${path.join(__dirname, "../build/worker.html")}`
   );
   workerWindow.on('closed', () => {
-    console.log('background window closed')
+    console.log('PoW hidden window closed')
   });
   return workerWindow
 }
@@ -87,10 +87,10 @@ app.on("activate", () => {
 
 // Windows can talk to each other via main
 ipcMain.on('for-renderer', (event, aManaPledge, cManaPledge, address, nonce) => {
-  console.log("MAIN RECEIVED for renderer--------", aManaPledge, cManaPledge, address, nonce);
+  // console.log("MAIN RECEIVED for renderer--------", aManaPledge, cManaPledge, address, nonce);
   mainWindow.webContents.send('to-renderer', aManaPledge, cManaPledge, address, nonce);
 });
 ipcMain.on('for-background', (event, aManaPledge, cManaPledge, address, data) => {
-  console.log("MAIN RECEIVED for background--------", aManaPledge, cManaPledge, address, data);
+  // console.log("MAIN RECEIVED for background--------", aManaPledge, cManaPledge, address, data);
   workerWindow.webContents.send('message', aManaPledge, cManaPledge, address, data);
 });

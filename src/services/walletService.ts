@@ -84,8 +84,7 @@ export class WalletService implements IWalletService {
         this._done = true;
 
         ipcRenderer.on("to-renderer", async (event, aManaPledge, cManaPledge, addrress, nonce) => {
-            console.log("Renderer: received ", aManaPledge, cManaPledge, addrress, nonce);
-        
+            // console.log("Renderer: received ", aManaPledge, cManaPledge, addrress, nonce);
             const apiClient = await this.buildApiClient();
             const response = await apiClient.faucet({
                 accessManaPledgeID: aManaPledge,
@@ -561,14 +560,6 @@ export class WalletService implements IWalletService {
                     }))
                 })));
             } while (spentAddresses.length > BLOCK_COUNT - 2);
-
-            // unspentOutputs.forEach(o => {
-            //     console.log("address: ", o.address)
-            //     o.outputs.forEach(output => {
-            //         console.log("output:", output.id)
-            //         console.log("inclusion state:", output.inclusionState)
-            //     })
-            // });
 
             return unspentOutputs;
         } catch (err) {
