@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>I'm a hidden worker</title>
+    <title>PoW hidden worker</title>
   </head>
   <body>
     <script>
@@ -33,12 +33,10 @@
 
         // if message is received, pass it back to the renderer via the main thread
         ipcRenderer.on("message", (event, aManaPledge, cManaPledge, address, data) => {
-            console.log("Worker: received " + aManaPledge, cManaPledge, address, data);
-           
+            // console.log("Worker: received " + aManaPledge, cManaPledge, address, data);
             const start = performance.now();
             const nonce = calculateProofOfWork(22, data);
             console.log("----------------- PoW", performance.now()-start);
-
             ipcRenderer.send("for-renderer", aManaPledge, cManaPledge, address, nonce);
         });
     </script>
