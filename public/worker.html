@@ -18,7 +18,8 @@
         function calculateProofOfWork(target, message) { 
             for(let nonce=0;;nonce++){ 
                 const nonceLE = numberToUInt64LE(nonce);
-                const digest = blake2b(Buffer.concat([message, nonceLE]));
+                const data = Buffer.concat([message, nonceLE]);
+                const digest = blake2b(data);
                 const b = Buffer.alloc(4);
                 for (let i = 0; i <4; i++) {
                     b[i] = digest[i];
@@ -35,7 +36,7 @@
             console.log("Worker: received " + aManaPledge, cManaPledge, address, data);
            
             const start = performance.now();
-            const nonce = calculateProofOfWork(20, data);
+            const nonce = calculateProofOfWork(22, data);
             console.log("----------------- PoW", performance.now()-start);
 
             ipcRenderer.send("for-renderer", aManaPledge, cManaPledge, address, nonce);

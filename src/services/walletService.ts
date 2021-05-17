@@ -416,7 +416,6 @@ export class WalletService implements IWalletService {
     private async wait(): Promise<void> {
         while (this._done === false) {
             await this.sleep(1000);
-            console.log("I'm sleeping!!!");
         }
     }
 
@@ -428,7 +427,7 @@ export class WalletService implements IWalletService {
      * Request funds from the faucet.
      * @returns Returns the transaction id.
      */
-    public async requestFunds(): Promise<string | undefined> {
+    public async requestFunds(): Promise<void | undefined> {
         
         if (this._wallet && this._addresses) {
             const receiveAddress = this.getReceiveAddress();
@@ -453,6 +452,10 @@ export class WalletService implements IWalletService {
 
                 const buffers = [];
 
+                const payloadLen = Buffer.alloc(4);
+                payloadLen.writeUInt32LE(109);
+                buffers.push(payloadLen);
+
                 const faucetRequestType = Buffer.alloc(4);
                 faucetRequestType.writeUInt32LE(2);
                 buffers.push(faucetRequestType);
@@ -476,17 +479,6 @@ export class WalletService implements IWalletService {
                 );
 
                 await this.wait();
-                console.log("__________________|||||||||||||||###########================");
-                // const response = await apiClient.faucet({
-                //     address: receiveAddress
-                // });
-                // if (response.error) {
-                //     throw new Error(response.error);
-                // }
-                // await this.doUpdates();
-
-                // return response.id;
-                return "";
             }
         }
     }

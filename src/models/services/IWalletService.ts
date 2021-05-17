@@ -36,9 +36,8 @@ export interface IWalletService {
 
     /**
      * Request funds.
-     * @returns The transactions id if successful.
      */
-    requestFunds(): Promise<string | undefined>;
+    requestFunds(): Promise<void | undefined>;
 
     /**
      * Get the current wallet balances.
