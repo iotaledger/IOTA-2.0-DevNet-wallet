@@ -1,6 +1,6 @@
 export interface IFaucetRequest {
-    aManaPledge: string;
-    cManaPledge: string;
+    accessManaPledgeID: string;
+    consensusManaPledgeID: string;
     /**
      * The address to send the funds to.
      */
