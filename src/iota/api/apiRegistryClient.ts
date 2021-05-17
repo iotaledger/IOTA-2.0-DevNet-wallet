@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import { IAssetRequest } from "./models/IAssetRequest";
 import { IAssetResponse } from "./models/IAssetResponse";
 import { IResponse } from "./models/IResponse";
 
@@ -40,6 +41,15 @@ export class ApiRegistryClient {
     public async fetchAsset(assetID: string): Promise<IAssetResponse> {
         return this.sendRequest<null, IAssetResponse>(
             "get", "registries/nectar/assets/"+assetID);
+    }
+
+    /**
+     * Reigester Asset info. 
+     * @returns The response from the request.
+     */
+     public async registerAsset(request: IAssetRequest): Promise<IAssetResponse> {
+        return this.sendRequest<IAssetRequest, IAssetResponse>(
+            "post", "registries/nectar/assets", request);
     }
 
     /**

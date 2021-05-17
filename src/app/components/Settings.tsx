@@ -35,6 +35,7 @@ class Settings extends Component<SettingsProps, SettingsState> {
         const settings = await this._settingsService.get();
         this.setState({
             settings,
+            apiRegistryEndpoint: settings.apiRegistryEndpoint,
             apiEndpoint: settings.apiEndpoint,
             user: settings.user,
             password: settings.password,
@@ -56,6 +57,17 @@ class Settings extends Component<SettingsProps, SettingsState> {
                         <h2>General</h2>
                     </div>
                     <div className="card--content">
+                        <div className="card--label">
+                            API Asset Registry Endpoint
+                        </div>
+                        <div className="card--value">
+                            <input
+                                className="fill"
+                                type="text"
+                                value={this.state.apiRegistryEndpoint}
+                                onChange={e => this.setState({ apiRegistryEndpoint: e.target.value })}
+                            />
+                        </div>
                         <div className="card--label">
                             API Endpoint
                         </div>
@@ -139,7 +151,13 @@ class Settings extends Component<SettingsProps, SettingsState> {
             newEndpoint = newEndpoint.substr(0, newEndpoint.length - 1);
         }
 
+        let newRegistryEndpoint = this.state.apiRegistryEndpoint ?? "";
+        if (newRegistryEndpoint.endsWith("/")) {
+            newRegistryEndpoint = newRegistryEndpoint.substr(0, newRegistryEndpoint.length - 1);
+        }
+
         const newSettings: ISettings = {
+            apiRegistryEndpoint: newRegistryEndpoint,
             apiEndpoint: newEndpoint,
             user: this.state.user ?? "",
             password: this.state.password ?? "",

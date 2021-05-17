@@ -26,7 +26,7 @@ export class Transaction {
     public static mintIndex(outputs: { [address: string]: {color: string; value: bigint }[] }): number {
         let mintOutput = "";
         let mintAddress = "";
-        let mintOutputIndex = 0;
+        let mintOutputIndex = -1;
 
         const bufferOutputs: Buffer[] = [];
         for (const address in outputs) {

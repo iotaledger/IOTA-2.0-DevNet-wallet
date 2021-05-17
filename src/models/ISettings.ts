@@ -1,5 +1,10 @@
 export interface ISettings {
     /**
+     * API Central Registry Endpoint.
+     */
+     apiRegistryEndpoint: string;
+    
+    /**
      * API Endpoint.
      */
     apiEndpoint: string;

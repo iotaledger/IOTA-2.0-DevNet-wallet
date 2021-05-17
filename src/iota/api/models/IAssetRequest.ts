@@ -1,6 +1,4 @@
-import { IResponse } from "./IResponse";
-
-export interface IAssetResponse extends IResponse {
+export interface IAssetRequest {
     ID: string;
     name: string;
     symbol: string;
