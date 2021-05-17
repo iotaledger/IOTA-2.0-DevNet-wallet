@@ -9,21 +9,6 @@ app.commandLine.appendSwitch('disable-web-security');;
 
 const logo = path.join(__dirname, '../build/logo.png');
 
-// stack of available background threads
-var available = []
-
-// queue of tasks to be done
-var tasks = []
-
-// hand the tasks out to waiting threads
-function doIt(arg) {
-  // while (available.length > 0 && tasks.length > 0) {
-  //   var task = tasks.shift()
-  //   available.shift().send(task[0], task[1])
-  // }
-  mainWindow.webContents.send('status', arg)
-}
-
 let mainWindow;
 let workerWindow;
 function createWindow() {
@@ -98,11 +83,6 @@ app.on("activate", () => {
   if (workerWindow === null) {
     createWorkerWindow();
   }
-});
-
-// Main thread can receive directly from windows
-ipcMain.on('to-main', (event, arg) => {
-  console.log(arg)
 });
 
 // Windows can talk to each other via main
