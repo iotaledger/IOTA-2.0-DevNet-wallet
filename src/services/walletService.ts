@@ -18,8 +18,7 @@ import { SettingsService } from "./settingsService";
 import { IUnlockBlock } from "../models/IUnlockBlock";
 import { blake2b } from "blakejs";
 import { IWalletOutputBalance } from "../models/IWalletOutputBalance";
-import { PoW } from "../iota/crypto/pow";
-import { Worker } from "worker_threads";
+import { ipcRenderer } from "electron";
 
 /**
  * Service to manage a wallet.
@@ -70,6 +69,8 @@ export class WalletService implements IWalletService {
      */
     private readonly _reusableAddresses: boolean;
 
+    private _done: boolean;
+
     /**
      * Create a new instance of WalletService.
      */
@@ -77,6 +78,26 @@ export class WalletService implements IWalletService {
         this._jsonStorageService = ServiceFactory.get<IJsonStorageService>("json-storage");
         this._subscribers = {};
         this._reusableAddresses = false;
+        this._done = true;
+
+        ipcRenderer.on("to-renderer", async (event, aManaPledge, cManaPledge, addrress, nonce) => {
+            console.log("Renderer: received ", aManaPledge, cManaPledge, addrress, nonce);
+        
+            const apiClient = await this.buildApiClient();
+            const response = await apiClient.faucet({
+                aManaPledge: aManaPledge,
+                cManaPledge: cManaPledge,
+                address: addrress,
+                nonce: nonce
+            });
+
+            this._done = true;
+            
+            if (response.error) {
+                throw new Error(response.error);
+            }
+            await this.doUpdates();
+        });
     }
 
     /**
@@ -392,44 +413,80 @@ export class WalletService implements IWalletService {
         }
     }
 
+    private async wait(): Promise<void> {
+        while (this._done === false) {
+            await this.sleep(1000);
+            console.log("I'm sleeping!!!");
+        }
+    }
+
+    private sleep(ms: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     /**
      * Request funds from the faucet.
      * @returns Returns the transaction id.
      */
     public async requestFunds(): Promise<string | undefined> {
+        
         if (this._wallet && this._addresses) {
             const receiveAddress = this.getReceiveAddress();
 
             if (receiveAddress) {
-
-                const worker = new Worker("../utils/worker.js", {
-                    workerData: {
-                    value: 15,
-                    path: "../utils/worker.ts"
-                    }
-                });
-                
-                worker.on("message", (result) => {
-                    console.log("HELLLLLLOOOOOOO", result);
-                });
-
-                const data = Buffer.alloc(1);
-                data.writeUInt8(255); 
-                const start = performance.now();
-                await PoW.calculateProofOfWork(20, data);
-                console.log("----------------- PoW", performance.now()-start);
-
-
+                this._done = false;
                 const apiClient = await this.buildApiClient();
-                const response = await apiClient.faucet({
-                    address: receiveAddress
-                });
-                if (response.error) {
-                    throw new Error(response.error);
-                }
-                await this.doUpdates();
 
-                return response.id;
+                const settingsService = ServiceFactory.get<SettingsService>("settings");
+                const settings = await settingsService.get();
+
+                let aManaPledge = settings.accessManaPledgeID;
+                let cManaPledge = settings.consensusManaPledgeID;
+
+                const allowedManaPledgeResp = await apiClient.allowedManaPledge();
+                if (aManaPledge === "" && allowedManaPledgeResp.accessMana.allowed != null) {
+                    aManaPledge = allowedManaPledgeResp.accessMana.allowed[0];
+                }
+                if (cManaPledge === "" && allowedManaPledgeResp.consensusMana.allowed != null) {
+                    cManaPledge = allowedManaPledgeResp.consensusMana.allowed[0];
+                }
+
+                const buffers = [];
+
+                const faucetRequestType = Buffer.alloc(4);
+                faucetRequestType.writeUInt32LE(2);
+                buffers.push(faucetRequestType);
+
+                const aManaPledgeBytes = Base58.decode(aManaPledge);
+                buffers.push(aManaPledgeBytes);
+                const cManaPledgeBytes = Base58.decode(cManaPledge);
+                buffers.push(cManaPledgeBytes);
+
+                const addressBytes = Base58.decode(receiveAddress);
+                buffers.push(addressBytes);
+
+                const data = Buffer.concat(buffers);
+
+                ipcRenderer.send(
+                    "for-background",
+                    aManaPledge,
+                    cManaPledge,
+                    receiveAddress,
+                    data
+                );
+
+                await this.wait();
+                console.log("__________________|||||||||||||||###########================");
+                // const response = await apiClient.faucet({
+                //     address: receiveAddress
+                // });
+                // if (response.error) {
+                //     throw new Error(response.error);
+                // }
+                // await this.doUpdates();
+
+                // return response.id;
+                return "";
             }
         }
     }

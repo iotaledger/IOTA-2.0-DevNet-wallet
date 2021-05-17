@@ -1,7 +1,7 @@
 {
     "name": "pollen-wallet",
     "description": "IOTA Pollen Wallet",
-    "version": "0.5.3",
+    "version": "0.6.0",
     "author": "Martyn Janes <martyn.janes@iota.org>",
     "repository": {
         "type": "git",
@@ -85,8 +85,7 @@
             "node_modules/electron-is-dev/**/*.js",
             "node_modules/electron-window-state/**/*.js",
             "node_modules/jsonfile/**/*.js",
-            "node_modules/mkdirp/**/*.js",
-            "utils/worker.js"
+            "node_modules/mkdirp/**/*.js"
         ],
         "appId": "org.iota.pollen-wallet",
         "win": {

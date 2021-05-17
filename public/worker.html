@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>I'm a hidden worker</title>
+  </head>
+  <body>
+    <script>
+        const { ipcRenderer } = require("electron");
+        const { blake2b } = require("blakejs");
+
+        function numberToUInt64LE(n) {
+            const buffer = Buffer.alloc(8);
+            buffer.writeBigUInt64LE(BigInt(n),0);
+            return buffer;
+        } 
+
+        function calculateProofOfWork(target, message) { 
+            for(let nonce=0;;nonce++){ 
+                const nonceLE = numberToUInt64LE(nonce);
+                const digest = blake2b(Buffer.concat([message, nonceLE]));
+                const b = Buffer.alloc(4);
+                for (let i = 0; i <4; i++) {
+                    b[i] = digest[i];
+                }
+                const leadingZeros = Math.clz32(b.readUInt32BE());
+                if (leadingZeros >= target) {
+                    return nonce; 
+                }
+            } 
+        }
+
+        // if message is received, pass it back to the renderer via the main thread
+        ipcRenderer.on("message", (event, aManaPledge, cManaPledge, address, data) => {
+            console.log("Worker: received " + aManaPledge, cManaPledge, address, data);
+           
+            const start = performance.now();
+            const nonce = calculateProofOfWork(20, data);
+            console.log("----------------- PoW", performance.now()-start);
+
+            ipcRenderer.send("for-renderer", aManaPledge, cManaPledge, address, nonce);
+        });
+    </script>
+  </body>
+</html>
