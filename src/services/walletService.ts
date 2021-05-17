@@ -883,6 +883,7 @@ export class WalletService implements IWalletService {
             const addressMap: { [id: string]: IWalletAddress } = {};
             const assetsMap: { [id: string]: IWalletAsset } = {};
             const addedAssets: IWalletAsset[] = [];
+            const apiRegistryClient = await this.buildApiRegistryClient();
 
             for (let i = 0; i <= this._wallet.lastAddressIndex; i++) {
                 const addr = Seed.generateAddress(Base58.decode(this._wallet.seed), BigInt(i));
@@ -920,6 +921,13 @@ export class WalletService implements IWalletService {
                                     symbol: "",
                                     precision: 0
                                 };
+
+                                const assetInfoResponse = await apiRegistryClient.fetchAsset(balance.color);
+                                if (assetInfoResponse) {
+                                    asset.name = assetInfoResponse.name;
+                                    asset.symbol = assetInfoResponse.symbol;
+                                }
+
                                 addedAssets.push(asset);
                                 assetsMap[balance.color] = asset;
                             }
