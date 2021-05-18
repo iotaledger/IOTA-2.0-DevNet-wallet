@@ -28,9 +28,10 @@ h1 {
 h2 {
   @include font-size(20px, 24px);
 
-  color: $gray-5;
+  color: $dark-gray;
   font-family: $metropolis;
   font-weight: bold;
+  letter-spacing: 0.05em;
 }
 
 h3 {
@@ -44,7 +45,7 @@ h3 {
 
 body {
   height: 100%;
-  background-color: #f6f8fc;
+  background-color: $gray-0;
 
   // sass-lint:disable no-ids
   #root {
