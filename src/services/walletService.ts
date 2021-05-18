@@ -17,6 +17,8 @@ import { IWalletService } from "../models/services/IWalletService";
 import { SettingsService } from "./settingsService";
 import { IUnlockBlock } from "../models/IUnlockBlock";
 import { blake2b } from "blakejs";
+import { IWalletOutputBalance } from "../models/IWalletOutputBalance";
+import { ipcRenderer } from "electron";
 
 /**
  * Service to manage a wallet.
@@ -67,6 +69,8 @@ export class WalletService implements IWalletService {
      */
     private readonly _reusableAddresses: boolean;
 
+    private _done: boolean;
+
     /**
      * Create a new instance of WalletService.
      */
@@ -74,6 +78,25 @@ export class WalletService implements IWalletService {
         this._jsonStorageService = ServiceFactory.get<IJsonStorageService>("json-storage");
         this._subscribers = {};
         this._reusableAddresses = false;
+        this._done = true;
+
+        ipcRenderer.on("to-renderer", async (event, aManaPledge, cManaPledge, addrress, nonce) => {
+            // console.log("Renderer: received ", aManaPledge, cManaPledge, addrress, nonce);
+            const apiClient = await this.buildApiClient();
+            const response = await apiClient.faucet({
+                accessManaPledgeID: aManaPledge,
+                consensusManaPledgeID: cManaPledge,
+                address: addrress,
+                nonce: nonce
+            });
+
+            this._done = true;
+            
+            if (response.error) {
+                throw new Error(response.error);
+            }
+            await this.doUpdates();
+        });
     }
 
     /**
@@ -350,7 +373,6 @@ export class WalletService implements IWalletService {
             tx.unlockBlocks = unlockBlocks;
 
             const response = await apiClient.sendTransaction({
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 txn_bytes: Transaction.bytes(tx, txEssence).toString("base64")
             });
 
@@ -390,27 +412,90 @@ export class WalletService implements IWalletService {
         }
     }
 
+    private async wait(): Promise<void> {
+        while (this._done === false) {
+            await this.sleep(1000);
+        }
+    }
+
+    private sleep(ms: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     /**
      * Request funds from the faucet.
      * @returns Returns the transaction id.
      */
-    public async requestFunds(): Promise<string | undefined> {
+    public async requestFunds(): Promise<void | undefined> {
+        
         if (this._wallet && this._addresses) {
             const receiveAddress = this.getReceiveAddress();
 
             if (receiveAddress) {
+                this._done = false;
                 const apiClient = await this.buildApiClient();
-                const response = await apiClient.faucet({
-                    address: receiveAddress
-                });
-                if (response.error) {
-                    throw new Error(response.error);
-                }
-                await this.doUpdates();
 
-                return response.id;
+                const settingsService = ServiceFactory.get<SettingsService>("settings");
+                const settings = await settingsService.get();
+
+                let aManaPledge = settings.accessManaPledgeID;
+                let cManaPledge = settings.consensusManaPledgeID;
+
+                const allowedManaPledgeResp = await apiClient.allowedManaPledge();
+                if (aManaPledge === "" && allowedManaPledgeResp.accessMana.allowed != null) {
+                    aManaPledge = allowedManaPledgeResp.accessMana.allowed[0];
+                }
+                if (cManaPledge === "" && allowedManaPledgeResp.consensusMana.allowed != null) {
+                    cManaPledge = allowedManaPledgeResp.consensusMana.allowed[0];
+                }
+
+                const buffers = [];
+
+                const payloadLen = Buffer.alloc(4);
+                payloadLen.writeUInt32LE(109);
+                buffers.push(payloadLen);
+
+                const faucetRequestType = Buffer.alloc(4);
+                faucetRequestType.writeUInt32LE(2);
+                buffers.push(faucetRequestType);
+
+                const addressBytes = Base58.decode(receiveAddress);
+                buffers.push(addressBytes);
+
+                const aManaPledgeBytes = Base58.decode(aManaPledge);
+                buffers.push(aManaPledgeBytes);
+                const cManaPledgeBytes = Base58.decode(cManaPledge);
+                buffers.push(cManaPledgeBytes);
+
+                const data = Buffer.concat(buffers);
+
+                ipcRenderer.send(
+                    "for-background",
+                    aManaPledge,
+                    cManaPledge,
+                    receiveAddress,
+                    data
+                );
+
+                await this.wait();
             }
         }
+    }
+
+    private mapToArray(b: {[color: string]: bigint}): (IWalletOutputBalance[]) {
+        const balances: IWalletOutputBalance[] = [];
+   
+        for (const [color, value] of Object.entries(b)) {
+            let colorName = color;
+            if (color === Colors.IOTA_BASE58) {
+                colorName = Colors.IOTA_NAME;
+            }
+            balances.push({
+                color: colorName, 
+                value: BigInt(value)
+            });
+        }
+        return balances;
     }
 
     /**
@@ -438,19 +523,17 @@ export class WalletService implements IWalletService {
                 const response = await apiClient.unspentOutputs({
                     addresses
                 });
-                spentAddresses = response.unspent_outputs.filter(u => this._wallet && this._wallet.spentAddresses.includes(u.address));
-                const usedAddresses = response.unspent_outputs.filter(u => u.output_ids.length > 0);
+
+                spentAddresses = response.unspentOutputs.filter(u => this._wallet && this._wallet.spentAddresses.includes(u.address.base58));
+                const usedAddresses = response.unspentOutputs.filter(u => u.outputs.length > 0);
                 blockIdx++;
 
                 unspentOutputs = unspentOutputs.concat(usedAddresses.map(uo => ({
-                    address: uo.address,
-                    outputs: uo.output_ids.map(uid => ({
-                        id: uid.id,
-                        balances: uid.balances.map(b => ({
-                            color: b.color,
-                            value: BigInt(b.value)
-                        })),
-                        inclusionState: uid.inclusion_state
+                    address: uo.address.base58,
+                    outputs: uo.outputs.filter(o => o.output.type === "SigLockedColoredOutputType").map(uid => ({
+                        id: uid.output.outputID.base58,
+                        balances: this.mapToArray(uid.output.output.balances),
+                        inclusionState: uid.inclusionState
                     }))
                 })));
             } while (spentAddresses.length > BLOCK_COUNT - 2);

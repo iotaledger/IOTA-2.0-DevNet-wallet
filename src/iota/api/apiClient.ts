@@ -45,7 +45,7 @@ export class ApiClient {
      */
     public async allowedManaPledge(): Promise<IAllowedManaPledgeResponse> {
         return this.sendRequest<null, IAllowedManaPledgeResponse>(
-            "get", "value/allowedManaPledge");
+            "get", "mana/allowedManaPledge");
     }
 
     /**
@@ -65,7 +65,7 @@ export class ApiClient {
      */
     public async unspentOutputs(request: IUnspentOutputsRequest): Promise<IUnspentOutputsResponse> {
         return this.sendRequest<IUnspentOutputsRequest, IUnspentOutputsResponse>(
-            "post", "value/unspentOutputs", request);
+            "post", "ledgerstate/addresses/unspentOutputs", request);
     }
 
     /**
@@ -75,7 +75,7 @@ export class ApiClient {
      */
     public async sendTransaction(request: ISendTransactionRequest): Promise<ISendTransactionResponse> {
         return this.sendRequest<ISendTransactionRequest, ISendTransactionResponse>(
-            "post", "value/sendTransaction", request);
+            "post", "ledgerstate/transactions", request);
     }
 
     /**
