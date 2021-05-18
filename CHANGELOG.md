@@ -5,6 +5,7 @@
 Add PoW for requesting funds
 Update GoShimmer APIs
 Upgrade dependencies
+
 ## v0.5.3
 
 Fixes unlock blocks
