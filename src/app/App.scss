@@ -14,7 +14,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px 20px;
-    background-color: $dark-gray;
+    background-color: $white;
+    border-bottom: 1px solid $gray-2;
 
     // sass-lint:disable no-vendor-prefixes
     -webkit-app-region: drag;
@@ -57,7 +58,7 @@
       border-radius: 6px;
       outline: none;
       background: none;
-      color: $white;
+      color: $gray-4;
       font-family: $metropolis;
       font-weight: bold;
       cursor: pointer;
@@ -88,8 +89,13 @@
     @include font-size(16px);
 
     padding: 20px 20px;
-    background-color: $dark-gray;
+    background-color: $white;
     color: $white;
+    border-top: 1px solid $gray-2;
     font-family: $metropolis;
+
+    img{
+      cursor: pointer;
+    }
   }
 }

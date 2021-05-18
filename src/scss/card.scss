@@ -6,8 +6,8 @@
 .card {
   display: flex;
   flex-direction: column;
-  border: 1px solid $gray-1;
-  border-radius: 6px;
+  border: 1px solid $gray-2;
+  border-radius: 10px;
   background-color: $white;
   box-shadow: $box-shadow;
   overflow: hidden;
@@ -55,9 +55,9 @@
     flex-direction: row;
     align-items: center;
     min-height: 50px;
-    margin: 20px 26px 0px 26px;
+    margin: 20px 16px 0px 16px;
     padding-bottom: 14px;
-    border-bottom: 1px solid $gray-1;
+    border-bottom: 1px solid $gray-2;
 
     &.card--header__space-between {
       justify-content: space-between;
@@ -69,8 +69,8 @@
   li {
     @include font-size(14px);
 
-    color: $gray-4;
-    font-family: $metropolis;
+    color: $gray-6;
+    font-family: $inter;
   }
 
   ul {
@@ -78,7 +78,7 @@
   }
 
   .card--content {
-    padding: 20px 30px;
+    padding: 20px 16px;
   }
 
   .card--action {

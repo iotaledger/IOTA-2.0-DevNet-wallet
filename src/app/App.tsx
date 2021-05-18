@@ -1,6 +1,8 @@
 import React, { Component, ReactNode } from "react";
 import { Link } from "react-router-dom";
-import logoHeader from "../assets/logo-header.svg";
+import logoHeader from "../assets/logo-nectar.svg";
+import closeApp from "../assets/close-app.svg";
+import settings from "../assets/settings.svg";
 import { ServiceFactory } from "../factories/serviceFactory";
 import { ElectronHelper } from "../helpers/electronHelper";
 import { ISettingsService } from "../models/services/ISettingsService";
@@ -67,7 +69,7 @@ class App extends Component<AppProps, AppState> {
                         <button
                             onClick={() => window.close()}
                         >
-                            X
+                            <img src={closeApp} alt="close" />
                         </button>
                     )}
                 </header>
@@ -121,7 +123,7 @@ class App extends Component<AppProps, AppState> {
                                     Yes
                                 </button>
                                 <button
-                                    className="button--secondary"
+                                    className="button--primary"
                                     onClick={() => this.setState({
                                         displayMode: "wallet"
                                     })}
@@ -134,19 +136,13 @@ class App extends Component<AppProps, AppState> {
                 </div>
                 <footer className="row space-between middle">
                     <div>
-                        <button
-                            disabled={this.state.displayMode !== "wallet"}
-                            className="margin-r-s"
-                            onClick={() => this.setState({ displayMode: "settings" })}
-                        >
-                            Settings
-                        </button>
+                        <img src={settings} alt="Settings" onClick={() => this.setState({ displayMode: "settings" })}/>
                     </div>
                     <span className="margin-r-s">v{process.env.REACT_APP_VERSION}</span>
                     <div>
                         <button
                             disabled={this.state.displayMode !== "wallet" || !this.state.wallet}
-                            className="button--danger"
+                            className="button"
                             onClick={() => this.setState({ displayMode: "delete-wallet" })}
                         >
                             Delete Wallet

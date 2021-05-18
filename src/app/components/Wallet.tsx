@@ -135,7 +135,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                     <React.Fragment>
                         <div className="card margin-b-s">
                             <div className="card--header">
-                                <h2>Balances</h2>
+                                <h2>Balance</h2>
                             </div>
                             <div className="card--content">
                                 {this.state.sendFundsAddress !== undefined &&
@@ -264,7 +264,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                                 {this.state.newAssetName === undefined && (
                                     <button
                                         onClick={() => this.copyReceiveAddress()}>
-                                        Copy Receive Address
+                                        Copy Address
                                     </button>
                                 )}
                             </div>
@@ -453,16 +453,18 @@ class Wallet extends Component<WalletProps, WalletState> {
                         </div>
 
                         <div className="card margin-b-s">
-                            <div className="card--header">
+                            <div className="card--header card--header__space-between">
                                 <h2>Faucet</h2>
-                            </div>
-                            <div className="card--content">
                                 <button
+                                    className="button--secondary"
                                     disabled={this.state.isBusyFaucet}
                                     onClick={() => this.requestFunds()}
                                 >
                                     Request Funds
                                 </button>
+                            </div>
+                            <div className="card--content">
+
                                 <div className="row middle margin-t-s">
                                     {this.state.isBusyFaucet && (
                                         <Spinner />

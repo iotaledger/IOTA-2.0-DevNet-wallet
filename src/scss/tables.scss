@@ -10,9 +10,9 @@ table {
         @include font-size(12px);
 
         padding: 10px;
-        color: $gray-header;
-        font-family: $metropolis;
-        font-weight: bold;
+        color: $gray-6;
+        font-family: $inter;
+        font-weight: 500;
         text-align: left;
         text-transform: uppercase;
         white-space: nowrap;
@@ -24,10 +24,12 @@ table {
     tr {
       td {
         padding: 10px;
+        color: $gray-6;
+        font-weight: 500;
 
-        @include font-size(12px);
+        @include font-size(14px);
 
-        font-family: $metropolis;
+        font-family: $inter;
 
         pre {
           @include font-size(12px);

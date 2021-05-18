@@ -5,13 +5,13 @@
 button {
   @include font-size(16px);
 
-  padding: 6px 10px;
-  border: 1px solid $dark-green;
+  padding: 8px 24px;
+  border: 2px solid $gray-3;
   border-radius: 6px;
   outline: none;
-  background: $dark-green;
-  color: $white;
-  font-family: $metropolis;
+  background: $white;
+  color: $gray-6;
+  font-family: $inter;
   font-weight: bold;
   cursor: pointer;
 
@@ -36,8 +36,8 @@ button {
   }
 
   &.button--secondary {
-    border-color: $dark-green;
-    background-color: $white;
-    color: $dark-green;
+    background-color: $orange-6;
+    color: $white;
+    border-color: $orange-6;
   }
 }
