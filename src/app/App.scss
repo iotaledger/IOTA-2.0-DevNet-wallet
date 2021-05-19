@@ -9,13 +9,18 @@
   flex-direction: column;
   height: 100%;
 
+  &.bg-gradient{
+    background: radial-gradient(96.39% 96.39% at 50% 98.82%, #E8EDF5 1.04%, #C3D0E4 100%);
+  }
+
   header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     padding: 10px 20px;
     background-color: $white;
     border-bottom: 1px solid $gray-2;
+    z-index: 1;
 
     // sass-lint:disable no-vendor-prefixes
     -webkit-app-region: drag;
@@ -29,16 +34,12 @@
       border-radius: 6px;
       outline: none;
       text-decoration: none;
-
+      cursor: initial;
       // sass-lint:disable no-vendor-prefixes
       -webkit-app-region: none;
 
-      &:focus {
-        box-shadow: 0 0 3px 0 $light-green;
-      }
-
       img {
-        height: 48px;
+        height: 40px;
       }
 
       h1 {
@@ -53,7 +54,7 @@
     button {
       @include font-size(28px);
 
-      padding: 6px;
+      padding: 0;
       border: 0;
       border-radius: 6px;
       outline: none;
@@ -62,13 +63,12 @@
       font-family: $metropolis;
       font-weight: bold;
       cursor: pointer;
-
+      position: absolute;
+      top: 4px;
+      right: 20px;
       // sass-lint:disable no-vendor-prefixes
       -webkit-app-region: none;
 
-      &:focus {
-        box-shadow: 0 0 3px 0 $light-green;
-      }
     }
   }
 
@@ -76,15 +76,34 @@
     flex: 1;
     overflow: auto;
     padding: 40px;
-
+    display: flex;
+    flex-direction: column;
     @include font-size(16px);
-
     font-family: $metropolis;
+  }
+
+  .bubbles{
+    background-image: url("../assets/bubbles.svg");
+    background-position-x: 58%;
+    background-position-y: 43%;
+    background-repeat: no-repeat;
+  }
+
+  .landing-banner{
+    margin-top: 15%;  
+    display: flex;
+    justify-content: center;
+
+    img{
+      width: 860px;
+      max-width: 90%;
+    }
   }
 
   footer {
     display: flex;
     justify-content: flex-end;
+    z-index: 1;
 
     @include font-size(16px);
 

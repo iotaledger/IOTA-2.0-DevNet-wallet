@@ -28,6 +28,10 @@
     align-items: flex-end;
   }
 
+  &.fill {
+    flex: 1;
+  }
+  
   @include tablet-down {
     &.row--tablet-responsive {
       flex-direction: column;
@@ -42,10 +46,24 @@
   &.fill {
     flex: 1;
   }
+  &.center {
+    justify-content: center;
+  }
+  &.middle {
+    align-items: center;
+  }
 }
 
 .line-breaks {
   white-space: pre;
+}
+
+ul{
+  list-style-position: inside;
+}
+
+li::marker{
+  margin-right: 0px;
 }
 
 .margin-b-2 {
@@ -83,6 +101,7 @@
 
 .margin-b-t {
   margin-bottom: 10px;
+  margin-right: 10px;
 }
 
 .margin-r-t {
@@ -95,6 +114,26 @@
 
 .margin-l-t {
   margin-left: 10px;
+}
+
+.margin-t-m {
+  margin-top: 30px;
+}
+
+.margin-r-m {
+  margin-right: 30px;
+}
+
+.margin-b-m {
+  margin-bottom: 30px;
+}
+
+.margin-l-m {
+  margin-left: 30px;
+}
+
+.margin-t-80{
+  margin-top: 80px;
 }
 
 .padding-b-s {
@@ -128,3 +167,18 @@
 .padding-l-m {
   padding-left: 30px;
 }
+
+.w-30{
+  width: 30%;
+}
+
+.w-40{
+  width: 40%;
+}
+.sm-w-40{
+  @include tablet-down {
+    width: 100%;
+  }
+}
+
+

@@ -1,6 +1,6 @@
 import React, { Component, ReactNode } from "react";
 import { Link } from "react-router-dom";
-import logoHeader from "../assets/logo-nectar.svg";
+import logoHeader from "../assets/iota-devnet-logo.svg";
 import closeApp from "../assets/close-app.svg";
 import settings from "../assets/settings.svg";
 import { ServiceFactory } from "../factories/serviceFactory";
@@ -60,10 +60,10 @@ class App extends Component<AppProps, AppState> {
      */
     public render(): ReactNode {
         return (
-            <div className="app">
+            <div className={`app ${(!this.state.wallet || !this.state.wallet.seed) ? "bg-gradient" : ""}`}>
                 <header>
                     <Link className="brand" to="/">
-                        <img src={logoHeader} alt="Pollen Wallet" />
+                        <img src={logoHeader} alt="IOTA 2.0 Devnet Logo" />
                     </Link>
                     {ElectronHelper.isElectron() && (
                         <button
@@ -73,7 +73,7 @@ class App extends Component<AppProps, AppState> {
                         </button>
                     )}
                 </header>
-                <div className="content">
+                <div className={`content ${(!this.state.wallet || !this.state.wallet.seed) ? "bubbles" : ""}`}>
                     {this.state.displayMode === "settings" && (
                         <Settings
                             onClose={settings => this.setState({
@@ -92,17 +92,15 @@ class App extends Component<AppProps, AppState> {
                     {this.state.displayMode === "wallet" &&
                         (!this.state.wallet || (this.state.wallet && !this.state.wallet.seed)) &&
                         this.state.settings?.apiEndpoint === "http://127.0.0.1:8080" && (
-                            <div className="card margin-t-s">
-                                <div className="card--header">
-                                    <h2>Node Connection</h2>
-                                </div>
-                                <div className="card--content">
-                                    <p>By default the wallet is configured to access the API of a Pollen node running on your local machine at http://127.0.0.1:8080</p>
+                            <div className="row center middle margin-t-m">
+                                <div className="col w-40 sm-w-40 text-center body-small">
+                                    <h4>Node Connection</h4>
+                                    <p className="margin-t-2">By default the wallet is configured to access the API of a Pollen node running on your local machine at http://127.0.0.1:8080</p>
                                     <br />
-                                    <p>If you don&apos;t have a node running locally you can either:</p>
-                                    <ul className="margin-t-s">
-                                        <li>Configure and run a node locally.</li>
-                                        <li>Change the Settings to connect to a remote node.</li>
+                                    <p className="margin-t-2">If you don&apos;t have a node running locally you can either:</p>
+                                    <ul>
+                                        <li className="margin-t-2">Configure and run a node locally.</li>
+                                        <li className="margin-t-2">Change the Settings to connect to a remote node.</li>
                                     </ul>
                                 </div>
                             </div>
@@ -114,7 +112,7 @@ class App extends Component<AppProps, AppState> {
                             </div>
                             <div className="card--content">
                                 <p className="margin-b-s">
-                                    ARE YOU SURE YOU WANT TO DELETE THE WALLET ?
+                                    Are you sure you want to delete the wallet?
                                 </p>
                                 <button
                                     className="button--danger margin-r-s"
@@ -123,7 +121,7 @@ class App extends Component<AppProps, AppState> {
                                     Yes
                                 </button>
                                 <button
-                                    className="button--primary"
+                                    className="button--secondary"
                                     onClick={() => this.setState({
                                         displayMode: "wallet"
                                     })}
@@ -142,7 +140,7 @@ class App extends Component<AppProps, AppState> {
                     <div>
                         <button
                             disabled={this.state.displayMode !== "wallet" || !this.state.wallet}
-                            className="button"
+                            className="button--danger"
                             onClick={() => this.setState({ displayMode: "delete-wallet" })}
                         >
                             Delete Wallet

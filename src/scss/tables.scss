@@ -46,6 +46,12 @@ table {
           // sass-lint:disable no-duplicate-properties
           word-break: break-word;
         }
+
+        button{
+          @include tablet-down {
+            margin: 5px;
+          }
+        }
       }
     }
   }

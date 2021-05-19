@@ -130,7 +130,7 @@ class Settings extends Component<SettingsProps, SettingsState> {
                             >
                                 OK
                             </button>
-                            <button
+                            <button className="button--secondary"
                                 onClick={() => this.props.onClose()}
                             >
                                 Cancel

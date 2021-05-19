@@ -118,9 +118,9 @@
     display: flex;
     align-items: center;
     height: 32px;
-    color: $gray-header;
-    font-family: $metropolis;
-    font-weight: bold;
+    color: $gray-6;
+    font-family: $inter;
+    font-weight: 500;
     text-transform: uppercase;
     white-space: nowrap;
 
@@ -136,11 +136,6 @@
       text-align: left;
       text-transform: inherit;
       cursor: pointer;
-
-      &:hover {
-        color: $light-green;
-        text-decoration: underline;
-      }
 
       &:focus {
         box-shadow: none;
@@ -237,7 +232,6 @@
       cursor: pointer;
 
       &:hover {
-        color: $light-green;
         text-decoration: underline;
       }
 
@@ -250,5 +244,36 @@
         opacity: 0.3;
       }
     }
+  }
+}
+
+.card--modal{
+
+  max-width: 500px;
+
+  .card--header {
+    justify-content: center;
+    border: none;
+  }
+
+  .card--content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .card--label {
+    text-transform: none;
+  }
+
+  .card--value {
+    @include font-size(12px);
+    font-weight: bold;
+    color: $gray-9;
+  }
+
+  p {
+    text-align: center;
+    line-height: 21px;
   }
 }

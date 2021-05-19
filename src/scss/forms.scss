@@ -40,9 +40,6 @@
     font-family: $inter;
     appearance: none;
 
-    &:focus {
-      box-shadow: 0 0 3px 0 $light-green;
-    }
 
     // sass-lint:disable no-vendor-prefixes
     &:-ms-expand {
@@ -90,10 +87,6 @@ input {
   color: $gray-5;
   font-family: $inter;
 
-  &:focus {
-    box-shadow: 0 0 3px 0 $light-green;
-  }
-
   // sass-lint:disable no-vendor-prefixes
   &:-moz-focusring {
     color: transparent;
@@ -116,10 +109,6 @@ input {
 
 button {
   outline: none;
-
-  &:focus {
-    box-shadow: 0 0 3px 0 $light-green;
-  }
 
   // sass-lint:disable no-vendor-prefixes
   &:-moz-focusring {
@@ -156,8 +145,6 @@ button {
   cursor: pointer;
 
   &.selected {
-    border-color: $light-green;
-    background-color: $light-green;
     $color: $white;
     font-weight: 600;
   }
@@ -167,9 +154,6 @@ button {
     pointer-events: none;
   }
 
-  &:focus {
-    box-shadow: 0 0 3px 0 $light-green;
-  }
 
   // sass-lint:disable no-vendor-prefixes
   &:-moz-focusring {

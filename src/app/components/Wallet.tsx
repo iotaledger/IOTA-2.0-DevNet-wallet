@@ -1,5 +1,7 @@
 import classNames from "classnames";
 import React, { Component, ReactNode } from "react";
+import logo from "../../assets/iota-devnet-logo.svg";
+import seed from "../../assets/seed.svg";
 import { ServiceFactory } from "../../factories/serviceFactory";
 import { ClipboardHelper } from "../../helpers/clipboardHelper";
 import { IWalletAsset } from "../../models/IWalletAsset";
@@ -68,7 +70,7 @@ class Wallet extends Component<WalletProps, WalletState> {
             });
     }
 
-    /**
+    /**bubbles
      * The component will unmount so update flag.
      */
     public componentWillUnmount(): void {
@@ -85,51 +87,61 @@ class Wallet extends Component<WalletProps, WalletState> {
     public render(): ReactNode {
         return (
             <div className="wallet col">
+
                 {this.state.isBusy && (
                     <Spinner />
                 )}
                 {(!this.state.wallet || !this.state.wallet.seed) && (
-                    <div className="card">
-                        <div className="card--header">
-                            <h2>Wallet</h2>
+                     <div className="landing-banner">
+                        <div className="row center fill">
+                            <div className="col center middle">
+                                <img src={logo} alt="IOTA 2.0 Devnet Logo" />
+                                <button
+                                    className="margin-t-80 button--landing"
+                                    disabled={this.state.isBusy}
+                                    onClick={() => this.createWallet()}
+                                >
+                                    New Wallet
+                                </button> 
+                            </div>
                         </div>
-                        <div className="card--content">
-                            <p className="margin-b-s">You do not currently have a wallet.</p>
-                            <button
-                                className="margin-b-s"
-                                disabled={this.state.isBusy}
-                                onClick={() => this.createWallet()}
-                            >
-                                Create New Wallet
-                            </button>
-                        </div>
-                    </div>
+                    </div>  
                 )}
                 {this.state.wallet && this.state.wallet.seed && this.state.justCreated && (
-                    <div className="card">
-                        <div className="card--header">
-                            <h2>Created</h2>
-                        </div>
-                        <div className="card--content">
-                            <p className="margin-b-s">
-                                Your new wallet has been created, please copy the seed for future use.
-                            </p>
-                            <React.Fragment>
-                                <div className="card--label">
-                                    Seed
+                    <div className="row fill">
+                        <div className="col fill center middle">
+                            <div className="card card--modal">
+                                <div className="card--header">
+                                    <h2>Wallet created</h2>
                                 </div>
-                                <div className="card--value margin-b-s">
-                                    {this.state.wallet.seed}
+                                <div className="card--content">
+                                    <p className="margin-b-s padding-r-m padding-l-m">
+                                        Your new wallet has been created, please copy the seed for future use.
+                                    </p>
+                                    <React.Fragment>
+                                        <div className="row middle">
+                                            <img src={seed} alt="Seed" />
+                                            <div className="margin-l-t">
+                                                <div className="card--label">
+                                                    Seed
+                                                </div>
+                                                <div className="card--value margin-b-s">
+                                                    {this.state.wallet.seed}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </React.Fragment>
+                                    <button
+                                        className="margin-t-s"
+                                        onClick={() => this.setState({ justCreated: false })}
+                                    >
+                                        OK
+                                    </button>
                                 </div>
-                            </React.Fragment>
-                            <button
-                                className="margin-t-s"
-                                onClick={() => this.setState({ justCreated: false })}
-                            >
-                                OK
-                            </button>
+                            </div>
                         </div>
-                    </div>
+                     </div>
+
                 )}
                 {this.state.wallet && this.state.wallet.seed && !this.state.justCreated && (
                     <React.Fragment>
@@ -262,7 +274,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                             <div className="card--header row space-between">
                                 <h2>Addresses</h2>
                                 {this.state.newAssetName === undefined && (
-                                    <button
+                                    <button className = "button--secondary"
                                         onClick={() => this.copyReceiveAddress()}>
                                         Copy Address
                                     </button>
@@ -302,7 +314,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                             <div className="card--header row space-between">
                                 <h2>Assets</h2>
                                 {this.state.newAssetName === undefined && (
-                                    <button
+                                    <button className = "button--secondary"
                                         onClick={() => this.setState({
                                             newAssetName: "",
                                             newAssetSymbol: "",
@@ -424,7 +436,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                             <td>
                                                                 <button
                                                                     type="button"
-                                                                    className="margin-r-t"
+                                                                    className="margin-r-t button--secondary"
                                                                     onClick={() => this.setState({
                                                                         newAssetName: asset.name,
                                                                         newAssetSymbol: asset.symbol,
@@ -456,7 +468,6 @@ class Wallet extends Component<WalletProps, WalletState> {
                             <div className="card--header card--header__space-between">
                                 <h2>Faucet</h2>
                                 <button
-                                    className="button--secondary"
                                     disabled={this.state.isBusyFaucet}
                                     onClick={() => this.requestFunds()}
                                 >

@@ -6,22 +6,18 @@ button {
   @include font-size(16px);
 
   padding: 8px 24px;
-  border: 2px solid $gray-3;
   border-radius: 6px;
   outline: none;
-  background: $white;
-  color: $gray-6;
   font-family: $inter;
   font-weight: bold;
   cursor: pointer;
+  background-color: $orange-6;
+  color: $white;
+  border: 2px solid $orange-6;
 
   &:disabled {
     opacity: 0.5;
     pointer-events: none;
-  }
-
-  &:focus {
-    box-shadow: 0 0 3px 0 $light-green;
   }
 
   // sass-lint:disable no-vendor-prefixes
@@ -36,8 +32,16 @@ button {
   }
 
   &.button--secondary {
-    background-color: $orange-6;
-    color: $white;
-    border-color: $orange-6;
+    background: $white;
+    color: $gray-6;
+    border-color: $gray-3;
+  }
+
+  &.button--landing{
+    @include font-size(14px);
+    width: 160px;
+    height: 48px;
+    text-transform: uppercase;
+    font-weight: 600;
   }
 }
