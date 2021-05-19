@@ -1,5 +1,8 @@
 import classNames from "classnames";
 import React, { Component, ReactNode } from "react";
+import nectarDrop1 from "../../assets/nectar-drop-1.svg";
+import nectarDrop2 from "../../assets/nectar-drop-2.svg";
+import nectarDrop3 from "../../assets/nectar-drop-3.svg";
 import logo from "../../assets/iota-devnet-logo.svg";
 import seed from "../../assets/seed.svg";
 import { ServiceFactory } from "../../factories/serviceFactory";
@@ -70,7 +73,7 @@ class Wallet extends Component<WalletProps, WalletState> {
             });
     }
 
-    /**bubbles
+    /**
      * The component will unmount so update flag.
      */
     public componentWillUnmount(): void {
@@ -86,61 +89,73 @@ class Wallet extends Component<WalletProps, WalletState> {
      */
     public render(): ReactNode {
         return (
-            <div className="wallet col">
+            <div 
+                className={`wallet col ${this.state.wallet && this.state.wallet.seed && this.state.justCreated ? "center middle fill" : ""}`}>
 
                 {this.state.isBusy && (
                     <Spinner />
                 )}
                 {(!this.state.wallet || !this.state.wallet.seed) && (
-                     <div className="landing-banner">
-                        <div className="row center fill">
-                            <div className="col center middle">
-                                <img src={logo} alt="IOTA 2.0 Devnet Logo" />
-                                <button
-                                    className="margin-t-80 button--landing"
-                                    disabled={this.state.isBusy}
-                                    onClick={() => this.createWallet()}
-                                >
-                                    New Wallet
-                                </button> 
+                    <div>
+                        <div className="landing-banner">
+                            <div className="nectar-drops">
+                                <img src={nectarDrop1} alt="Nectar drop" className="nectar-drop" id="drop-1"/>
+                                <div id="scale-drop">
+                                    <img src={nectarDrop2} alt="Nectar drop" className="nectar-drop" id="drop-2"/>
+                                </div>
+                                <img src={nectarDrop3} alt="Nectar drop" className="nectar-drop" id="drop-3"/>
                             </div>
-                        </div>
+                            <div className="row center fill z-1">
+                                <div className="col center middle">
+                                    <img src={logo} alt="IOTA 2.0 Devnet Logo" />
+                                    <button
+                                        className="margin-t-80 button--landing"
+                                        disabled={this.state.isBusy}
+                                        onClick={() => this.createWallet()}
+                                    >
+                                        New Wallet
+                                    </button> 
+                                </div>
+                            </div>
+                        </div>  
                     </div>  
                 )}
                 {this.state.wallet && this.state.wallet.seed && this.state.justCreated && (
-                    <div className="row fill">
-                        <div className="col fill center middle">
-                            <div className="card card--modal">
-                                <div className="card--header">
-                                    <h2>Wallet created</h2>
-                                </div>
-                                <div className="card--content">
-                                    <p className="margin-b-s padding-r-m padding-l-m">
-                                        Your new wallet has been created, please copy the seed for future use.
-                                    </p>
-                                    <React.Fragment>
-                                        <div className="row middle">
-                                            <img src={seed} alt="Seed" />
-                                            <div className="margin-l-t">
-                                                <div className="card--label">
-                                                    Seed
-                                                </div>
-                                                <div className="card--value margin-b-s">
-                                                    {this.state.wallet.seed}
+                    <div>
+                        <div className="row fill">
+                            <div className="col fill center middle">
+                                <div className="card card--modal">
+                                    <div className="card--header">
+                                        <h2>Wallet created</h2>
+                                    </div>
+                                    <div className="card--content">
+                                        <p className="margin-b-s padding-r-m padding-l-m">
+                                            Your new wallet has been created, please copy the seed for future use.
+                                        </p>
+                                        <React.Fragment>
+                                            <div className="row middle">
+                                                <img src={seed} alt="Seed" />
+                                                <div className="margin-l-t">
+                                                    <div className="card--label">
+                                                        Seed
+                                                    </div>
+                                                    <div className="card--value margin-b-s">
+                                                        {this.state.wallet.seed}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </React.Fragment>
-                                    <button
-                                        className="margin-t-s"
-                                        onClick={() => this.setState({ justCreated: false })}
-                                    >
-                                        OK
-                                    </button>
+                                        </React.Fragment>
+                                        <button
+                                            className="margin-t-s"
+                                            onClick={() => this.setState({ justCreated: false })}
+                                        >
+                                            OK
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                     </div>
+                    </div>
 
                 )}
                 {this.state.wallet && this.state.wallet.seed && !this.state.justCreated && (

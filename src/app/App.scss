@@ -82,11 +82,43 @@
     font-family: $metropolis;
   }
 
-  .bubbles{
-    background-image: url("../assets/bubbles.svg");
+  .nectar-drops{
+/*     background-image: url("../assets/bubbles.svg");
     background-position-x: 58%;
     background-position-y: 43%;
-    background-repeat: no-repeat;
+    background-repeat: no-repeat; */
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+
+    .nectar-drop{
+      position: absolute;
+      width: 690px;
+    }
+
+    #drop-1{
+      left: -28%;
+      top: -25%;
+      animation: rotatePositive 140s infinite;
+    }
+
+    #scale-drop{
+      animation: scale 10s linear infinite;
+    } 
+
+    #drop-2{
+      top: 0%;
+      left: 20%;    
+      animation: rotateNegative 140s infinite;
+    }
+
+    #drop-3{
+      right: -21%;
+      bottom: -18%;      
+      animation: rotatePositive 100s infinite;
+    }
   }
 
   .landing-banner{

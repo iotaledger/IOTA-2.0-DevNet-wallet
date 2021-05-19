@@ -60,7 +60,8 @@ class App extends Component<AppProps, AppState> {
      */
     public render(): ReactNode {
         return (
-            <div className={`app ${(!this.state.wallet || !this.state.wallet.seed) ? "bg-gradient" : ""}`}>
+            <div className={`app 
+                ${(!this.state.wallet || !this.state.wallet.seed) ? "bg-gradient" : ""}`}>
                 <header>
                     <Link className="brand" to="/">
                         <img src={logoHeader} alt="IOTA 2.0 Devnet Logo" />
@@ -73,7 +74,8 @@ class App extends Component<AppProps, AppState> {
                         </button>
                     )}
                 </header>
-                <div className={`content ${(!this.state.wallet || !this.state.wallet.seed) ? "bubbles" : ""}`}>
+                <div className="content">
+
                     {this.state.displayMode === "settings" && (
                         <Settings
                             onClose={settings => this.setState({
@@ -92,7 +94,7 @@ class App extends Component<AppProps, AppState> {
                     {this.state.displayMode === "wallet" &&
                         (!this.state.wallet || (this.state.wallet && !this.state.wallet.seed)) &&
                         this.state.settings?.apiEndpoint === "http://127.0.0.1:8080" && (
-                            <div className="row center middle margin-t-m">
+                            <div className="row center middle margin-t-m z-1">
                                 <div className="col w-40 sm-w-40 text-center body-small">
                                     <h4>Node Connection</h4>
                                     <p className="margin-t-2">By default the wallet is configured to access the API of a Pollen node running on your local machine at http://127.0.0.1:8080</p>
