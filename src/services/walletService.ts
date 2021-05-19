@@ -620,6 +620,7 @@ export class WalletService implements IWalletService {
                     !this._spentOutputTransactions.includes(o.id)) && 
                     o.inclusionState.confirmed);
                
+
                 // scan the outputs on this address for required funds
                 for (const output of confirmedUnspentOutputs) {
                     // keeps track if the output contains any usable funds
@@ -912,11 +913,14 @@ export class WalletService implements IWalletService {
                                     symbol: "",
                                     precision: 0
                                 };
-
-                                const assetInfoResponse = await apiRegistryClient.fetchAsset(balance.color);
-                                if (assetInfoResponse) {
-                                    asset.name = assetInfoResponse.name;
-                                    asset.symbol = assetInfoResponse.symbol;
+                                try {
+                                    const assetInfoResponse = await apiRegistryClient.fetchAsset(balance.color);
+                                    if (assetInfoResponse) {
+                                        asset.name = assetInfoResponse.name;
+                                        asset.symbol = assetInfoResponse.symbol;
+                                    }
+                                } catch (err) {
+                                    console.error(err);
                                 }
 
                                 addedAssets.push(asset);
