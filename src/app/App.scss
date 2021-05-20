@@ -13,6 +13,11 @@
     background: radial-gradient(96.39% 96.39% at 50% 98.82%, #E8EDF5 1.04%, #C3D0E4 100%);
   }
 
+  img{
+    -webkit-user-drag: none;
+    user-drag: none;
+  }
+
   header {
     display: flex;
     align-items: center;
