@@ -1,7 +1,9 @@
 import React, { Component, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import logoHeader from "../assets/iota-devnet-logo.svg";
-import closeApp from "../assets/close-app.svg";
+import closeWindow from "../assets/close-app.svg";
+import maximizeWindow from "../assets/maximize.svg";
+import minimizeWindow from "../assets/minimize.svg";
 import settings from "../assets/settings.svg";
 import { ServiceFactory } from "../factories/serviceFactory";
 import { ElectronHelper } from "../helpers/electronHelper";
@@ -12,6 +14,9 @@ import { AppProps } from "./AppProps";
 import { AppState } from "./AppState";
 import Settings from "./components/Settings";
 import Wallet from "./components/Wallet";
+
+const remote = window.require("electron").remote;
+let fullScreen = false;
 
 /**
  * Main application class.
@@ -55,6 +60,25 @@ class App extends Component<AppProps, AppState> {
     }
 
     /**
+     * Minimize window.
+     */
+    public minimize(): void{
+        remote.getCurrentWindow().minimize();
+    }
+
+    /**
+     * Maximize/unmaximize window.
+     */
+     public maximize(): void{
+        if(!fullScreen){
+            remote.getCurrentWindow().maximize();
+        }else{
+            remote.getCurrentWindow().unmaximize();
+        }
+        fullScreen = !fullScreen;
+    }
+
+    /**
      * Render the component.
      * @returns The node to render.
      */
@@ -66,13 +90,29 @@ class App extends Component<AppProps, AppState> {
                     <Link className="brand" to="/">
                         <img src={logoHeader} alt="IOTA 2.0 Devnet Logo" />
                     </Link>
-                    {ElectronHelper.isElectron() && (
-                        <button
-                            onClick={() => window.close()}
-                        >
-                            <img src={closeApp} alt="close" />
-                        </button>
-                    )}
+                    <div className="window-controllers row">
+                        {ElectronHelper.isElectron() && (
+                            <button
+                            onClick={() => this.minimize()}
+                            >
+                                <img src={minimizeWindow} alt="minimize window" />
+                            </button>
+                        )}
+                        {ElectronHelper.isElectron() && (
+                            <button
+                                onClick={() => this.maximize()}
+                            >
+                                <img src={maximizeWindow} alt="maximize window" />
+                            </button>
+                        )}
+                        {ElectronHelper.isElectron() && (
+                            <button
+                                onClick={() => window.close()}
+                            >
+                                <img src={closeWindow} alt="close window" />
+                            </button>
+                        )}
+                    </div>
                 </header>
                 <div className="content">
 

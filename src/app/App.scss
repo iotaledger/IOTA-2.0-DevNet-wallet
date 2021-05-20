@@ -51,25 +51,30 @@
       }
     }
 
-    button {
-      @include font-size(28px);
-
-      padding: 0;
-      border: 0;
-      border-radius: 6px;
-      outline: none;
-      background: none;
-      color: $gray-4;
-      font-family: $metropolis;
-      font-weight: bold;
-      cursor: pointer;
+    .window-controllers {
       position: absolute;
-      top: 4px;
-      right: 20px;
-      // sass-lint:disable no-vendor-prefixes
-      -webkit-app-region: none;
+      top: 12px;
+      right: 0px;
+
+      button {
+        padding: 0;
+        border: none;
+        background: none;
+        color: $gray-4;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        margin-right: 24px;
+        // sass-lint:disable no-vendor-prefixes
+        -webkit-app-region: none;
+      }
+
+      img{
+        width: 16px;
+      }
 
     }
+
   }
 
   .content {
@@ -83,10 +88,6 @@
   }
 
   .nectar-drops{
-/*     background-image: url("../assets/bubbles.svg");
-    background-position-x: 58%;
-    background-position-y: 43%;
-    background-repeat: no-repeat; */
     position: fixed;
     width: 100%;
     height: 100%;
@@ -96,6 +97,12 @@
     .nectar-drop{
       position: absolute;
       width: 690px;
+      @include desktop-down {
+        width: 500px;
+      }
+      @include tablet-down {
+        max-width: 80%;
+      }
     }
 
     #drop-1{
