@@ -18,8 +18,6 @@ import Wallet from "./components/Wallet";
 const remote = window.require("electron").remote;
 let fullScreen = false;
 
-console.log(Settings)
-
 /**
  * Main application class.
  */
