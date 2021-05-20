@@ -36,7 +36,7 @@
     border-radius: 6px;
     outline: none;
     background-color: #ffffff;
-    color: $gray-5;
+    color: $gray-7;
     font-family: $inter;
     appearance: none;
 
@@ -49,10 +49,10 @@
     // sass-lint:disable no-vendor-prefixes
     &:-moz-focusring {
       color: transparent;
-      text-shadow: 0 0 0 $gray-5;
+      text-shadow: 0 0 0 $gray-7;
 
       * {
-        color: $gray-5;
+        color: $gray-7;
         text-shadow: none;
       }
     }
@@ -81,20 +81,30 @@ input {
   height: 40px;
   margin: 0px;
   padding: 0px 10px;
-  border: 1px solid $input-border;
+  background: $gray-1;
+  border: none;
   border-radius: 6px;
   outline: none;
-  color: $gray-5;
+  color: $gray-7;
   font-family: $inter;
 
   // sass-lint:disable no-vendor-prefixes
   &:-moz-focusring {
     color: transparent;
-    text-shadow: 0 0 0 $gray-5;
+    text-shadow: 0 0 0 $gray-7;
   }
 
   &.fill {
     width: 100%;
+    color: $gray-7;
+  }
+
+  &:hover{
+    background: $gray-2;
+  }
+
+  &:disabled{
+    opacity: 0.5;
   }
 
   &.input-plus {
@@ -112,7 +122,7 @@ button {
 
   // sass-lint:disable no-vendor-prefixes
   &:-moz-focusring {
-    text-shadow: 0 0 0 $gray-5;
+    text-shadow: 0 0 0 $gray-7;
   }
 }
 
