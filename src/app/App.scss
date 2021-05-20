@@ -20,7 +20,7 @@
     padding: 10px 20px;
     background-color: $white;
     border-bottom: 1px solid $gray-2;
-    z-index: 1;
+    z-index: 10;
 
     // sass-lint:disable no-vendor-prefixes
     -webkit-app-region: drag;
@@ -87,56 +87,89 @@
     font-family: $metropolis;
   }
 
-  .nectar-drops{
+  .nectar-drops-bg{
     position: fixed;
     width: 100%;
     height: 100%;
     left: 0;
     top: 0;
+  }
 
-    .nectar-drop{
-      position: absolute;
-      width: 690px;
-      @include desktop-down {
-        width: 500px;
-      }
-      @include tablet-down {
-        max-width: 80%;
-      }
+  .nectar-drop{
+    position: absolute;
+    width: 690px;
+    @include desktop-down {
+      width: 500px;
     }
-
-    #drop-1{
-      left: -28%;
-      top: -25%;
-      animation: rotatePositive 140s infinite;
-    }
-
-    #scale-drop{
-      animation: scale 10s linear infinite;
-    } 
-
-    #drop-2{
-      top: 0%;
-      left: 20%;    
-      animation: rotateNegative 140s infinite;
-    }
-
-    #drop-3{
-      right: -21%;
-      bottom: -18%;      
-      animation: rotatePositive 100s infinite;
+    @include tablet-down {
+      max-width: 450px;
     }
   }
 
-  .landing-banner{
+  #drop-1{
+    left: -35%;
+    top: -25%;
+    animation: rotatePositive 140s infinite;
+    @include big-desktop-up {
+      left: 0;
+      top: 0;
+    }
+  }
+
+  #scale-drop{
+    animation: scale 10s linear infinite;
+    z-index: 10;
+    top: -90%;
+    left: 18%;
+    position: absolute;
+  } 
+
+  #drop-2{   
+    animation: rotateNegative 140s infinite;
+    width: 480px;
+    @include desktop-down {
+      width: 430px;
+    }
+    @include tablet-down {
+      width: 300px;
+    }
+    @include phone-down {
+      width: 250px;
+    }
+  }
+
+  #drop-3{
+    right: -21%;
+    bottom: -18%;      
+    animation: rotatePositive 100s infinite;
+    @include big-desktop-up {
+      right: 0;
+      bottom: 0;
+    }
+  }
+
+  .landing-banner-container{
     margin-top: 15%;  
     display: flex;
+    flex-direction: column;
     justify-content: center;
-
-    img{
-      width: 860px;
-      max-width: 90%;
+    align-items: center;
+    @include tablet-down {
+      top: 30%;
     }
+  }
+  
+  #landing-banner{
+    width: 860px;
+    max-width: 90%;
+    z-index: 100;
+  }
+
+  #hexagon{
+    width: 400px;
+    max-width: 45%;
+    z-index: 1;
+    position: absolute;
   }
 
   footer {

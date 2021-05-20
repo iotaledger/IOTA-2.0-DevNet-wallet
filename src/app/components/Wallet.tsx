@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import React, { Component, ReactNode } from "react";
+import hexagon from "../../assets/nectar-hexagon.svg";
 import nectarDrop1 from "../../assets/nectar-drop-1.svg";
 import nectarDrop2 from "../../assets/nectar-drop-2.svg";
 import nectarDrop3 from "../../assets/nectar-drop-3.svg";
@@ -97,32 +98,33 @@ class Wallet extends Component<WalletProps, WalletState> {
                 )}
                 {(!this.state.wallet || !this.state.wallet.seed) && (
                     <div>
-                        <div className="landing-banner">
-                            <div className="nectar-drops">
+                        <div className="landing-banner-container">
+                            <div className="nectar-drops-bg">
                                 <img src={nectarDrop1} alt="Nectar drop" className="nectar-drop" id="drop-1"/>
-                                <div id="scale-drop">
-                                    <img src={nectarDrop2} alt="Nectar drop" className="nectar-drop" id="drop-2"/>
-                                </div>
                                 <img src={nectarDrop3} alt="Nectar drop" className="nectar-drop" id="drop-3"/>
                             </div>
                             <div className="row center fill z-1">
-                                <div className="col center middle">
-                                    <img src={logo} alt="IOTA 2.0 Devnet Logo" />
-                                    <button
-                                        className="margin-t-80 button--landing"
-                                        disabled={this.state.isBusy}
-                                        onClick={() => this.createWallet()}
-                                    >
-                                        New Wallet
-                                    </button> 
+                                <div className="col center middle relative">
+                                    <div id="scale-drop">
+                                        <img src={nectarDrop2} alt="Nectar drop" className="nectar-drop" id="drop-2"/>
+                                    </div>
+                                    <img src={hexagon} alt="orange hexagon" id="hexagon"/>
+                                    <img src={logo} alt="IOTA 2.0 Devnet Logo" id="landing-banner"/>
                                 </div>
                             </div>
+                            <button
+                                className="margin-t-80 button--landing z-10"
+                                disabled={this.state.isBusy}
+                                onClick={() => this.createWallet()}
+                            >
+                                New Wallet
+                             </button> 
                         </div>  
                     </div>  
                 )}
                 {this.state.wallet && this.state.wallet.seed && this.state.justCreated && (
                     <div>
-                        <div className="row fill">
+                        <div className="row fill z-10">
                             <div className="col fill center middle">
                                 <div className="card card--modal">
                                     <div className="card--header">

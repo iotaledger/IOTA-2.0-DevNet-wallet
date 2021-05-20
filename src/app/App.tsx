@@ -18,6 +18,8 @@ import Wallet from "./components/Wallet";
 const remote = window.require("electron").remote;
 let fullScreen = false;
 
+console.log(Settings)
+
 /**
  * Main application class.
  */
@@ -114,7 +116,8 @@ class App extends Component<AppProps, AppState> {
                         )}
                     </div>
                 </header>
-                <div className="content">
+                <div className={`content 
+                ${(!this.state.wallet || !this.state.wallet.seed) ? "relative overflow-hidden" : ""}`}>
 
                     {this.state.displayMode === "settings" && (
                         <Settings
