@@ -90,29 +90,25 @@ class App extends Component<AppProps, AppState> {
                     <Link className="brand" to="/">
                         <img src={logoHeader} alt="IOTA 2.0 Devnet Logo" />
                     </Link>
-                    <div className="window-controllers row">
                         {ElectronHelper.isElectron() && (
-                            <button
-                            onClick={() => this.minimize()}
-                            >
-                                <img src={minimizeWindow} alt="minimize window" />
-                            </button>
+                            <div className="window-controllers row">
+                                <button
+                                onClick={() => this.minimize()}
+                                >
+                                    <img src={minimizeWindow} alt="minimize window" />
+                                </button>
+                                <button
+                                    onClick={() => this.maximize()}
+                                >
+                                    <img src={maximizeWindow} alt="maximize window" />
+                                </button>
+                                <button
+                                    onClick={() => window.close()}
+                                >
+                                    <img src={closeWindow} alt="close window" />
+                                </button>
+                            </div>
                         )}
-                        {ElectronHelper.isElectron() && (
-                            <button
-                                onClick={() => this.maximize()}
-                            >
-                                <img src={maximizeWindow} alt="maximize window" />
-                            </button>
-                        )}
-                        {ElectronHelper.isElectron() && (
-                            <button
-                                onClick={() => window.close()}
-                            >
-                                <img src={closeWindow} alt="close window" />
-                            </button>
-                        )}
-                    </div>
                 </header>
                 <div className={`content 
                 ${(!this.state.wallet || !this.state.wallet.seed) ? "relative overflow-hidden" : ""}`}>
