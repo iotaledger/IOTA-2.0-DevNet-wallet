@@ -133,7 +133,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                         </div>  
                     </div>  
                 )}
-                {this.state.isBusy || !this.state.walletServiceLoaded && (
+                {(this.state.isBusy || !this.state.walletServiceLoaded) && (
                     <Spinner className="spinner absolute spinner-landing"/>
                 )}
                 {this.state.walletServiceLoaded && this.state.wallet && this.state.wallet.seed && this.state.justCreated && (
