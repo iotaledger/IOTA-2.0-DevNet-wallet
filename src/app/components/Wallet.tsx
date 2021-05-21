@@ -93,7 +93,7 @@ class Wallet extends Component<WalletProps, WalletState> {
             <div 
                 className={`wallet col relative ${this.state.wallet && this.state.wallet.seed && this.state.justCreated ? "center middle fill" : ""}`}>
 
-                {((!this.state.wallet || !this.state.wallet.seed) && this.props.isHomepage) && (
+                {(!this.state.wallet || !this.state.wallet.seed) && (
                     <div>
                         <div className="landing-banner-container">
                             <div className="nectar-drops-bg">
@@ -522,10 +522,10 @@ class Wallet extends Component<WalletProps, WalletState> {
      */
     private createWallet(seed?: string): void {
         this.setState(
-            { isBusy: true},
+            { isBusy: true },
             async () => {
                 const wallet = await this._walletService.create(seed);
-                 this.setState(
+                this.setState(
                     {
                         wallet,
                         isBusy: false,
@@ -533,11 +533,10 @@ class Wallet extends Component<WalletProps, WalletState> {
                         balances: this._walletService.getWalletBalances(),
                         addresses: this._walletService.getWalletAddresses(),
                         receiveAddress: this._walletService.getReceiveAddress()
-                    }); 
+                    });
                 this.props.onUpdated(); 
-             });
-
-            }
+            });
+    }
 
     /**
      * Request funds from the faucet.

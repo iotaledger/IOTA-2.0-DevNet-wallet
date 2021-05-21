@@ -16,10 +16,4 @@ export interface AppState {
      * The current settings.
      */
     settings?: ISettings;
-
-    /**
-     * Whether in homepage or not.
-     */
-     isHomepage: boolean;
-
 }
