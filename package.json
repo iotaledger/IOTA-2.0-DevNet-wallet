@@ -86,7 +86,8 @@
             "node_modules/electron-is-dev/**/*.js",
             "node_modules/electron-window-state/**/*.js",
             "node_modules/jsonfile/**/*.js",
-            "node_modules/mkdirp/**/*.js"
+            "node_modules/mkdirp/**/*.js",
+            "node_modules/blakejs/**/*.js"
         ],
         "appId": "org.iota.pollen-wallet",
         "win": {
