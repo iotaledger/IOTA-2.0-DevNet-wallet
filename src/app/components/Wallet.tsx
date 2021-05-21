@@ -91,11 +91,8 @@ class Wallet extends Component<WalletProps, WalletState> {
     public render(): ReactNode {
         return (
             <div 
-                className={`wallet col ${this.state.wallet && this.state.wallet.seed && this.state.justCreated ? "center middle fill" : ""}`}>
+                className={`wallet col relative ${this.state.wallet && this.state.wallet.seed && this.state.justCreated ? "center middle fill" : ""}`}>
 
-                {this.state.isBusy && (
-                    <Spinner />
-                )}
                 {(!this.state.wallet || !this.state.wallet.seed) && (
                     <div>
                         <div className="landing-banner-container">
@@ -121,6 +118,9 @@ class Wallet extends Component<WalletProps, WalletState> {
                              </button> 
                         </div>  
                     </div>  
+                )}
+                {this.state.isBusy && (
+                    <Spinner className="spinner absolute spinner-landing"/>
                 )}
                 {this.state.wallet && this.state.wallet.seed && this.state.justCreated && (
                     <div>
@@ -222,7 +222,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                 </button>
                                             </div>
                                             {this.state.isBusySendFunds && (
-                                                <Spinner className="margin-t-s" />
+                                                <Spinner className="margin-t-s spinner--secondary" />
                                             )}
                                             {this.state.errorSendFunds && (
                                                 <p className="margin-t-s danger">{this.state.errorSendFunds}</p>
@@ -419,7 +419,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                 </button>
                                             </div>
                                             {this.state.isBusyNewAsset && (
-                                                <Spinner className="margin-t-s" />
+                                                <Spinner className="margin-t-s spinner--secondary" />
                                             )}
                                             {this.state.errorNewAsset && (
                                                 <p className="margin-t-s danger">{this.state.errorNewAsset}</p>
@@ -495,7 +495,7 @@ class Wallet extends Component<WalletProps, WalletState> {
 
                                 <div className="row middle margin-t-s">
                                     {this.state.isBusyFaucet && (
-                                        <Spinner />
+                                        <Spinner className="spinner--secondary"/>
                                     )}
                                     {this.state.faucetStatus && (
                                         <p className={
@@ -534,7 +534,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                         addresses: this._walletService.getWalletAddresses(),
                         receiveAddress: this._walletService.getReceiveAddress()
                     });
-                this.props.onUpdated();
+                this.props.onUpdated(); 
             });
     }
 

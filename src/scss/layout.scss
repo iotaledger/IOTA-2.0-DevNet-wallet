@@ -175,6 +175,7 @@ li::marker{
 .w-40{
   width: 40%;
 }
+
 .sm-w-40{
   @include tablet-down {
     width: 100%;

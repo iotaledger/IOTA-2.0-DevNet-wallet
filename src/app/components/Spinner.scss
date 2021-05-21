@@ -8,9 +8,18 @@
   left: 20px;
   width: 40px;
   height: 40px;
+  background-color: $orange-6;
   border-radius: 100%;
-  background-color: #c3d0e4;
   animation: pulse 1s ease-in-out infinite;
+
+  &.spinner--secondary{
+    background-color: $gray-3;
+  }
+
+  &.spinner-landing{
+    right: 20px;
+    left: auto;
+  }
 }
 
 @keyframes pulse {
