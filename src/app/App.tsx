@@ -43,7 +43,8 @@ class App extends Component<AppProps, AppState> {
         this._walletService = ServiceFactory.get<IWalletService>("wallet");
 
         this.state = {
-            displayMode: "wallet"
+            displayMode: "wallet",
+            isHomepage: true
         };
     }
 
@@ -112,11 +113,11 @@ class App extends Component<AppProps, AppState> {
                 </header>
                 <div className={`content 
                 ${(!this.state.wallet || !this.state.wallet.seed) ? "relative overflow-hidden" : ""}`}>
-
                     {this.state.displayMode === "settings" && (
                         <Settings
                             onClose={settings => this.setState({
                                 settings: settings ?? this.state.settings,
+                                isHomepage: !this.state.wallet || !this.state.wallet.seed ? true : false, 
                                 displayMode: "wallet"
                             })}
                         />
@@ -126,8 +127,9 @@ class App extends Component<AppProps, AppState> {
                             async () => this.setState({
                                 wallet: await this._walletService.get()
                             })
-                        } />
+                        } isHomepage={this.state.isHomepage } />
                     )}
+                    
                     {this.state.displayMode === "wallet" &&
                         (!this.state.wallet || (this.state.wallet && !this.state.wallet.seed)) &&
                         this.state.settings?.apiEndpoint === "http://127.0.0.1:8080" && (
@@ -162,7 +164,8 @@ class App extends Component<AppProps, AppState> {
                                 <button
                                     className="button--secondary"
                                     onClick={() => this.setState({
-                                        displayMode: "wallet"
+                                        displayMode: "wallet",
+                                        isHomepage: false
                                     })}
                                 >
                                     No
@@ -198,6 +201,7 @@ class App extends Component<AppProps, AppState> {
         await this._walletService.delete();
         this.setState({
             displayMode: "wallet",
+            isHomepage: true,
             wallet: undefined
         });
     }
