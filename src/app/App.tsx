@@ -126,24 +126,9 @@ class App extends Component<AppProps, AppState> {
                             async () => this.setState({
                                 wallet: await this._walletService.get()
                             })
-                        } />
+                        } displayNodeMessage={(!this.state.wallet || (this.state.wallet && !this.state.wallet.seed)) 
+                            && this.state.settings?.apiEndpoint === "http://127.0.0.1:8080"} />
                     )}
-                    {this.state.displayMode === "wallet" &&
-                        (!this.state.wallet || (this.state.wallet && !this.state.wallet.seed)) &&
-                        this.state.settings?.apiEndpoint === "http://127.0.0.1:8080" && (
-                            <div className="row center middle margin-t-m z-1">
-                                <div className="col w-40 sm-w-40 text-center body-small">
-                                    <h4>Node Connection</h4>
-                                    <p className="margin-t-2">By default the wallet is configured to access the API of a Pollen node running on your local machine at http://127.0.0.1:8080</p>
-                                    <br />
-                                    <p className="margin-t-2">If you don&apos;t have a node running locally you can either:</p>
-                                    <ul>
-                                        <li className="margin-t-2">Configure and run a node locally.</li>
-                                        <li className="margin-t-2">Change the Settings to connect to a remote node.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        )}
                     {this.state.displayMode === "delete-wallet" && (
                         <div className="card">
                             <div className="card--header">

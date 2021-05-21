@@ -93,15 +93,15 @@ class Wallet extends Component<WalletProps, WalletState> {
     public render(): ReactNode {
         return (
             <div 
-                className={`wallet col relative ${this.state.wallet && this.state.wallet.seed && this.state.justCreated ? "center middle fill" : ""}`}>
+                className={`wallet col ${(this.state.walletServiceLoaded && (!this.state.wallet || !this.state.wallet.seed)) ? "wallet--homepage" : "relative center fill"}`}>
 
                 {(this.state.walletServiceLoaded && (!this.state.wallet || !this.state.wallet.seed)) && (
-                    <div>
-                        <div className="landing-banner-container">
-                            <div className="nectar-drops-bg">
-                                <img src={nectarDrop1} alt="Nectar drop" className="nectar-drop" id="drop-1"/>
-                                <img src={nectarDrop3} alt="Nectar drop" className="nectar-drop" id="drop-3"/>
-                            </div>
+                    <div className="landing-banner-container">
+                        <div className="nectar-drops-bg">
+                            <img src={nectarDrop1} alt="Nectar drop" className="nectar-drop" id="drop-1"/>
+                            <img src={nectarDrop3} alt="Nectar drop" className="nectar-drop" id="drop-3"/>
+                        </div>
+                        <div className="grid">
                             <div className="row center fill z-1">
                                 <div className="col center middle relative">
                                     <div id="scale-drop">
@@ -112,12 +112,24 @@ class Wallet extends Component<WalletProps, WalletState> {
                                 </div>
                             </div>
                             <button
-                                className="margin-t-80 button--landing z-10"
+                                className="button--landing z-10"
                                 disabled={this.state.isBusy}
                                 onClick={() => this.createWallet()}
                             >
                                 New Wallet
-                             </button> 
+                                </button> 
+                                {this.props.displayNodeMessage && <div className="row center middle margin-t-m z-1">
+                                <div className="col w-40 sm-w-40 text-center body-small node-connection-message">
+                                    <h4>Node Connection</h4>
+                                    <p className="margin-t-2">By default the wallet is configured to access the API of a Pollen node running on your local machine at http://127.0.0.1:8080</p>
+                                    <br />
+                                    <p className="margin-t-2">If you don&apos;t have a node running locally you can either:</p>
+                                    <ul>
+                                        <li className="margin-t-2">Configure and run a node locally.</li>
+                                        <li className="margin-t-2">Change the Settings to connect to a remote node.</li>
+                                    </ul>
+                                </div>
+                            </div>}
                         </div>  
                     </div>  
                 )}
