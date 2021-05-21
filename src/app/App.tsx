@@ -1,6 +1,6 @@
 import React, { Component, ReactNode } from "react";
 import { Link } from "react-router-dom";
-import logoHeader from "../assets/iota-devnet-logo.svg";
+import logoHeader from "../assets/logo-header.svg";
 import closeWindow from "../assets/close-app.svg";
 import maximizeWindow from "../assets/maximize.svg";
 import minimizeWindow from "../assets/minimize.svg";
