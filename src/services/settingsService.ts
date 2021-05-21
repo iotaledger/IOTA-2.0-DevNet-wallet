@@ -36,7 +36,7 @@ export class SettingsService implements ISettingsService {
         if (!this._settings) {
             this._settings = {
                 apiRegistryEndpoint: "http://asset-registry.tokenizedassetsdemo.iota.cafe",
-                apiEndpoint: "http://falk.goshidev.manahub.io:9101",
+                apiEndpoint: "http://ressims.iota.cafe:9102",
                 user: "",
                 password: "",
                 accessManaPledgeID: "",
