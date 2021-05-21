@@ -8,6 +8,11 @@ export interface WalletState {
      * Is the component busy.
      */
     isBusy: boolean;
+    
+    /**
+     * Has the wallet been loaded.
+     */
+    walletServiceLoaded: boolean;
 
     /**
      * The current settings.

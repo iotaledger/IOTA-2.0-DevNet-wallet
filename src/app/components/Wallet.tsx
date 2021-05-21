@@ -38,6 +38,7 @@ class Wallet extends Component<WalletProps, WalletState> {
         this._walletService = ServiceFactory.get<IWalletService>("wallet");
 
         this.state = {
+            walletServiceLoaded: false,
             isBusy: true,
             justCreated: false,
             isBusyFaucet: false,
@@ -61,7 +62,8 @@ class Wallet extends Component<WalletProps, WalletState> {
                 isBusy: false,
                 balances: this._walletService.getWalletBalances(),
                 addresses: this._walletService.getWalletAddresses(),
-                receiveAddress: this._walletService.getReceiveAddress()
+                receiveAddress: this._walletService.getReceiveAddress(),
+                walletServiceLoaded: true
             },
             () => {
                 this._subscriptionId = this._walletService.subscribe(() => {
@@ -93,7 +95,7 @@ class Wallet extends Component<WalletProps, WalletState> {
             <div 
                 className={`wallet col relative ${this.state.wallet && this.state.wallet.seed && this.state.justCreated ? "center middle fill" : ""}`}>
 
-                {(!this.state.wallet || !this.state.wallet.seed) && (
+                {(this.state.walletServiceLoaded && (!this.state.wallet || !this.state.wallet.seed)) && (
                     <div>
                         <div className="landing-banner-container">
                             <div className="nectar-drops-bg">
@@ -119,10 +121,10 @@ class Wallet extends Component<WalletProps, WalletState> {
                         </div>  
                     </div>  
                 )}
-                {this.state.isBusy && (
+                {this.state.isBusy || !this.state.walletServiceLoaded && (
                     <Spinner className="spinner absolute spinner-landing"/>
                 )}
-                {this.state.wallet && this.state.wallet.seed && this.state.justCreated && (
+                {this.state.walletServiceLoaded && this.state.wallet && this.state.wallet.seed && this.state.justCreated && (
                     <div>
                         <div className="row fill z-10">
                             <div className="col fill center middle">
@@ -160,7 +162,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                     </div>
 
                 )}
-                {this.state.wallet && this.state.wallet.seed && !this.state.justCreated && (
+                {this.state.walletServiceLoaded && this.state.wallet && this.state.wallet.seed && !this.state.justCreated && (
                     <React.Fragment>
                         <div className="card margin-b-s">
                             <div className="card--header">
