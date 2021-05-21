@@ -40,7 +40,7 @@ export class ApiRegistryClient {
      */
     public async fetchAsset(assetID: string): Promise<IAssetResponse> {
         return this.sendRequest<null, IAssetResponse>(
-            "get", "registries/nectar/assets/"+assetID);
+            "get", "registries/test/assets/"+assetID);
     }
 
     /**
@@ -49,7 +49,7 @@ export class ApiRegistryClient {
      */
      public async registerAsset(request: IAssetRequest): Promise<IAssetResponse> {
         return this.sendRequest<IAssetRequest, IAssetResponse>(
-            "post", "registries/nectar/assets", request);
+            "post", "registries/test/assets", request);
     }
 
     /**

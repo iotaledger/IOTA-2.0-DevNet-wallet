@@ -1,7 +1,7 @@
 {
     "name": "pollen-wallet",
     "description": "IOTA Pollen Wallet",
-    "version": "0.6.0",
+    "version": "0.6.2",
     "author": "Martyn Janes <martyn.janes@iota.org>",
     "repository": {
         "type": "git",

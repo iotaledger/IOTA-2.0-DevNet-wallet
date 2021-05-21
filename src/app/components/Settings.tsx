@@ -57,7 +57,7 @@ class Settings extends Component<SettingsProps, SettingsState> {
                         <h2>General</h2>
                     </div>
                     <div className="card--content">
-                        <div className="card--label">
+                        {/* <div className="card--label">
                             API Asset Registry Endpoint
                         </div>
                         <div className="card--value">
@@ -67,7 +67,7 @@ class Settings extends Component<SettingsProps, SettingsState> {
                                 value={this.state.apiRegistryEndpoint}
                                 onChange={e => this.setState({ apiRegistryEndpoint: e.target.value })}
                             />
-                        </div>
+                        </div> */}
                         <div className="card--label">
                             API Endpoint
                         </div>
