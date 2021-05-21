@@ -89,6 +89,15 @@ class App extends Component<AppProps, AppState> {
                     )}
                     {this.state.displayMode === "wallet" &&
                         (!this.state.wallet || (this.state.wallet && !this.state.wallet.seed)) &&
+                        this.state.settings?.apiRegistryEndpoint === "http://asset-registry.tokenizedassetsdemo.iota.cafe" && (
+                            <div className="card margin-t-s">
+                                <div className="card--header">
+                                    <h2>Asset Registry Connection</h2>
+                                </div>
+                            </div>
+                        )}
+                    {this.state.displayMode === "wallet" &&
+                        (!this.state.wallet || (this.state.wallet && !this.state.wallet.seed)) &&
                         this.state.settings?.apiEndpoint === "http://127.0.0.1:8080" && (
                             <div className="card margin-t-s">
                                 <div className="card--header">

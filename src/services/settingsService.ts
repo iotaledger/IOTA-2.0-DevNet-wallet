@@ -35,6 +35,7 @@ export class SettingsService implements ISettingsService {
 
         if (!this._settings) {
             this._settings = {
+                apiRegistryEndpoint: "http://asset-registry.tokenizedassetsdemo.iota.cafe",
                 apiEndpoint: "http://127.0.0.1:8080",
                 user: "",
                 password: "",
@@ -42,6 +43,9 @@ export class SettingsService implements ISettingsService {
                 consensusManaPledgeID: ""
             };
         }
+
+        // always override local settings
+        this._settings.apiRegistryEndpoint = "http://asset-registry.tokenizedassetsdemo.iota.cafe";
 
         return this._settings;
     }

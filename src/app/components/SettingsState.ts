@@ -12,6 +12,11 @@ export interface SettingsState {
     settings?: ISettings;
 
     /**
+     * The api Central Reigstry endpoint.
+     */
+    apiRegistryEndpoint?: string;
+
+    /**
      * The api endpoint.
      */
     apiEndpoint?: string;

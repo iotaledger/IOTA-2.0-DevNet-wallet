@@ -1,11 +1,13 @@
 import { ServiceFactory } from "../factories/serviceFactory";
 import { ApiClient } from "../iota/api/apiClient";
+import { ApiRegistryClient } from "../iota/api/apiRegistryClient";
 import { Colors } from "../iota/colors";
 import { Base58 } from "../iota/crypto/base58";
 import { ITransaction } from "../iota/models/ITransaction";
 import { Seed } from "../iota/seed";
 import { Transaction } from "../iota/transaction";
 import { ISendFundsOptions } from "../models/ISendFundsOptions";
+import { ISendFundsResponse } from "../models/ISendFundsResponse";
 import { IWallet } from "../models/IWallet";
 import { IWalletAddress } from "../models/IWalletAddress";
 import { IWalletAddressOutput } from "../models/IWalletAddressOutput";
@@ -19,6 +21,7 @@ import { IUnlockBlock } from "../models/IUnlockBlock";
 import { blake2b } from "blakejs";
 import { IWalletOutputBalance } from "../models/IWalletOutputBalance";
 import { ipcRenderer } from "electron";
+import { IAssetRequest } from "../iota/api/models/IAssetRequest";
 
 /**
  * Service to manage a wallet.
@@ -207,17 +210,28 @@ export class WalletService implements IWalletService {
             const receiveAddress = this.getReceiveAddress();
 
             if (receiveAddress) {
-                const txId = await this.sendFundsWithOptions(
+                const resp = await this.sendFundsWithOptions(
                     this.createSendFundOptions(receiveAddress, amount, Colors.MINT)
                 );
 
-                if (txId) {
+                if (resp && resp.assetID) {
                     this._wallet.assets.push({
-                        color: txId,
+                        color: resp.assetID,
                         name,
                         symbol,
                         precision: 0
                     });
+                    
+                    const api = await this.buildApiRegistryClient();
+                    const assetInfo: IAssetRequest = {
+                        ID: resp.assetID,
+                        name: name,
+                        symbol: symbol,
+                        supply: Number(amount),
+                        transactionID: resp.transactionID
+                    };
+                    await api.registerAsset(assetInfo);
+                    
                     await this.save();
                     await this.doUpdates();
                 }
@@ -294,7 +308,7 @@ export class WalletService implements IWalletService {
      * @param sendFundsOptions The options for sending.
      * @returns The new tx id.
      */
-    public async sendFundsWithOptions(sendFundsOptions: ISendFundsOptions): Promise<string | undefined> {
+    public async sendFundsWithOptions(sendFundsOptions: ISendFundsOptions): Promise<ISendFundsResponse | undefined> {
         if (this._wallet && this._addresses) {
             await this.doUpdates();
             const apiClient = await this.buildApiClient();
@@ -399,13 +413,22 @@ export class WalletService implements IWalletService {
                 }
             }
 
-            const txID = response.transaction_id;
-            if (txID) {
+            if (response.transaction_id) {
+                const txID = response.transaction_id;
+                const resp: ISendFundsResponse = { 
+                    transactionID: txID,
+                    assetID: undefined
+                };
+
                 const index = Transaction.mintIndex(tx.outputs);
-                const indexBytes = Buffer.alloc(2);
-                indexBytes.writeUInt16LE(index);
-                const txIDBytes = Base58.decode(txID);
-                return Base58.encode(Buffer.from(blake2b(Buffer.concat([txIDBytes, indexBytes]), undefined, 32 /* Blake256 */)));
+                if (index >= 0) {
+                    const indexBytes = Buffer.alloc(2);
+                    indexBytes.writeUInt16LE(index);
+                    const txIDBytes = Base58.decode(txID);
+                    resp.assetID = Base58.encode(Buffer.from(blake2b(Buffer.concat([txIDBytes, indexBytes]), undefined, 32 /* Blake256 */)));
+                }
+
+                return resp;
             }
 
             return undefined;
@@ -597,6 +620,7 @@ export class WalletService implements IWalletService {
                     !this._spentOutputTransactions.includes(o.id)) && 
                     o.inclusionState.confirmed);
                
+
                 // scan the outputs on this address for required funds
                 for (const output of confirmedUnspentOutputs) {
                     // keeps track if the output contains any usable funds
@@ -851,6 +875,7 @@ export class WalletService implements IWalletService {
             const addressMap: { [id: string]: IWalletAddress } = {};
             const assetsMap: { [id: string]: IWalletAsset } = {};
             const addedAssets: IWalletAsset[] = [];
+            const apiRegistryClient = await this.buildApiRegistryClient();
 
             for (let i = 0; i <= this._wallet.lastAddressIndex; i++) {
                 const addr = Seed.generateAddress(Base58.decode(this._wallet.seed), BigInt(i));
@@ -888,6 +913,16 @@ export class WalletService implements IWalletService {
                                     symbol: "",
                                     precision: 0
                                 };
+                                try {
+                                    const assetInfoResponse = await apiRegistryClient.fetchAsset(balance.color);
+                                    if (assetInfoResponse) {
+                                        asset.name = assetInfoResponse.name;
+                                        asset.symbol = assetInfoResponse.symbol;
+                                    }
+                                } catch (err) {
+                                    console.error(err);
+                                }
+
                                 addedAssets.push(asset);
                                 assetsMap[balance.color] = asset;
                             }
@@ -975,5 +1010,15 @@ export class WalletService implements IWalletService {
         const settingsService = ServiceFactory.get<SettingsService>("settings");
         const settings = await settingsService.get();
         return new ApiClient(settings.apiEndpoint, settings.user, settings.password);
+    }
+
+    /**
+     * Build an API Registry Client for requests.
+     * @returns The API Registry Client.
+     */
+     private async buildApiRegistryClient(): Promise<ApiRegistryClient> {
+        const settingsService = ServiceFactory.get<SettingsService>("settings");
+        const settings = await settingsService.get();
+        return new ApiRegistryClient(settings.apiRegistryEndpoint);
     }
 }
