@@ -62,10 +62,7 @@ function createWorkerWindow() {
       ? `file://${path.join(__dirname, "worker.html")}`
       : `file://${path.join(__dirname, "../build/worker.html")}`
   );
-  workerWindow.on('closed', () => {
-    console.log('PoW hidden window closed')
-  });
-  return workerWindow
+  workerWindow.on('closed', () => (workerWindow = null));
 }
 
 app.on("ready", createWindow);
