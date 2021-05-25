@@ -43,6 +43,10 @@ export class SettingsService implements ISettingsService {
                 consensusManaPledgeID: ""
             };
         }
+
+        // always override local settings
+        this._settings.apiRegistryEndpoint = "http://asset-registry.tokenizedassetsdemo.iota.cafe";
+
         return this._settings;
     }
 

@@ -57,6 +57,17 @@ class Settings extends Component<SettingsProps, SettingsState> {
                         <h2>General</h2>
                     </div>
                     <div className="card--content">
+                        {/* <div className="card--label">
+                            API Asset Registry Endpoint
+                        </div>
+                        <div className="card--value">
+                            <input
+                                className="fill"
+                                type="text"
+                                value={this.state.apiRegistryEndpoint}
+                                onChange={e => this.setState({ apiRegistryEndpoint: e.target.value })}
+                            />
+                        </div> */}
                         <div className="card--label">
                             API Asset Registry Endpoint
                         </div>

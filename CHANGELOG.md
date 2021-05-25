@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.2
+
+Add Asset Registry support
+
 ## v0.6.0
 
 Add PoW for requesting funds
