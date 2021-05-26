@@ -451,9 +451,9 @@ class Wallet extends Component<WalletProps, WalletState> {
                                         <table>
                                             <thead>
                                                 <tr>
-                                                    <th>Color</th>
-                                                    <th>Name</th>
                                                     <th>Symbol</th>
+                                                    <th>Name</th>
+                                                    <th>Color</th>
                                                     <th>&nbsp;</th>
                                                 </tr>
                                             </thead>
@@ -461,9 +461,9 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                 {this.state.wallet.assets &&
                                                     this.state.wallet.assets.map((asset, idx) => (
                                                         <tr key={idx} className="middle">
-                                                            <td className="break">{asset.color}</td>
-                                                            <td className="break">{asset.name}</td>
                                                             <td>{asset.symbol}</td>
+                                                            <td className="break">{asset.name}</td>
+                                                            <td className="break">{asset.color}</td>
                                                             <td className="flex">
                                                                 <button
                                                                     type="button"
