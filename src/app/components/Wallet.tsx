@@ -464,7 +464,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                             <td className="break">{asset.color}</td>
                                                             <td className="break">{asset.name}</td>
                                                             <td>{asset.symbol}</td>
-                                                            <td>
+                                                            <td className="flex">
                                                                 <button
                                                                     type="button"
                                                                     className="margin-r-t button--secondary"
