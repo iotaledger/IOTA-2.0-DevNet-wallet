@@ -1,6 +1,6 @@
-@import './fonts';
-@import './mixins';
-@import './variables';
+@import "./fonts";
+@import "./mixins";
+@import "./variables";
 
 button {
   @include font-size(16px);
@@ -37,7 +37,7 @@ button {
     border-color: $gray-3;
   }
 
-  &.button--landing{
+  &.button--landing {
     @include font-size(14px);
     width: 160px;
     height: 48px;

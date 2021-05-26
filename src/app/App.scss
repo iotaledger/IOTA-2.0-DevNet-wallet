@@ -1,7 +1,7 @@
-@import '../scss/fonts';
-@import '../scss/mixins';
-@import '../scss/media-queries';
-@import '../scss/variables';
+@import "../scss/fonts";
+@import "../scss/mixins";
+@import "../scss/media-queries";
+@import "../scss/variables";
 
 .app {
   display: flex;
@@ -9,11 +9,11 @@
   flex-direction: column;
   height: 100%;
 
-  &.bg-gradient{
-    background: radial-gradient(96.39% 96.39% at 50% 98.82%, #E8EDF5 1.04%, #C3D0E4 100%);
+  &.bg-gradient {
+    background: radial-gradient(96.39% 96.39% at 50% 98.82%, #e8edf5 1.04%, #c3d0e4 100%);
   }
 
-  img{
+  img {
     -webkit-user-drag: none;
     user-drag: none;
   }
@@ -74,12 +74,10 @@
         -webkit-app-region: none;
       }
 
-      img{
+      img {
         width: 16px;
       }
-
     }
-
   }
 
   .content {
@@ -92,8 +90,8 @@
     font-family: $metropolis;
   }
 
-  .wallet{
-    &.wallet--homepage{
+  .wallet {
+    &.wallet--homepage {
       position: absolute;
       width: 100%;
       height: 100%;
@@ -104,7 +102,7 @@
     }
   }
 
-  .nectar-drops-bg{
+  .nectar-drops-bg {
     position: fixed;
     width: 100%;
     height: 100%;
@@ -112,93 +110,104 @@
     top: 0;
   }
 
-  .nectar-drop{
+  .nectar-drop {
     position: absolute;
     width: 690px;
+
     @include big-desktop-up {
       width: 50%;
     }
+
     @include desktop-down {
       width: 500px;
     }
+
     @include tablet-down {
       max-width: 420px;
     }
   }
 
-  #drop-1{
+  #drop-1 {
     left: -35%;
     top: -25%;
     animation: rotatePositive 140s infinite;
+
     @include big-desktop-up {
       left: -20%;
       top: -13%;
     }
   }
 
-  #scale-drop{
+  #scale-drop {
     animation: scale 10s linear infinite;
     z-index: 10;
     top: -90%;
     left: 18%;
     position: absolute;
-  } 
+  }
 
-  #drop-2{   
+  #drop-2 {
     animation: rotateNegative 140s infinite;
     width: 480px;
+
     @include big-desktop-up {
       width: 900px;
     }
+
     @include desktop-down {
       width: 430px;
     }
+
     @include tablet-down {
       width: 300px;
     }
+
     @include phone-down {
       width: 250px;
     }
   }
 
-  #drop-3{
+  #drop-3 {
     right: -21%;
-    bottom: -18%;      
+    bottom: -18%;
     animation: rotatePositive 100s infinite;
+
     @include big-desktop-up {
       right: -10%;
       bottom: -20%;
     }
   }
 
-  .landing-banner-container{
+  .landing-banner-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
   }
-  
-  #landing-banner{
+
+  #landing-banner {
     width: 860px;
     max-width: 80%;
     z-index: 100;
+
     @include big-desktop-up {
       width: 1500px;
     }
   }
 
-  #hexagon{
+  #hexagon {
     width: 400px;
     max-width: 45%;
     z-index: 1;
     position: absolute;
+
     @include big-desktop-up {
       width: 800px;
       max-width: initial;
-    }  
+    }
   }
 
-  .node-connection-message{
+  .node-connection-message {
     max-width: 90%;
   }
 
@@ -215,7 +224,7 @@
     border-top: 1px solid $gray-2;
     font-family: $metropolis;
 
-    img{
+    img {
       cursor: pointer;
     }
   }

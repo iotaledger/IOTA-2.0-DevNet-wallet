@@ -1,6 +1,6 @@
-@import '../../scss/fonts';
-@import '../../scss/mixins';
-@import '../../scss/variables';
+@import "../../scss/fonts";
+@import "../../scss/mixins";
+@import "../../scss/variables";
 
 .spinner {
   position: relative;
@@ -12,11 +12,11 @@
   border-radius: 100%;
   animation: pulse 1s ease-in-out infinite;
 
-  &.spinner--secondary{
+  &.spinner--secondary {
     background-color: $gray-3;
   }
 
-  &.spinner-landing{
+  &.spinner-landing {
     right: 20px;
     left: auto;
   }

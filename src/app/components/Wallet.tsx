@@ -92,23 +92,23 @@ class Wallet extends Component<WalletProps, WalletState> {
      */
     public render(): ReactNode {
         return (
-            <div 
+            <div
                 className={`wallet col ${(this.state.walletServiceLoaded && (!this.state.wallet || !this.state.wallet.seed)) ? "wallet--homepage" : "relative center fill"}`}>
 
                 {(this.state.walletServiceLoaded && (!this.state.wallet || !this.state.wallet.seed)) && (
                     <div className="landing-banner-container">
                         <div className="nectar-drops-bg">
-                            <img src={nectarDrop1} alt="Nectar drop" className="nectar-drop" id="drop-1"/>
-                            <img src={nectarDrop3} alt="Nectar drop" className="nectar-drop" id="drop-3"/>
+                            <img src={nectarDrop1} alt="Nectar drop" className="nectar-drop" id="drop-1" />
+                            <img src={nectarDrop3} alt="Nectar drop" className="nectar-drop" id="drop-3" />
                         </div>
                         <div className="grid">
                             <div className="row center fill z-1">
                                 <div className="col center middle relative">
                                     <div id="scale-drop">
-                                        <img src={nectarDrop2} alt="Nectar drop" className="nectar-drop" id="drop-2"/>
+                                        <img src={nectarDrop2} alt="Nectar drop" className="nectar-drop" id="drop-2" />
                                     </div>
-                                    <img src={hexagon} alt="orange hexagon" id="hexagon"/>
-                                    <img src={logo} alt="IOTA 2.0 Devnet Logo" id="landing-banner"/>
+                                    <img src={hexagon} alt="orange hexagon" id="hexagon" />
+                                    <img src={logo} alt="IOTA 2.0 Devnet Logo" id="landing-banner" />
                                 </div>
                             </div>
                             <button
@@ -117,8 +117,8 @@ class Wallet extends Component<WalletProps, WalletState> {
                                 onClick={() => this.createWallet()}
                             >
                                 New Wallet
-                                </button> 
-                                {this.props.displayNodeMessage && <div className="row center middle margin-t-m z-1">
+                                </button>
+                            {this.props.displayNodeMessage && <div className="row center middle margin-t-m z-1">
                                 <div className="col w-40 sm-w-40 text-center body-small node-connection-message">
                                     <h4>Node Connection</h4>
                                     <p className="margin-t-2">By default the wallet is configured to access the API of a Pollen node running on your local machine at http://127.0.0.1:8080</p>
@@ -130,11 +130,11 @@ class Wallet extends Component<WalletProps, WalletState> {
                                     </ul>
                                 </div>
                             </div>}
-                        </div>  
-                    </div>  
+                        </div>
+                    </div>
                 )}
                 {(this.state.isBusy || !this.state.walletServiceLoaded) && (
-                    <Spinner className="spinner absolute spinner-landing"/>
+                    <Spinner className="spinner absolute spinner-landing" />
                 )}
                 {this.state.walletServiceLoaded && this.state.wallet && this.state.wallet.seed && this.state.justCreated && (
                     <div>
@@ -305,7 +305,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                             <div className="card--header row space-between">
                                 <h2>Addresses</h2>
                                 {this.state.newAssetName === undefined && (
-                                    <button className = "button--secondary"
+                                    <button className="button--secondary"
                                         onClick={() => this.copyReceiveAddress()}>
                                         Copy Address
                                     </button>
@@ -345,7 +345,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                             <div className="card--header row space-between">
                                 <h2>Assets</h2>
                                 {this.state.newAssetName === undefined && (
-                                    <button className = "button--secondary"
+                                    <button className="button--secondary"
                                         onClick={() => this.setState({
                                             newAssetName: "",
                                             newAssetSymbol: "",
@@ -509,7 +509,7 @@ class Wallet extends Component<WalletProps, WalletState> {
 
                                 <div className="row middle margin-t-s">
                                     {this.state.isBusyFaucet && (
-                                        <Spinner className="spinner--secondary"/>
+                                        <Spinner className="spinner--secondary" />
                                     )}
                                     {this.state.faucetStatus && (
                                         <p className={
@@ -548,7 +548,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                         addresses: this._walletService.getWalletAddresses(),
                         receiveAddress: this._walletService.getReceiveAddress()
                     });
-                this.props.onUpdated(); 
+                this.props.onUpdated();
             });
     }
 

@@ -1,7 +1,7 @@
-@import './fonts';
-@import './mixins';
-@import './layout';
-@import './variables';
+@import "./fonts";
+@import "./mixins";
+@import "./layout";
+@import "./variables";
 
 .card {
   display: flex;
@@ -191,13 +191,13 @@
       }
 
       &.card--value-textarea__json {
-        font-family: 'Courier New', Courier, monospace;
+        font-family: "Courier New", Courier, monospace;
         white-space: pre-wrap;
       }
     }
 
     input {
-      &[type='checkbox'] {
+      &[type="checkbox"] {
         @include font-size(24px);
 
         width: 24px;
@@ -213,7 +213,7 @@
             bottom: 4px;
             left: 0px;
             color: $main-green;
-            content: '\2713';
+            content: "\2713";
           }
         }
       }
@@ -247,8 +247,7 @@
   }
 }
 
-.card--modal{
-
+.card--modal {
   max-width: 500px;
 
   .card--header {
@@ -256,12 +255,12 @@
     border: none;
   }
 
-  .card--content{
+  .card--content {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-  
+
   .card--label {
     text-transform: none;
   }

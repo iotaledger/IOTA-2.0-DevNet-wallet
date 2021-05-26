@@ -1,13 +1,13 @@
-@import './scss/animations';
-@import './scss/buttons';
-@import './scss/card';
-@import './scss/fonts';
-@import './scss/forms';
-@import './scss/helpers';
-@import './scss/layout';
-@import './scss/media-queries';
-@import './scss/tables';
-@import './scss/variables';
+@import "./scss/animations";
+@import "./scss/buttons";
+@import "./scss/card";
+@import "./scss/fonts";
+@import "./scss/forms";
+@import "./scss/helpers";
+@import "./scss/layout";
+@import "./scss/media-queries";
+@import "./scss/tables";
+@import "./scss/variables";
 
 html {
   height: 100%;
@@ -44,13 +44,11 @@ h3 {
   font-weight: bold;
 }
 
-h4{
+h4 {
   @include font-size(16px);
   color: $gray-4;
   font-family: $inter;
-
 }
-
 
 body {
   height: 100%;
@@ -65,7 +63,7 @@ body {
     min-height: 100vh;
     height: 100%;
 
-    .body-small{
+    .body-small {
       @include font-size(12px);
       color: $gray-4;
       font-family: $inter;

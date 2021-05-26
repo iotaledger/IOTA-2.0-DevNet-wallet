@@ -62,17 +62,17 @@ class App extends Component<AppProps, AppState> {
     /**
      * Minimize window.
      */
-    public minimize(): void{
+    public minimize(): void {
         remote.getCurrentWindow().minimize();
     }
 
     /**
      * Maximize/unmaximize window.
      */
-     public maximize(): void{
-        if(!fullScreen){
+    public maximize(): void {
+        if (!fullScreen) {
             remote.getCurrentWindow().maximize();
-        }else{
+        } else {
             remote.getCurrentWindow().unmaximize();
         }
         fullScreen = !fullScreen;
@@ -90,33 +90,33 @@ class App extends Component<AppProps, AppState> {
                     <Link className="brand" to="/">
                         <img src={logoHeader} alt="IOTA 2.0 Devnet Logo" />
                     </Link>
-                        {ElectronHelper.isElectron() && (
-                            <div className="window-controllers row">
-                                <button
+                    {ElectronHelper.isElectron() && (
+                        <div className="window-controllers row">
+                            <button
                                 onClick={() => this.minimize()}
-                                >
-                                    <img src={minimizeWindow} alt="minimize window" />
-                                </button>
-                                <button
-                                    onClick={() => this.maximize()}
-                                >
-                                    <img src={maximizeWindow} alt="maximize window" />
-                                </button>
-                                <button
-                                    onClick={() => window.close()}
-                                >
-                                    <img src={closeWindow} alt="close window" />
-                                </button>
-                            </div>
-                        )}
+                            >
+                                <img src={minimizeWindow} alt="minimize window" />
+                            </button>
+                            <button
+                                onClick={() => this.maximize()}
+                            >
+                                <img src={maximizeWindow} alt="maximize window" />
+                            </button>
+                            <button
+                                onClick={() => window.close()}
+                            >
+                                <img src={closeWindow} alt="close window" />
+                            </button>
+                        </div>
+                    )}
                 </header>
                 <div className={`content 
                 ${(!this.state.wallet || !this.state.wallet.seed) ? "relative overflow-hidden" : ""}`}>
 
                     {this.state.displayMode === "settings" && (
-                        <Settings 
-                                isDev={(process.env.NODE_ENV === "development" ? true : false)} 
-                                onClose={settings => this.setState({
+                        <Settings
+                            isDev={(process.env.NODE_ENV === "development" ? true : false)}
+                            onClose={settings => this.setState({
                                 settings: settings ?? this.state.settings,
                                 displayMode: "wallet"
                             })}
@@ -127,7 +127,7 @@ class App extends Component<AppProps, AppState> {
                             async () => this.setState({
                                 wallet: await this._walletService.get()
                             })
-                        } displayNodeMessage={(!this.state.wallet || (this.state.wallet && !this.state.wallet.seed)) 
+                        } displayNodeMessage={(!this.state.wallet || (this.state.wallet && !this.state.wallet.seed))
                             && this.state.settings?.apiEndpoint === "http://127.0.0.1:8080"} />
                     )}
                     {this.state.displayMode === "delete-wallet" && (
@@ -159,7 +159,7 @@ class App extends Component<AppProps, AppState> {
                 </div>
                 <footer className="row space-between middle">
                     <div>
-                        <img src={settings} alt="Settings" onClick={() => this.setState({ displayMode: "settings" })}/>
+                        <img src={settings} alt="Settings" onClick={() => this.setState({ displayMode: "settings" })} />
                     </div>
                     <span className="margin-r-s">v{process.env.REACT_APP_VERSION}</span>
                     <div>

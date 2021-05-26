@@ -1,5 +1,5 @@
-@import './mixins';
-@import './variables';
+@import "./mixins";
+@import "./variables";
 
 .select-wrapper {
   display: inline-block;
@@ -39,7 +39,6 @@
     color: $gray-7;
     font-family: $inter;
     appearance: none;
-
 
     // sass-lint:disable no-vendor-prefixes
     &:-ms-expand {
@@ -99,11 +98,11 @@ input {
     color: $gray-7;
   }
 
-  &:hover{
+  &:hover {
     background: $gray-2;
   }
 
-  &:disabled{
+  &:disabled {
     opacity: 0.5;
   }
 
@@ -163,7 +162,6 @@ button {
     opacity: 0.5;
     pointer-events: none;
   }
-
 
   // sass-lint:disable no-vendor-prefixes
   &:-moz-focusring {

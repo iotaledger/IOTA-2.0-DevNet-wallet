@@ -1,5 +1,5 @@
-@import './mixins';
-@import './variables';
+@import "./mixins";
+@import "./variables";
 
 table {
   table-layout: fixed;
@@ -47,7 +47,7 @@ table {
           word-break: break-word;
         }
 
-        button{
+        button {
           @include tablet-down {
             margin: 5px;
           }
