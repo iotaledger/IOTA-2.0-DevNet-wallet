@@ -32,6 +32,7 @@ class Settings extends Component<SettingsProps, SettingsState> {
      * The component mounted.
      */
     public async componentDidMount(): Promise<void> {
+
         const settings = await this._settingsService.get();
         this.setState({
             settings,
@@ -68,17 +69,21 @@ class Settings extends Component<SettingsProps, SettingsState> {
                                 onChange={e => this.setState({ apiRegistryEndpoint: e.target.value })}
                             />
                         </div> */}
-                        <div className="card--label">
-                            API Asset Registry Endpoint
-                        </div>
-                        <div className="card--value">
-                            <input
-                                className="fill"
-                                type="text"
-                                value={this.state.apiRegistryEndpoint}
-                                onChange={e => this.setState({ apiRegistryEndpoint: e.target.value })}
-                            />
-                        </div>
+                        {this.props.isDev &&
+                            <div>
+                                <div className="card--label">
+                                    API Asset Registry Endpoint
+                                </div>
+                                <div className="card--value">
+                                    <input
+                                        className="fill"
+                                        type="text"
+                                        value={this.state.apiRegistryEndpoint}
+                                        onChange={e => this.setState({ apiRegistryEndpoint: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+                        }
                         <div className="card--label">
                             API Endpoint
                         </div>

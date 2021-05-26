@@ -114,8 +114,9 @@ class App extends Component<AppProps, AppState> {
                 ${(!this.state.wallet || !this.state.wallet.seed) ? "relative overflow-hidden" : ""}`}>
 
                     {this.state.displayMode === "settings" && (
-                        <Settings
-                            onClose={settings => this.setState({
+                        <Settings 
+                                isDev={(process.env.NODE_ENV === "development" ? true : false)} 
+                                onClose={settings => this.setState({
                                 settings: settings ?? this.state.settings,
                                 displayMode: "wallet"
                             })}
