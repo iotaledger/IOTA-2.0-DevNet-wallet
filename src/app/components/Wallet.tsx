@@ -463,7 +463,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                         <tr key={idx} className="middle">
                                                             <td>{asset.symbol}</td>
                                                             <td className="break">{asset.name}</td>
-                                                            <td className="break">{asset.color}</td>
+                                                            <td className="break">{this.truncateString(asset.color, 5, 5, 3)}</td>
                                                             <td className="flex">
                                                                 <button
                                                                     type="button"
@@ -704,6 +704,27 @@ class Wallet extends Component<WalletProps, WalletState> {
     private copyReceiveAddress(): void {
         ClipboardHelper.copy(this.state.receiveAddress);
     }
+
+    /**
+     * Truncate Asset Color string.
+     * @param string The string to convert.
+     * @param firstCharCount The number of characters to keep at the beginning.
+     * @param endCharCount The number of characters to keep at the end.
+     * @param dotCount The amount of dots to set.
+     * @returns The truncated string.
+     */
+    private truncateString(str: string, firstCharCount: number, endCharCount: number, dotCount: number): string {
+        const MAX_LENGTH = 13
+        if (!str || str.length <= MAX_LENGTH) {
+            return str
+        }
+        let convertedStr = ""
+        convertedStr += str.substring(0, firstCharCount)
+        convertedStr += ".".repeat(dotCount)
+        convertedStr += str.substring(str.length - endCharCount, str.length)
+        return convertedStr
+    }
+
 }
 
 export default Wallet;
