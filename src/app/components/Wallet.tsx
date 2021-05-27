@@ -96,21 +96,17 @@ class Wallet extends Component<WalletProps, WalletState> {
                 className={`wallet col ${(this.state.walletServiceLoaded && (!this.state.wallet || !this.state.wallet.seed)) ? "wallet--homepage" : "relative center fill"}`}>
 
                 {(this.state.walletServiceLoaded && (!this.state.wallet || !this.state.wallet.seed)) && (
-                    <div className="landing-banner-container">
+                    <div className="homepage">
                         <div className="nectar-drops-bg">
-                            <img src={nectarDrop1} alt="Nectar drop" className="nectar-drop" id="drop-1" />
-                            <img src={nectarDrop3} alt="Nectar drop" className="nectar-drop" id="drop-3" />
-                        </div>
-                        <div className="grid">
-                            <div className="row center fill z-1">
-                                <div className="col center middle relative">
-                                    <div id="scale-drop">
-                                        <img src={nectarDrop2} alt="Nectar drop" className="nectar-drop" id="drop-2" />
-                                    </div>
-                                    <img src={hexagon} alt="orange hexagon" id="hexagon" />
-                                    <img src={logo} alt="IOTA 2.0 Devnet Logo" id="landing-banner" />
-                                </div>
+                            <img src={nectarDrop1} className="nectar-drop" id="drop-1" />
+                            <div className="absolute-center scale-rotate">
+                                <img src={nectarDrop2} className="nectar-drop" id="drop-2" />
                             </div>
+                            <img src={nectarDrop3} className="nectar-drop" id="drop-3" />
+                            <img src={hexagon} className="absolute-center" id="hexagon" />
+                        </div>
+                        <div className={`content-wrapper ${this.props.displayNodeMessage && "message-visible"}`}>
+                            <img src={logo} alt="IOTA 2.0 Devnet Logo" id="landing-banner" />
                             <button
                                 className="button--landing z-10"
                                 disabled={this.state.isBusy}
@@ -118,8 +114,8 @@ class Wallet extends Component<WalletProps, WalletState> {
                             >
                                 New Wallet
                                 </button>
-                            {this.props.displayNodeMessage && <div className="row center middle margin-t-m z-1">
-                                <div className="col w-40 sm-w-40 text-center body-small node-connection-message">
+                            {this.props.displayNodeMessage && <div className="row center middle margin-t-m z-1 node-connection-message">
+                                <div className="col w-40 sm-w-40 text-center body-small">
                                     <h4>Node Connection</h4>
                                     <p className="margin-t-2">By default the wallet is configured to access the API of a Pollen node running on your local machine at http://127.0.0.1:8080</p>
                                     <br />
