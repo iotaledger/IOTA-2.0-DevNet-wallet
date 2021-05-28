@@ -36,7 +36,7 @@ export class SettingsService implements ISettingsService {
         if (!this._settings) {
             this._settings = {
                 apiRegistryEndpoint: "http://asset-registry.tokenizedassetsdemo.iota.cafe",
-                apiEndpoint: "http://ressims.iota.cafe:9102",
+                apiEndpoint: "http://nodes.nectar.iota.cafe",
                 user: "",
                 password: "",
                 accessManaPledgeID: "",
