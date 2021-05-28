@@ -50,19 +50,19 @@ jobs:
     
     - uses: actions/upload-artifact@v2
       with:
-        name: pollen-wallet-win-${{ steps.package-version.outputs.prop}}
-        path: out/pollen-wallet-${{ steps.package-version.outputs.prop}}.exe
+        name: nectar-wallet-win-${{ steps.package-version.outputs.prop}}
+        path: out/nectar-wallet-${{ steps.package-version.outputs.prop}}.exe
       if: matrix.os == 'windows-2019'
 
     - uses: actions/upload-artifact@v2
       with:
-        name: pollen-wallet-mac-${{ steps.package-version.outputs.prop}}
-        path: out/pollen-wallet-${{ steps.package-version.outputs.prop}}.dmg
+        name: nectar-wallet-mac-${{ steps.package-version.outputs.prop}}
+        path: out/nectar-wallet-${{ steps.package-version.outputs.prop}}.dmg
       if: matrix.os == 'macos-10.15'
 
     - uses: actions/upload-artifact@v2
       with:
-        name: pollen-wallet-linux-${{ steps.package-version.outputs.prop}}
+        name: nectar-wallet-linux-${{ steps.package-version.outputs.prop}}
         path: |
-          out/pollen-wallet-${{ steps.package-version.outputs.prop}}.AppImage
+          out/nectar-wallet-${{ steps.package-version.outputs.prop}}.AppImage
       if: matrix.os == 'ubuntu-18.04'
