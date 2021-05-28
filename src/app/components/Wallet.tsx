@@ -244,6 +244,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                                         <table>
                                             <thead>
                                                 <tr>
+                                                    <th>Symbol</th>
                                                     <th>Token Name</th>
                                                     <th>Color</th>
                                                     <th>Confirmed</th>
@@ -257,11 +258,19 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                     .sort((a, b) => a.asset.name.localeCompare(b.asset.name))
                                                     .map((balance, idx) => (
                                                         <tr key={idx}>
-                                                            <td className="break">
+                                                            <td className="no-break">
+                                                                {balance.asset && balance.asset.symbol}
+                                                            </td>
+                                                            <td className="no-break">
                                                                 {balance.asset && balance.asset.name}
                                                             </td>
-                                                            <td className="break">
-                                                                {balance.asset && balance.asset.color}
+                                                            <td className="w-100 break">
+                                                                <div className="ellipsis-container">
+                                                                    <div className="ellipsis-content">{balance.asset && balance.asset.color}</div>
+                                                                    <div className="ellipsis-spacer">{balance.asset && balance.asset.color}</div>
+                                                                    <span>&nbsp;</span>
+                                                                </div>
+                                                                {/* {balance.asset && balance.asset.color} */}
                                                             </td>
                                                             <td className="success">
                                                                 {balance.confirmed.toString()}
@@ -321,7 +330,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                                             {this.state.addresses && this.state.addresses.map((address, idx) => (
                                                 <tr key={idx}>
                                                     <td>{address.index.toString()}</td>
-                                                    <td className="break">{address.address}</td>
+                                                    <td className="w-100 break">{address.address}</td>
                                                     <td>{address.isSpent ? "Yes" : "No"}</td>
                                                     <td>{address.address === this.state.receiveAddress
                                                         ? "Yes" : "No"}</td>
@@ -453,9 +462,15 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                 {this.state.wallet.assets &&
                                                     this.state.wallet.assets.map((asset, idx) => (
                                                         <tr key={idx} className="middle">
-                                                            <td>{asset.symbol}</td>
-                                                            <td className="break">{asset.name}</td>
-                                                            <td className="break">{this.truncateString(asset.color, 5, 5, 3)}</td>
+                                                            <td className="no-break">{asset.symbol}</td>
+                                                            <td className="no-break">{asset.name}</td>
+                                                            <td className="w-100 break">
+                                                                <div className="ellipsis-container">
+                                                                    <div className="ellipsis-content">{asset.color}</div>
+                                                                    <div className="ellipsis-spacer">{asset.color}</div>
+                                                                    <span>&nbsp;</span>
+                                                                </div>
+                                                            </td>
                                                             <td className="flex">
                                                                 <button
                                                                     type="button"
@@ -696,27 +711,6 @@ class Wallet extends Component<WalletProps, WalletState> {
     private copyReceiveAddress(): void {
         ClipboardHelper.copy(this.state.receiveAddress);
     }
-
-    /**
-     * Truncate Asset Color string.
-     * @param string The string to convert.
-     * @param firstCharCount The number of characters to keep at the beginning.
-     * @param endCharCount The number of characters to keep at the end.
-     * @param dotCount The amount of dots to set.
-     * @returns The truncated string.
-     */
-    private truncateString(str: string, firstCharCount: number, endCharCount: number, dotCount: number): string {
-        const MAX_LENGTH = 13
-        if (!str || str.length <= MAX_LENGTH) {
-            return str
-        }
-        let convertedStr = ""
-        convertedStr += str.substring(0, firstCharCount)
-        convertedStr += ".".repeat(dotCount)
-        convertedStr += str.substring(str.length - endCharCount, str.length)
-        return convertedStr
-    }
-
 }
 
 export default Wallet;
