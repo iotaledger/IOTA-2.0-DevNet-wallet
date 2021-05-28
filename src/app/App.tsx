@@ -16,7 +16,7 @@ import Settings from "./components/Settings";
 import Wallet from "./components/Wallet";
 
 const remote = window.require("electron").remote;
-let fullScreen = false;
+let fullScreen = remote.getCurrentWindow().isMaximized() ? true : false;
 
 /**
  * Main application class.

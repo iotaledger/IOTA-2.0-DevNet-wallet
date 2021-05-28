@@ -3,9 +3,6 @@
 @import "../../scss/variables";
 
 .spinner {
-  position: relative;
-  top: 20px;
-  left: 20px;
   width: 40px;
   height: 40px;
   background-color: $orange-6;
@@ -14,11 +11,6 @@
 
   &.spinner--secondary {
     background-color: $gray-3;
-  }
-
-  &.spinner-landing {
-    right: 20px;
-    left: auto;
   }
 }
 

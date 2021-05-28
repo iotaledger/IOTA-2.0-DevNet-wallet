@@ -126,7 +126,9 @@ class Wallet extends Component<WalletProps, WalletState> {
                     </div>
                 )}
                 {(this.state.isBusy || !this.state.walletServiceLoaded) && (
-                    <Spinner className="spinner absolute spinner-landing" />
+                    <div className="absolute t-40 r-20">
+                        <Spinner className="spinner spinner-landing" />
+                    </div>
                 )}
                 {this.state.walletServiceLoaded && this.state.wallet && this.state.wallet.seed && this.state.justCreated && (
                     <div>
@@ -228,7 +230,9 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                 </button>
                                             </div>
                                             {this.state.isBusySendFunds && (
-                                                <Spinner className="margin-t-s spinner--secondary" />
+                                                <div className="relative l-20 t-20">
+                                                    <Spinner className="margin-t-s spinner--secondary" />
+                                                </div>
                                             )}
                                             {this.state.errorSendFunds && (
                                                 <p className="margin-t-s danger">{this.state.errorSendFunds}</p>
@@ -270,7 +274,6 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                                     <div className="ellipsis-spacer">{balance.asset && balance.asset.color}</div>
                                                                     <span>&nbsp;</span>
                                                                 </div>
-                                                                {/* {balance.asset && balance.asset.color} */}
                                                             </td>
                                                             <td className="success">
                                                                 {balance.confirmed.toString()}
@@ -434,7 +437,9 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                 </button>
                                             </div>
                                             {this.state.isBusyNewAsset && (
-                                                <Spinner className="margin-t-s spinner--secondary" />
+                                                <div className="relative l-20 t-20">
+                                                    <Spinner className="margin-t-s spinner--secondary" />
+                                                </div>
                                             )}
                                             {this.state.errorNewAsset && (
                                                 <p className="margin-t-s danger">{this.state.errorNewAsset}</p>
@@ -516,8 +521,11 @@ class Wallet extends Component<WalletProps, WalletState> {
 
                                 <div className="row middle margin-t-s">
                                     {this.state.isBusyFaucet && (
-                                        <Spinner className="spinner--secondary" />
+                                        <div className="relative l-20 t-20">
+                                            <Spinner className="spinner--secondary" />
+                                        </div>
                                     )}
+
                                     {this.state.faucetStatus && (
                                         <p className={
                                             classNames(
