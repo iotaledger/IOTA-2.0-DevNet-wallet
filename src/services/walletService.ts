@@ -94,7 +94,7 @@ export class WalletService implements IWalletService {
             });
 
             this._done = true;
-            
+
             if (response.error) {
                 throw new Error(response.error);
             }
@@ -210,6 +210,15 @@ export class WalletService implements IWalletService {
             const receiveAddress = this.getReceiveAddress();
 
             if (receiveAddress) {
+
+                if (name.length > 20) {
+                    throw new Error("Name must have 20 or less characters");
+                }
+
+                if (symbol.length > 4) {
+                    throw new Error("Symbol must have 4 or less characters");
+                }
+
                 const resp = await this.sendFundsWithOptions(
                     this.createSendFundOptions(receiveAddress, amount, Colors.MINT)
                 );
@@ -221,7 +230,7 @@ export class WalletService implements IWalletService {
                         symbol,
                         precision: 0
                     });
-                    
+
                     const api = await this.buildApiRegistryClient();
                     const assetInfo: IAssetRequest = {
                         ID: resp.assetID,
@@ -231,7 +240,7 @@ export class WalletService implements IWalletService {
                         transactionID: resp.transactionID
                     };
                     await api.registerAsset(assetInfo);
-                    
+
                     await this.save();
                     await this.doUpdates();
                 }
@@ -247,6 +256,15 @@ export class WalletService implements IWalletService {
      */
     public async updateAsset(color: string, name: string, symbol: string): Promise<void> {
         if (this._wallet) {
+
+            if (name.length > 20) {
+                throw new Error("Name must have 20 or less characters");
+            }
+
+            if (symbol.length > 4) {
+                throw new Error("Symbol must have 4 or less characters");
+            }
+
             const asset = this._wallet.assets.find(a => a.color === color);
             if (asset) {
                 asset.name = name;
@@ -312,7 +330,7 @@ export class WalletService implements IWalletService {
         if (this._wallet && this._addresses) {
             await this.doUpdates();
             const apiClient = await this.buildApiClient();
-            
+
             const settingsService = ServiceFactory.get<SettingsService>("settings");
             const settings = await settingsService.get();
 
@@ -326,7 +344,7 @@ export class WalletService implements IWalletService {
             if (cManaPledge === "" && allowedManaPledgeResp.consensusMana.allowed != null) {
                 cManaPledge = allowedManaPledgeResp.consensusMana.allowed[0];
             }
-            
+
             const aManaPledgeBytes = Base58.decode(aManaPledge);
             if (aManaPledgeBytes.length !== 32) {
                 throw new Error("accessManaPledgeID is not valid");
@@ -339,8 +357,8 @@ export class WalletService implements IWalletService {
 
             const version = 0;
             const time = Date.now();
-            const timestamp = BigInt(time*1000000);
- 
+            const timestamp = BigInt(time * 1000000);
+
             // Calculate the spending requirements
             const consumedOutputs = this.determineOutputsToConsume(sendFundsOptions);
 
@@ -361,10 +379,10 @@ export class WalletService implements IWalletService {
             };
 
             const txEssence = Transaction.essence(tx);
-            
+
             const addressByOutputID: { [outputID: string]: string } = {};
             for (const address in consumedOutputs) {
-                for (const outputID in consumedOutputs[address]){
+                for (const outputID in consumedOutputs[address]) {
                     addressByOutputID[outputID] = address;
                 }
             }
@@ -374,12 +392,12 @@ export class WalletService implements IWalletService {
                 const addr = this._addresses.find(a => a.address === addressByOutputID[inputs[index]]);
                 if (addr) {
                     if (existingUnlockBlocks[addr.address] !== undefined) {
-                        unlockBlocks.push({type:1, referenceIndex:existingUnlockBlocks[addr.address], publicKey: Buffer.alloc(0), signature: Buffer.alloc(0) });
+                        unlockBlocks.push({ type: 1, referenceIndex: existingUnlockBlocks[addr.address], publicKey: Buffer.alloc(0), signature: Buffer.alloc(0) });
                         continue;
                     }
                     const keyPair = Seed.generateKeyPair(seed, addr.index);
-                    const signatureUnlockBlock = {type:0, referenceIndex:0, publicKey: keyPair.publicKey, signature: Transaction.sign(keyPair, txEssence)};
-                    existingUnlockBlocks[addr.address] = unlockBlocks.length; 
+                    const signatureUnlockBlock = { type: 0, referenceIndex: 0, publicKey: keyPair.publicKey, signature: Transaction.sign(keyPair, txEssence) };
+                    existingUnlockBlocks[addr.address] = unlockBlocks.length;
                     unlockBlocks.push(signatureUnlockBlock);
                 }
             }
@@ -415,7 +433,7 @@ export class WalletService implements IWalletService {
 
             if (response.transaction_id) {
                 const txID = response.transaction_id;
-                const resp: ISendFundsResponse = { 
+                const resp: ISendFundsResponse = {
                     transactionID: txID,
                     assetID: undefined
                 };
@@ -450,7 +468,7 @@ export class WalletService implements IWalletService {
      * @returns Returns the transaction id.
      */
     public async requestFunds(): Promise<void | undefined> {
-        
+
         if (this._wallet && this._addresses) {
             const receiveAddress = this.getReceiveAddress();
 
@@ -505,16 +523,16 @@ export class WalletService implements IWalletService {
         }
     }
 
-    private mapToArray(b: {[color: string]: bigint}): (IWalletOutputBalance[]) {
+    private mapToArray(b: { [color: string]: bigint }): (IWalletOutputBalance[]) {
         const balances: IWalletOutputBalance[] = [];
-   
+
         for (const [color, value] of Object.entries(b)) {
             let colorName = color;
             if (color === Colors.IOTA_BASE58) {
                 colorName = Colors.IOTA_NAME;
             }
             balances.push({
-                color: colorName, 
+                color: colorName,
                 value: BigInt(value)
             });
         }
@@ -614,12 +632,12 @@ export class WalletService implements IWalletService {
         if (this._unspentOutputs) {
             for (const unspentOutput of this._unspentOutputs) {
                 let outputsFromAddressSpent = false;
-               
+
                 const confirmedUnspentOutputs = unspentOutput.outputs.filter(o =>
                     (!this._spentOutputTransactions ||
-                    !this._spentOutputTransactions.includes(o.id)) && 
+                        !this._spentOutputTransactions.includes(o.id)) &&
                     o.inclusionState.confirmed);
-               
+
 
                 // scan the outputs on this address for required funds
                 for (const output of confirmedUnspentOutputs) {
@@ -1016,7 +1034,7 @@ export class WalletService implements IWalletService {
      * Build an API Registry Client for requests.
      * @returns The API Registry Client.
      */
-     private async buildApiRegistryClient(): Promise<ApiRegistryClient> {
+    private async buildApiRegistryClient(): Promise<ApiRegistryClient> {
         const settingsService = ServiceFactory.get<SettingsService>("settings");
         const settings = await settingsService.get();
         return new ApiRegistryClient(settings.apiRegistryEndpoint);
