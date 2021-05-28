@@ -93,7 +93,7 @@ class Wallet extends Component<WalletProps, WalletState> {
     public render(): ReactNode {
         return (
             <div
-                className={`wallet col ${(this.state.walletServiceLoaded && (!this.state.wallet || !this.state.wallet.seed)) ? "wallet--homepage" : "relative center fill"}`}>
+                className={`wallet col ${(this.state.walletServiceLoaded && (!this.state.wallet || !this.state.wallet.seed)) ? "wallet--homepage" : "relative fill"}`}>
 
                 {(this.state.walletServiceLoaded && (!this.state.wallet || !this.state.wallet.seed)) && (
                     <div className="homepage">
@@ -131,7 +131,6 @@ class Wallet extends Component<WalletProps, WalletState> {
                     </div>
                 )}
                 {this.state.walletServiceLoaded && this.state.wallet && this.state.wallet.seed && this.state.justCreated && (
-                    <div>
                         <div className="row fill z-10">
                             <div className="col fill center middle">
                                 <div className="card card--modal">
@@ -165,7 +164,6 @@ class Wallet extends Component<WalletProps, WalletState> {
                                 </div>
                             </div>
                         </div>
-                    </div>
 
                 )}
                 {this.state.walletServiceLoaded && this.state.wallet && this.state.wallet.seed && !this.state.justCreated && (
