@@ -1,12 +1,10 @@
-# IOTA Pollen GUI Wallet
+# IOTA Nectar GUI Wallet
 
-IOTA Pollen wallet GUI, a lightweight wallet for the test Pollen network.
+IOTA Nectar wallet GUI, a lightweight wallet for the test Nectar network.
 
-<span style="color:#bb0000">The wallet is configured by default to connect to a node running on your local machine. You must either run a local node or change the settings to connect to a remote node [See settings](#settings).</span>
+**Disclaimer** - This wallet is intended to demonstrate how to communicate with the Nectar network, your seed is **NOT** stored securely.
 
-**Disclaimer** - This wallet is intended to demonstrate how to communicate with the Pollen network, your seed is **NOT** stored securely.
-
-![Pollen Wallet](images/pollen-wallet.png)
+![Nectar Wallet](images/nectar-wallet.png)
 
 ## Building
 
@@ -45,6 +43,6 @@ npm run package-linux
 
 ## Settings
 
-By default the application is configured to access a `GoShimmer` nodes API running on your local machine at `http://127.0.0.1:8080`. To make it communicate with another node you can change the endpoint in the settings page.
+By default the application is configured to access a `GoShimmer` nodes API at `http://nodes.nectar.iota.cafe`. To make it communicate with another node you can change the endpoint in the settings page.
 
-![Pollen Wallet](images/pollen-settings.png)
+![Nectar Wallet](images/nectar-settings.png)
