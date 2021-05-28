@@ -127,8 +127,7 @@ class App extends Component<AppProps, AppState> {
                             async () => this.setState({
                                 wallet: await this._walletService.get()
                             })
-                        } displayNodeMessage={(!this.state.wallet || (this.state.wallet && !this.state.wallet.seed))
-                            && this.state.settings?.apiEndpoint === "http://127.0.0.1:8080"} />
+                        } displayNodeMessage={(!this.state.wallet || (this.state.wallet && !this.state.wallet.seed))} />
                     )}
                     {this.state.displayMode === "delete-wallet" && (
                         <div className="card">
