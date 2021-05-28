@@ -98,12 +98,12 @@ class Wallet extends Component<WalletProps, WalletState> {
                 {(this.state.walletServiceLoaded && (!this.state.wallet || !this.state.wallet.seed)) && (
                     <div className="homepage">
                         <div className="nectar-drops-bg">
-                            <img src={nectarDrop1} className="nectar-drop" id="drop-1" />
+                            <img src={nectarDrop1} className="nectar-drop" id="drop-1" alt="Nectar drop"/>
                             <div className="absolute-center scale-rotate">
-                                <img src={nectarDrop2} className="nectar-drop" id="drop-2" />
+                                <img src={nectarDrop2} className="nectar-drop" id="drop-2" alt="Nectar drop"/>
                             </div>
-                            <img src={nectarDrop3} className="nectar-drop" id="drop-3" />
-                            <img src={hexagon} className="absolute-center" id="hexagon" />
+                            <img src={nectarDrop3} className="nectar-drop" id="drop-3" alt="Nectar drop"/>
+                            <img src={hexagon} className="absolute-center" id="hexagon" alt="Nectar hexagon" />
                         </div>
                         <div className={`content-wrapper ${this.props.displayNodeMessage && "message-visible"}`}>
                             <img src={logo} alt="IOTA 2.0 Devnet Logo" id="landing-banner" />
