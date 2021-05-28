@@ -270,7 +270,6 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                                     <div className="ellipsis-spacer">{balance.asset && balance.asset.color}</div>
                                                                     <span>&nbsp;</span>
                                                                 </div>
-                                                                {/* {balance.asset && balance.asset.color} */}
                                                             </td>
                                                             <td className="success">
                                                                 {balance.confirmed.toString()}
