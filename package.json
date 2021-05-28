@@ -1,11 +1,11 @@
 {
-    "name": "pollen-wallet",
-    "description": "IOTA Pollen Wallet",
+    "name": "nectar-wallet",
+    "description": "IOTA Nectar Wallet",
     "version": "0.6.2",
     "author": "Martyn Janes <martyn.janes@iota.org>",
     "repository": {
         "type": "git",
-        "url": "https://github.com/iotaledger/pollen-wallet.git"
+        "url": "https://github.com/iotaledger/nectar-wallet.git"
     },
     "license": "MIT",
     "dependencies": {
@@ -72,8 +72,8 @@
     "homepage": "./",
     "main": "./public/electron.js",
     "build": {
-        "productName": "IOTA Pollen Wallet",
-        "artifactName": "pollen-wallet-${version}.${ext}",
+        "productName": "IOTA nectar Wallet",
+        "artifactName": "nectar-wallet-${version}.${ext}",
         "copyright": "IOTA Foundation",
         "directories": {
             "output": "./out"
@@ -89,7 +89,7 @@
             "node_modules/mkdirp/**/*.js",
             "node_modules/blakejs/**/*.js"
         ],
-        "appId": "org.iota.pollen-wallet",
+        "appId": "org.iota.nectar-wallet",
         "win": {
             "icon": "./public/logo.png"
         }

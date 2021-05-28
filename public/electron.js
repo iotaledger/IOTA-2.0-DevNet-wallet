@@ -25,7 +25,7 @@ function createWindow() {
       height: mainWindowState.height,
       backgroundColor: '#f6f8fc',
       frame: false,
-      title: "Pollen Wallet",
+      title: "Nectar Wallet",
       webPreferences: {
         nodeIntegration: true,
         contextIsolation: false,

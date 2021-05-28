@@ -117,13 +117,9 @@ class Wallet extends Component<WalletProps, WalletState> {
                             {this.props.displayNodeMessage && <div className="row center middle margin-t-m z-1 node-connection-message">
                                 <div className="col w-40 sm-w-40 text-center body-small">
                                     <h4>Node Connection</h4>
-                                    <p className="margin-t-2">By default the wallet is configured to access the API of a Pollen node running on your local machine at http://127.0.0.1:8080</p>
+                                    <p className="margin-t-2">By default the wallet is configured to access the API of a Nectar node running on http://nodes.nectar.iota.cafe</p>
                                     <br />
-                                    <p className="margin-t-2">If you don&apos;t have a node running locally you can either:</p>
-                                    <ul>
-                                        <li className="margin-t-2">Configure and run a node locally.</li>
-                                        <li className="margin-t-2">Change the Settings to connect to a remote node.</li>
-                                    </ul>
+                                    <p className="margin-t-2">To make it communicate with another node you can change the endpoint in the settings page.</p>
                                 </div>
                             </div>}
                         </div>
