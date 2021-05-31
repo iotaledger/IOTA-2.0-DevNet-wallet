@@ -1,10 +1,10 @@
 # IOTA Nectar GUI Wallet
 
-IOTA Nectar wallet GUI, a lightweight wallet for the test Nectar network.
+IOTA Nectar DevNet Wallet GUI, a lightweight wallet for the test Nectar network.
 
 **Disclaimer** - This wallet is intended to demonstrate how to communicate with the Nectar network, your seed is **NOT** stored securely.
 
-![Nectar Wallet](images/nectar-wallet.png)
+![Nectar DevNet Wallet](images/nectar-wallet.png)
 
 ## Building
 
@@ -45,4 +45,4 @@ npm run package-linux
 
 By default the application is configured to access a `GoShimmer` nodes API at `http://nodes.nectar.iota.cafe`. To make it communicate with another node you can change the endpoint in the settings page.
 
-![Nectar Wallet](images/nectar-settings.png)
+![Nectar DevNet Wallet](images/nectar-settings.png)

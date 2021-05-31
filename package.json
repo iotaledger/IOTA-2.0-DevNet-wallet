@@ -1,6 +1,6 @@
 {
-    "name": "nectar-wallet",
-    "description": "IOTA Nectar Wallet",
+    "name": "nectar-devnet-wallet",
+    "description": "IOTA Nectar DevNet Wallet",
     "version": "0.7.0",
     "author": "Martyn Janes <martyn.janes@iota.org>",
     "repository": {
@@ -72,7 +72,7 @@
     "homepage": "./",
     "main": "./public/electron.js",
     "build": {
-        "productName": "IOTA nectar Wallet",
+        "productName": "IOTA Nectar DevNet Wallet",
         "artifactName": "nectar-wallet-${version}.${ext}",
         "copyright": "IOTA Foundation",
         "directories": {

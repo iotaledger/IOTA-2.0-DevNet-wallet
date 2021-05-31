@@ -25,7 +25,7 @@ function createWindow() {
       height: mainWindowState.height,
       backgroundColor: '#f6f8fc',
       frame: false,
-      title: "Nectar Wallet",
+      title: "Nectar DevNet Wallet",
       webPreferences: {
         nodeIntegration: true,
         contextIsolation: false,
