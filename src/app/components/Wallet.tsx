@@ -48,8 +48,7 @@ class Wallet extends Component<WalletProps, WalletState> {
             faucetIsError: false,
             errorNewAsset: "",
             sendFundsAmount: "100",
-            newAssetAmount: "100",
-            isCopyAddressClicked: false
+            newAssetAmount: "100"
         };
     }
 
@@ -100,11 +99,11 @@ class Wallet extends Component<WalletProps, WalletState> {
                 {(this.state.walletServiceLoaded && (!this.state.wallet || !this.state.wallet.seed)) && (
                     <div className="homepage">
                         <div className="nectar-drops-bg">
-                            <img src={nectarDrop1} className="nectar-drop" id="drop-1" alt="Nectar drop"/>
+                            <img src={nectarDrop1} className="nectar-drop" id="drop-1" alt="Nectar drop" />
                             <div className="absolute-center scale-rotate">
-                                <img src={nectarDrop2} className="nectar-drop" id="drop-2" alt="Nectar drop"/>
+                                <img src={nectarDrop2} className="nectar-drop" id="drop-2" alt="Nectar drop" />
                             </div>
-                            <img src={nectarDrop3} className="nectar-drop" id="drop-3" alt="Nectar drop"/>
+                            <img src={nectarDrop3} className="nectar-drop" id="drop-3" alt="Nectar drop" />
                             <img src={hexagon} className="absolute-center" id="hexagon" alt="Nectar hexagon" />
                         </div>
                         <div className={`content-wrapper ${this.props.displayNodeMessage && "message-visible"}`}>
@@ -309,10 +308,9 @@ class Wallet extends Component<WalletProps, WalletState> {
                             <div className="card--header row space-between">
                                 <h2>Addresses</h2>
                                 <div className="row center middle">
-                                    {this.state.isCopyAddressClicked && (
-                                        <p className={`margin-r-s ${this.state.copyAddressOk ? "" : "danger"}`}>
-                                            {/* {this.state.addressCopied} */}
-                                            {this.state.copyAddressOk ? "Address copied to clipboard" : "There was an error copying to clipboard"}
+                                    {this.state.clipboardFeedback !== "" && (
+                                        <p className={`margin-r-s ${this.state.clipboardError && "danger"}`}>
+                                            {this.state.clipboardFeedback}
                                         </p>
                                     )}
                                     {this.state.newAssetName === undefined && (
@@ -732,25 +730,31 @@ class Wallet extends Component<WalletProps, WalletState> {
      * Copy the receive address to the clipboard.
      */
     private copyReceiveAddress(): void {
-        try {
-            ClipboardHelper.copy(this.state.receiveAddress);
-            this.setState({
-                isCopyAddressClicked: true,
-                addressCopied: "Address copied to clipboard",
-                copyAddressOk: true
-            });
-        } catch (error) {
-            this.setState({
-                isCopyAddressClicked: true,
-                addressCopied: "There was an error copying to clipboard",
-                copyAddressOk: false
-            });
+        const copied = ClipboardHelper.copy(this.state.receiveAddress);
+        if (copied) {
+            this.updateClipboardFeedback("Address copied to clipboard", false);
+        } else {
+            this.updateClipboardFeedback("There was an error copying to clipboard", true);
         }
-        setTimeout(
-            () => this.setState({ isCopyAddressClicked: false }), 5000
-        );
-
+    
     }
+
+    /**
+     * Update Copy Adress to Clipboard feedback 
+     * @param feedback The string to show
+     * @param error An error happened
+     */
+    private updateClipboardFeedback(feedback: string, error: boolean): void {
+        this.setState({
+            clipboardFeedback: feedback,
+            clipboardError: error
+        });
+        const timeOut = 
+        setTimeout(
+            () => this.setState({ clipboardFeedback: "" }), 5000
+        );
+    }
+
 }
 
 export default Wallet;

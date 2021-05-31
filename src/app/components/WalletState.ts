@@ -115,17 +115,12 @@ export interface WalletState {
     isBusySendFunds: boolean;
 
     /**
-     * Copy address button has been clicked.
-     */
-    isCopyAddressClicked: boolean;
-
-    /**
      * Message to display whether the address was succesfully copied or not
      */
-    addressCopied?: string;
+     clipboardFeedback?: string;
 
     /**
      * Address successfully copied.
      */
-     copyAddressOk?: boolean;    
+     clipboardError?: boolean;    
 }
