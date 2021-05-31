@@ -14,6 +14,7 @@ import Spinner from "./Spinner";
 import { WalletProps } from "./WalletProps";
 import { WalletState } from "./WalletState";
 
+let timer: NodeJS.Timeout;
 
 /**
  * Component which will display wallet.
@@ -736,7 +737,6 @@ class Wallet extends Component<WalletProps, WalletState> {
         } else {
             this.updateClipboardFeedback("There was an error copying to clipboard", true);
         }
-    
     }
 
     /**
@@ -749,8 +749,8 @@ class Wallet extends Component<WalletProps, WalletState> {
             clipboardFeedback: feedback,
             clipboardError: error
         });
-        const timeOut = 
-        setTimeout(
+        clearTimeout(timer);        
+        timer = setTimeout(
             () => this.setState({ clipboardFeedback: "" }), 5000
         );
     }
