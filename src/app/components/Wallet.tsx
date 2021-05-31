@@ -172,7 +172,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                     <React.Fragment>
                         <div className="card margin-b-s">
                             <div className="card--header">
-                                <h2>Balance</h2>
+                                <h2>Balances</h2>
                             </div>
                             <div className="card--content">
                                 {this.state.sendFundsAddress !== undefined &&
