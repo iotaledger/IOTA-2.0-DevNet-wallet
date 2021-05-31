@@ -73,7 +73,7 @@
     "main": "./public/electron.js",
     "build": {
         "productName": "IOTA Nectar DevNet Wallet",
-        "artifactName": "nectar-wallet-${version}.${ext}",
+        "artifactName": "nectar-devnet-wallet-${version}.${ext}",
         "copyright": "IOTA Foundation",
         "directories": {
             "output": "./out"
@@ -89,7 +89,7 @@
             "node_modules/mkdirp/**/*.js",
             "node_modules/blakejs/**/*.js"
         ],
-        "appId": "org.iota.nectar-wallet",
+        "appId": "org.iota.nectar-devnet-wallet",
         "win": {
             "icon": "./public/logo.png"
         }
