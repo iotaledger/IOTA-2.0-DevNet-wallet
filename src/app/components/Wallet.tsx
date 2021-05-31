@@ -86,6 +86,7 @@ class Wallet extends Component<WalletProps, WalletState> {
             this._walletService.unsubscribe(this._subscriptionId);
             this._subscriptionId = undefined;
         }
+        clearTimeout(timer);
     }
 
     /**

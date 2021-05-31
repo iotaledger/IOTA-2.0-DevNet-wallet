@@ -16,8 +16,6 @@ import Settings from "./components/Settings";
 import Wallet from "./components/Wallet";
 
 const remote = window.require("electron").remote;
-let fullScreen = remote.getCurrentWindow().isMaximized() ? true : false;
-
 /**
  * Main application class.
  */
@@ -70,12 +68,11 @@ class App extends Component<AppProps, AppState> {
      * Maximize/unmaximize window.
      */
     public maximize(): void {
-        if (!fullScreen) {
-            remote.getCurrentWindow().maximize();
-        } else {
+        if (remote.getCurrentWindow().isMaximized()) {
             remote.getCurrentWindow().unmaximize();
+        } else {
+            remote.getCurrentWindow().maximize();
         }
-        fullScreen = !fullScreen;
     }
 
     /**
