@@ -11,23 +11,23 @@ export class ApiRegistryClient {
      * The end point of the api.
      */
     private readonly _endpoint: string;
-    
+
     /**
      * The user of the api.
      */
-     private readonly _user?: string;
-    
+    private readonly _user?: string;
+
     /**
      * The password of the api.
      */
-     private readonly _password?: string;
-    
-     /**
-     * Create a new instance of ApiClient.
-     * @param endPoint The endpoint for the API.
-     * @param user The user for the API.
-     * @param password The password for the API.
-     */
+    private readonly _password?: string;
+
+    /**
+    * Create a new instance of ApiClient.
+    * @param endPoint The endpoint for the API.
+    * @param user The user for the API.
+    * @param password The password for the API.
+    */
     constructor(endPoint: string, user?: string, password?: string) {
         this._endpoint = endPoint;
         this._user = user;
@@ -40,14 +40,14 @@ export class ApiRegistryClient {
      */
     public async fetchAsset(assetID: string): Promise<IAssetResponse> {
         return this.sendRequest<null, IAssetResponse>(
-            "get", "registries/nectar/assets/"+assetID);
+            "get", "registries/nectar/assets/" + assetID);
     }
 
     /**
      * Reigester Asset info. 
      * @returns The response from the request.
      */
-     public async registerAsset(request: IAssetRequest): Promise<IAssetResponse> {
+    public async registerAsset(request: IAssetRequest): Promise<IAssetResponse> {
         return this.sendRequest<IAssetRequest, IAssetResponse>(
             "post", "registries/nectar/assets", request);
     }
@@ -137,6 +137,11 @@ export class ApiRegistryClient {
 
                         if (isComError) {
                             msg += "\n\nPlease try again later.";
+                        }
+
+                        if(fetchResponse.status === 400){
+                            msg = "";
+                            msg += response;
                         }
 
                         throw new Error(msg);
