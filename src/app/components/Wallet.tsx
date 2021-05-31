@@ -14,6 +14,7 @@ import Spinner from "./Spinner";
 import { WalletProps } from "./WalletProps";
 import { WalletState } from "./WalletState";
 
+
 /**
  * Component which will display wallet.
  */
@@ -47,7 +48,8 @@ class Wallet extends Component<WalletProps, WalletState> {
             faucetIsError: false,
             errorNewAsset: "",
             sendFundsAmount: "100",
-            newAssetAmount: "100"
+            newAssetAmount: "100",
+            isCopyAddressClicked: false
         };
     }
 
@@ -131,39 +133,39 @@ class Wallet extends Component<WalletProps, WalletState> {
                     </div>
                 )}
                 {this.state.walletServiceLoaded && this.state.wallet && this.state.wallet.seed && this.state.justCreated && (
-                        <div className="row fill z-10">
-                            <div className="col fill center middle">
-                                <div className="card card--modal">
-                                    <div className="card--header">
-                                        <h2>Wallet created</h2>
-                                    </div>
-                                    <div className="card--content">
-                                        <p className="margin-b-s padding-r-m padding-l-m">
-                                            Your new wallet has been created, please copy the seed for future use.
+                    <div className="row fill z-10">
+                        <div className="col fill center middle">
+                            <div className="card card--modal">
+                                <div className="card--header">
+                                    <h2>Wallet created</h2>
+                                </div>
+                                <div className="card--content">
+                                    <p className="margin-b-s padding-r-m padding-l-m">
+                                        Your new wallet has been created, please copy the seed for future use.
                                         </p>
-                                        <React.Fragment>
-                                            <div className="row middle">
-                                                <img src={seed} alt="Seed" />
-                                                <div className="margin-l-t">
-                                                    <div className="card--label">
-                                                        Seed
+                                    <React.Fragment>
+                                        <div className="row middle">
+                                            <img src={seed} alt="Seed" />
+                                            <div className="margin-l-t">
+                                                <div className="card--label">
+                                                    Seed
                                                     </div>
-                                                    <div className="card--value margin-b-s">
-                                                        {this.state.wallet.seed}
-                                                    </div>
+                                                <div className="card--value margin-b-s">
+                                                    {this.state.wallet.seed}
                                                 </div>
                                             </div>
-                                        </React.Fragment>
-                                        <button
-                                            className="margin-t-s"
-                                            onClick={() => this.setState({ justCreated: false })}
-                                        >
-                                            OK
+                                        </div>
+                                    </React.Fragment>
+                                    <button
+                                        className="margin-t-s"
+                                        onClick={() => this.setState({ justCreated: false })}
+                                    >
+                                        OK
                                         </button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
                 )}
                 {this.state.walletServiceLoaded && this.state.wallet && this.state.wallet.seed && !this.state.justCreated && (
@@ -306,12 +308,23 @@ class Wallet extends Component<WalletProps, WalletState> {
                         <div className="card margin-b-s">
                             <div className="card--header row space-between">
                                 <h2>Addresses</h2>
-                                {this.state.newAssetName === undefined && (
-                                    <button className="button--secondary"
-                                        onClick={() => this.copyReceiveAddress()}>
-                                        Copy Address
-                                    </button>
-                                )}
+                                <div className="row center middle">
+                                    {this.state.isCopyAddressClicked && (
+                                        <p className={`margin-r-s ${this.state.copyAddressOk ? "" : "danger"}`}>
+                                            {/* {this.state.addressCopied} */}
+                                            {this.state.copyAddressOk ? "Address copied to clipboard" : "There was an error copying to clipboard"}
+                                        </p>
+                                    )}
+                                    {this.state.newAssetName === undefined && (
+                                        <button className="button--secondary"
+                                            onClick={() => {
+                                                this.copyReceiveAddress();
+                                            }}
+                                        >
+                                            Copy Address
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                             <div className="card--content">
                                 {(!this.state.addresses || this.state.addresses.length === 0) && (
@@ -348,13 +361,15 @@ class Wallet extends Component<WalletProps, WalletState> {
                                 <h2>Assets</h2>
                                 {this.state.newAssetName === undefined && (
                                     <button className="button--secondary"
-                                        onClick={() => this.setState({
-                                            newAssetName: "",
-                                            newAssetSymbol: "",
-                                            newAssetColor: "",
-                                            newAssetAmount: "100",
-                                            errorNewAsset: ""
-                                        })}
+                                        onClick={() =>
+                                            this.setState({
+                                                newAssetName: "",
+                                                newAssetSymbol: "",
+                                                newAssetColor: "",
+                                                newAssetAmount: "100",
+                                                errorNewAsset: ""
+                                            })
+                                        }
                                     >
                                         Create Asset
                                     </button>
@@ -510,7 +525,9 @@ class Wallet extends Component<WalletProps, WalletState> {
                                 <h2>Faucet</h2>
                                 <button
                                     disabled={this.state.isBusyFaucet}
-                                    onClick={() => this.requestFunds()}
+                                    onClick={() => {
+                                        this.requestFunds();
+                                    }}
                                 >
                                     Request Funds
                                 </button>
@@ -715,7 +732,24 @@ class Wallet extends Component<WalletProps, WalletState> {
      * Copy the receive address to the clipboard.
      */
     private copyReceiveAddress(): void {
-        ClipboardHelper.copy(this.state.receiveAddress);
+        try {
+            ClipboardHelper.copy(this.state.receiveAddress);
+            this.setState({
+                isCopyAddressClicked: true,
+                addressCopied: "Address copied to clipboard",
+                copyAddressOk: true
+            });
+        } catch (error) {
+            this.setState({
+                isCopyAddressClicked: true,
+                addressCopied: "There was an error copying to clipboard",
+                copyAddressOk: false
+            });
+        }
+        setTimeout(
+            () => this.setState({ isCopyAddressClicked: false }), 5000
+        );
+
     }
 }
 
