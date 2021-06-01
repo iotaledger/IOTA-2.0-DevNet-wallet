@@ -8,6 +8,7 @@ import logo from "../../assets/iota-devnet-logo.svg";
 import seed from "../../assets/seed.svg";
 import { ServiceFactory } from "../../factories/serviceFactory";
 import { ClipboardHelper } from "../../helpers/clipboardHelper";
+import { MAX_ASSET_NAME_LENGTH, MAX_ASSET_SYMBOL_LENGTH } from "../../helpers/utils";
 import { IWalletAsset } from "../../models/IWalletAsset";
 import { IWalletService } from "../../models/services/IWalletService";
 import Spinner from "./Spinner";
@@ -388,6 +389,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                     type="text"
                                                     disabled={this.state.isBusyNewAsset}
                                                     value={this.state.newAssetName}
+                                                    maxLength={MAX_ASSET_NAME_LENGTH}
                                                     onChange={e => this.setState({
                                                         newAssetName: e.target.value
                                                     })}
@@ -402,6 +404,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                     type="text"
                                                     disabled={this.state.isBusyNewAsset}
                                                     value={this.state.newAssetSymbol}
+                                                    maxLength={MAX_ASSET_SYMBOL_LENGTH}
                                                     onChange={e => this.setState({
                                                         newAssetSymbol: e.target.value
                                                     })}

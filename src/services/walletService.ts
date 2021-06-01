@@ -1,4 +1,5 @@
 import { ServiceFactory } from "../factories/serviceFactory";
+import { MAX_ASSET_NAME_LENGTH, MAX_ASSET_SYMBOL_LENGTH } from "../helpers/utils";
 import { ApiClient } from "../iota/api/apiClient";
 import { ApiRegistryClient } from "../iota/api/apiRegistryClient";
 import { Colors } from "../iota/colors";
@@ -211,12 +212,12 @@ export class WalletService implements IWalletService {
 
             if (receiveAddress) {
 
-                if (name.length > 20) {
-                    throw new Error("Name must have 20 or less characters");
+                if (name.length > MAX_ASSET_NAME_LENGTH) {
+                    throw new Error(`Name must have ${MAX_ASSET_NAME_LENGTH} or less characters`);
                 }
 
-                if (symbol.length > 4) {
-                    throw new Error("Symbol must have 4 or less characters");
+                if (symbol.length > MAX_ASSET_SYMBOL_LENGTH) {
+                    throw new Error(`Name must have ${MAX_ASSET_SYMBOL_LENGTH} or less characters`);
                 }
 
                 const resp = await this.sendFundsWithOptions(
@@ -257,12 +258,12 @@ export class WalletService implements IWalletService {
     public async updateAsset(color: string, name: string, symbol: string): Promise<void> {
         if (this._wallet) {
 
-            if (name.length > 20) {
-                throw new Error("Name must have 20 or less characters");
+            if (name.length > MAX_ASSET_NAME_LENGTH) {
+                throw new Error(`Name must have ${MAX_ASSET_NAME_LENGTH} or less characters`);
             }
 
-            if (symbol.length > 4) {
-                throw new Error("Symbol must have 4 or less characters");
+            if (symbol.length > MAX_ASSET_SYMBOL_LENGTH) {
+                throw new Error(`Name must have ${MAX_ASSET_SYMBOL_LENGTH} or less characters`);
             }
 
             const asset = this._wallet.assets.find(a => a.color === color);
