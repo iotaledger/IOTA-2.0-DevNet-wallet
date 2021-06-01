@@ -58,6 +58,7 @@
         "cross-env": "^7.0.3",
         "electron": "^12.0.7",
         "electron-builder": "^22.11.4",
+        "electron-notarize": "^1.0.0",
         "husky": "^6.0.0",
         "node-sass": "^6.0.0",
         "sass-lint": "^1.13.1",
@@ -90,8 +91,22 @@
             "node_modules/blakejs/**/*.js"
         ],
         "appId": "org.iota.pollen-wallet",
+        "afterSign": "./scripts/notarize.macos.js",
         "win": {
             "icon": "./public/logo.png"
+        },
+        "mac": {
+            "entitlements": "./entitlements.mac.plist",
+            "entitlementsInherit": "./entitlements.mac.plist",
+            "hardenedRuntime": true,
+            "gatekeeperAssess": false,
+            "asarUnpack": [
+                "**/*.node"
+            ]
+        },
+        "dmg": {
+            "title": "${productName}",
+            "sign": false
         }
     }
 }
