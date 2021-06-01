@@ -31,14 +31,38 @@ jobs:
 
     - name: Packaging Electron app - Windows
       run: npm run package-win
+      env:
+        CSC_LINK: ${{ secrets.WIN_CERT_BASE64 }}
+        CSC_KEY_PASSWORD: ${{ secrets.WIN_CERT_PASSWORD }}
       if: matrix.os == 'windows-2019'
         
     - name: Packaging Electron app - MacOs
       run: npm run package-mac
+      env:
+        CSC_LINK: ${{ secrets.MAC_CERT_BASE64 }}
+        CSC_KEY_PASSWORD: ${{ secrets.MAC_CERT_PASSWORD }}
+        POLLEN_APPLE_ID: ${{ secrets.APPLE_ID }}
+        POLLEN_APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
       if: matrix.os == 'macos-10.15'
 
     - name: Packaging Electron app - Linux
       run: npm run package-linux
+      if: matrix.os == 'ubuntu-18.04'
+
+    - name: Import GPG key (Linux)
+      run: |
+        echo "$GPG_PRIVATE_KEY" | base64 -d > /tmp/private.key && \
+        echo "$GPG_PASSPHRASE" | gpg --batch --yes --passphrase-fd 0 --import /tmp/private.key
+      env:
+        GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      if: matrix.os == 'ubuntu-18.04'
+    
+    - name: Sign AppImage (Linux)
+      run: echo $GPG_PASSPHRASE | gpg --pinentry-mode loopback --batch --passphrase-fd 0 --armor --detach-sign --default-key contact@iota.org pollen-wallet-*.AppImage
+      working-directory: packages/desktop/out
+      env:
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       if: matrix.os == 'ubuntu-18.04'
 
     - name: get version
