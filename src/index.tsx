@@ -10,7 +10,7 @@ const configId = process.env.REACT_APP_CONFIG_ID ?? "local";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const config: IConfiguration = require(`./assets/config/config.${configId}.json`);
 
-const APP_NAME = "NectarWallet";
+const APP_NAME = "DevNetWallet";
 
 registerServices(config, APP_NAME);
 

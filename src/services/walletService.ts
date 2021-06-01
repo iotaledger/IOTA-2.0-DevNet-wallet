@@ -1,7 +1,10 @@
+import { blake2b } from "blakejs";
+import { ipcRenderer } from "electron";
 import { ServiceFactory } from "../factories/serviceFactory";
 import { MAX_ASSET_NAME_LENGTH, MAX_ASSET_SYMBOL_LENGTH } from "../helpers/utils";
 import { ApiClient } from "../iota/api/apiClient";
 import { ApiRegistryClient } from "../iota/api/apiRegistryClient";
+import { IAssetRequest } from "../iota/api/models/IAssetRequest";
 import { Colors } from "../iota/colors";
 import { Base58 } from "../iota/crypto/base58";
 import { ITransaction } from "../iota/models/ITransaction";
@@ -9,20 +12,17 @@ import { Seed } from "../iota/seed";
 import { Transaction } from "../iota/transaction";
 import { ISendFundsOptions } from "../models/ISendFundsOptions";
 import { ISendFundsResponse } from "../models/ISendFundsResponse";
+import { IUnlockBlock } from "../models/IUnlockBlock";
 import { IWallet } from "../models/IWallet";
 import { IWalletAddress } from "../models/IWalletAddress";
 import { IWalletAddressOutput } from "../models/IWalletAddressOutput";
 import { IWalletAsset } from "../models/IWalletAsset";
 import { IWalletBalance } from "../models/IWalletBalance";
 import { IWalletOutput } from "../models/IWalletOutput";
+import { IWalletOutputBalance } from "../models/IWalletOutputBalance";
 import { IJsonStorageService } from "../models/services/IJsonStorageService";
 import { IWalletService } from "../models/services/IWalletService";
 import { SettingsService } from "./settingsService";
-import { IUnlockBlock } from "../models/IUnlockBlock";
-import { blake2b } from "blakejs";
-import { IWalletOutputBalance } from "../models/IWalletOutputBalance";
-import { ipcRenderer } from "electron";
-import { IAssetRequest } from "../iota/api/models/IAssetRequest";
 
 /**
  * Service to manage a wallet.

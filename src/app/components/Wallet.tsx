@@ -1,10 +1,10 @@
 import classNames from "classnames";
 import React, { Component, ReactNode } from "react";
-import hexagon from "../../assets/nectar-hexagon.svg";
+import logo from "../../assets/iota-devnet-logo.svg";
 import nectarDrop1 from "../../assets/nectar-drop-1.svg";
 import nectarDrop2 from "../../assets/nectar-drop-2.svg";
 import nectarDrop3 from "../../assets/nectar-drop-3.svg";
-import logo from "../../assets/iota-devnet-logo.svg";
+import hexagon from "../../assets/nectar-hexagon.svg";
 import seed from "../../assets/seed.svg";
 import { ServiceFactory } from "../../factories/serviceFactory";
 import { ClipboardHelper } from "../../helpers/clipboardHelper";
@@ -121,7 +121,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                             {this.props.displayNodeMessage && <div className="row center middle margin-t-m z-1 node-connection-message">
                                 <div className="col w-40 sm-w-40 text-center body-small">
                                     <h4>Node Connection</h4>
-                                    <p className="margin-t-2">By default the wallet is configured to access the API of a Nectar node running on http://nodes.nectar.iota.cafe</p>
+                                    <p className="margin-t-2">By default the wallet is configured to access the API of an IOTA 2.0 DevNet node running on http://nodes.nectar.iota.cafe</p>
                                     <br />
                                     <p className="margin-t-2">To make it communicate with another node you can change the endpoint in the settings page.</p>
                                 </div>

@@ -52,19 +52,19 @@ jobs:
     
     - uses: actions/upload-artifact@v2
       with:
-        name: nectar-devnet-wallet-win-${{ steps.package-version.outputs.prop}}
-        path: out/nectar-devnet-wallet-${{ steps.package-version.outputs.prop}}.exe
+        name: iota-devnet-devnet-wallet-win-${{ steps.package-version.outputs.prop}}
+        path: out/iota-devnet-devnet-wallet-${{ steps.package-version.outputs.prop}}.exe
       if: matrix.os == 'windows-2019'
 
     - uses: actions/upload-artifact@v2
       with:
-        name: nectar-devnet-wallet-mac-${{ steps.package-version.outputs.prop}}
-        path: out/nectar-devnet-wallet-${{ steps.package-version.outputs.prop}}.dmg
+        name: iota-devnet-devnet-wallet-mac-${{ steps.package-version.outputs.prop}}
+        path: out/iota-devnet-devnet-wallet-${{ steps.package-version.outputs.prop}}.dmg
       if: matrix.os == 'macos-10.15'
 
     - uses: actions/upload-artifact@v2
       with:
-        name: nectar-devnet-wallet-linux-${{ steps.package-version.outputs.prop}}
+        name: iota-devnet-devnet-wallet-linux-${{ steps.package-version.outputs.prop}}
         path: |
-          out/nectar-devnet-wallet-${{ steps.package-version.outputs.prop}}.AppImage
+          out/iota-devnet-devnet-wallet-${{ steps.package-version.outputs.prop}}.AppImage
       if: matrix.os == 'ubuntu-18.04'
