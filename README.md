@@ -37,6 +37,8 @@ npm run package-win
 npm run package-mac
 ```
 
+For local development, set the environment variable `MACOS_SKIP_NOTARIZATION=true` (or `MACOS_SKIP_NOTARISATION`).
+
 ### Linux
 
 ```shell
