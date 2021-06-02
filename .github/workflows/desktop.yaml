@@ -70,7 +70,7 @@ jobs:
     
     - name: Sign AppImage (Linux)
       run: echo $GPG_PASSPHRASE | gpg --pinentry-mode loopback --batch --passphrase-fd 0 --armor --detach-sign --default-key contact@iota.org pollen-wallet-*.AppImage
-      working-directory: packages/desktop/out
+      working-directory: out
       env:
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       if: matrix.os == 'ubuntu-18.04'
