@@ -1,7 +1,7 @@
 {
-    "name": "pollen-wallet",
-    "description": "IOTA Pollen Wallet",
-    "version": "0.6.2",
+    "name": "iota-devnet-wallet",
+    "description": "IOTA 2.0 DevNet Wallet",
+    "version": "0.7.0",
     "author": "Martyn Janes <martyn.janes@iota.org>",
     "repository": {
         "type": "git",
@@ -58,6 +58,7 @@
         "cross-env": "^7.0.3",
         "electron": "^12.0.7",
         "electron-builder": "^22.11.4",
+        "electron-notarize": "^1.0.0",
         "husky": "^6.0.0",
         "node-sass": "^6.0.0",
         "sass-lint": "^1.13.1",
@@ -72,8 +73,8 @@
     "homepage": "./",
     "main": "./public/electron.js",
     "build": {
-        "productName": "IOTA Pollen Wallet",
-        "artifactName": "pollen-wallet-${version}.${ext}",
+        "productName": "IOTA DevNet Wallet",
+        "artifactName": "iota-devnet-wallet-${version}.${ext}",
         "copyright": "IOTA Foundation",
         "directories": {
             "output": "./out"
@@ -90,8 +91,23 @@
             "node_modules/blakejs/**/*.js"
         ],
         "appId": "org.iota.pollen-wallet",
+        "afterSign": "./scripts/notarize.macos.js",
         "win": {
             "icon": "./public/logo.png"
+        },
+        "mac": {
+            "entitlements": "./entitlements.mac.plist",
+            "entitlementsInherit": "./entitlements.mac.plist",
+            "hardenedRuntime": true,
+            "gatekeeperAssess": false,
+            "asarUnpack": [
+                "**/*.node"
+            ],
+            "icon": "./public/icon.icns"
+        },
+        "dmg": {
+            "title": "${productName}",
+            "sign": false
         }
     }
 }

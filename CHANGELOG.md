@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.7.0
+
+Update UI to Nectar branding
+
 ## v0.6.2
 
 Add Asset Registry support

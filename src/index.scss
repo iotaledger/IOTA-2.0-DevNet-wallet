@@ -1,11 +1,13 @@
-@import './scss/buttons';
-@import './scss/card';
-@import './scss/fonts';
-@import './scss/forms';
-@import './scss/layout';
-@import './scss/media-queries';
-@import './scss/tables';
-@import './scss/variables';
+@import "./scss/animations";
+@import "./scss/buttons";
+@import "./scss/card";
+@import "./scss/fonts";
+@import "./scss/forms";
+@import "./scss/helpers";
+@import "./scss/layout";
+@import "./scss/media-queries";
+@import "./scss/tables";
+@import "./scss/variables";
 
 html {
   height: 100%;
@@ -28,23 +30,29 @@ h1 {
 h2 {
   @include font-size(20px, 24px);
 
-  color: $gray-5;
+  color: $dark-gray;
   font-family: $metropolis;
   font-weight: bold;
+  letter-spacing: 0.05em;
 }
 
 h3 {
   @include font-size(16px, 20px);
 
-  color: $gray-5;
+  color: $gray-7;
   font-family: $metropolis;
   font-weight: bold;
 }
 
+h4 {
+  @include font-size(16px);
+  color: $gray-4;
+  font-family: $inter;
+}
 
 body {
   height: 100%;
-  background-color: #f6f8fc;
+  background-color: $gray-0;
 
   // sass-lint:disable no-ids
   #root {
@@ -54,6 +62,12 @@ body {
     min-width: $phone-width;
     min-height: 100vh;
     height: 100%;
+
+    .body-small {
+      @include font-size(12px);
+      color: $gray-4;
+      font-family: $inter;
+    }
 
     .success {
       color: $success;

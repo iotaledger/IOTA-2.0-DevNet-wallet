@@ -1,0 +1,14 @@
+@keyframes rotatePositive {
+    100% {
+        transform: rotateZ(360deg);
+    }
+}
+
+@keyframes rotateAndScale {
+    0% {
+        transform: scale(1.2) rotate(360deg);
+    }
+    100% {
+        transform: scale(1) rotate(-360deg);
+    }
+}

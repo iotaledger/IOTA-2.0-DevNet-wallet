@@ -1,5 +1,5 @@
-@import './mixins';
-@import './variables';
+@import "./mixins";
+@import "./variables";
 
 .select-wrapper {
   display: inline-block;
@@ -36,13 +36,9 @@
     border-radius: 6px;
     outline: none;
     background-color: #ffffff;
-    color: $gray-5;
+    color: $gray-7;
     font-family: $inter;
     appearance: none;
-
-    &:focus {
-      box-shadow: 0 0 3px 0 $light-green;
-    }
 
     // sass-lint:disable no-vendor-prefixes
     &:-ms-expand {
@@ -52,10 +48,10 @@
     // sass-lint:disable no-vendor-prefixes
     &:-moz-focusring {
       color: transparent;
-      text-shadow: 0 0 0 $gray-5;
+      text-shadow: 0 0 0 $gray-7;
 
       * {
-        color: $gray-5;
+        color: $gray-7;
         text-shadow: none;
       }
     }
@@ -84,24 +80,30 @@ input {
   height: 40px;
   margin: 0px;
   padding: 0px 10px;
-  border: 1px solid $input-border;
+  background: $gray-1;
+  border: none;
   border-radius: 6px;
   outline: none;
-  color: $gray-5;
+  color: $gray-7;
   font-family: $inter;
-
-  &:focus {
-    box-shadow: 0 0 3px 0 $light-green;
-  }
 
   // sass-lint:disable no-vendor-prefixes
   &:-moz-focusring {
     color: transparent;
-    text-shadow: 0 0 0 $gray-5;
+    text-shadow: 0 0 0 $gray-7;
   }
 
   &.fill {
     width: 100%;
+    color: $gray-7;
+  }
+
+  &:hover {
+    background: $gray-2;
+  }
+
+  &:disabled {
+    opacity: 0.5;
   }
 
   &.input-plus {
@@ -117,13 +119,9 @@ input {
 button {
   outline: none;
 
-  &:focus {
-    box-shadow: 0 0 3px 0 $light-green;
-  }
-
   // sass-lint:disable no-vendor-prefixes
   &:-moz-focusring {
-    text-shadow: 0 0 0 $gray-5;
+    text-shadow: 0 0 0 $gray-7;
   }
 }
 
@@ -156,8 +154,6 @@ button {
   cursor: pointer;
 
   &.selected {
-    border-color: $light-green;
-    background-color: $light-green;
     $color: $white;
     font-weight: 600;
   }
@@ -165,10 +161,6 @@ button {
   &:disabled {
     opacity: 0.5;
     pointer-events: none;
-  }
-
-  &:focus {
-    box-shadow: 0 0 3px 0 $light-green;
   }
 
   // sass-lint:disable no-vendor-prefixes

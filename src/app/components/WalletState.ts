@@ -8,6 +8,11 @@ export interface WalletState {
      * Is the component busy.
      */
     isBusy: boolean;
+    
+    /**
+     * Has the wallet been loaded.
+     */
+    walletServiceLoaded: boolean;
 
     /**
      * The current settings.
@@ -108,4 +113,14 @@ export interface WalletState {
      * Busy sending funds.
      */
     isBusySendFunds: boolean;
+
+    /**
+     * Message to display whether the address was succesfully copied or not
+     */
+     clipboardFeedback?: string;
+
+    /**
+     * Address successfully copied.
+     */
+     clipboardError?: boolean;    
 }
