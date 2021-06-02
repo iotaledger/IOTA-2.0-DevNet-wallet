@@ -19,7 +19,7 @@ exports.default = async () => {
 
     await notarize({
         appBundleId: 'org.iota.pollen-wallet',
-        appPath: path.resolve(__dirname, '../out/mac/IOTA Pollen Wallet.app'),
+        appPath: path.resolve(__dirname, '../out/mac/IOTA DevNet Wallet.app'),
         appleId: APPLE_ID,
         appleIdPassword: APPLE_ID_PASSWORD,
         ascProvider: 'UG77RJKZHH',
