@@ -90,7 +90,7 @@
             "node_modules/mkdirp/**/*.js",
             "node_modules/blakejs/**/*.js"
         ],
-        "appId": "org.iota.devnet-wallet",
+        "appId": "org.iota.pollen-wallet",
         "afterSign": "./scripts/notarize.macos.js",
         "win": {
             "icon": "./public/logo.png"
