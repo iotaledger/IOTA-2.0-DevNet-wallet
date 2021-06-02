@@ -1,6 +1,10 @@
 import React, { Component, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import logoHeader from "../assets/logo-header.svg";
+import closeWindow from "../assets/close-app.svg";
+import maximizeWindow from "../assets/maximize.svg";
+import minimizeWindow from "../assets/minimize.svg";
+import settings from "../assets/settings.svg";
 import { ServiceFactory } from "../factories/serviceFactory";
 import { ElectronHelper } from "../helpers/electronHelper";
 import { ISettingsService } from "../models/services/ISettingsService";
@@ -11,6 +15,7 @@ import { AppState } from "./AppState";
 import Settings from "./components/Settings";
 import Wallet from "./components/Wallet";
 
+const remote = window.require("electron").remote;
 /**
  * Main application class.
  */
@@ -53,27 +58,61 @@ class App extends Component<AppProps, AppState> {
     }
 
     /**
+     * Minimize window.
+     */
+    public minimize(): void {
+        remote.getCurrentWindow().minimize();
+    }
+
+    /**
+     * Maximize/unmaximize window.
+     */
+    public maximize(): void {
+        if (remote.getCurrentWindow().isMaximized()) {
+            remote.getCurrentWindow().unmaximize();
+        } else {
+            remote.getCurrentWindow().maximize();
+        }
+    }
+
+    /**
      * Render the component.
      * @returns The node to render.
      */
     public render(): ReactNode {
         return (
-            <div className="app">
+            <div className={`app 
+                ${(!this.state.wallet || !this.state.wallet.seed) ? "bg-gradient" : ""}`}>
                 <header>
                     <Link className="brand" to="/">
-                        <img src={logoHeader} alt="Pollen Wallet" />
+                        <img src={logoHeader} alt="IOTA 2.0 Devnet Logo" />
                     </Link>
                     {ElectronHelper.isElectron() && (
-                        <button
-                            onClick={() => window.close()}
-                        >
-                            X
-                        </button>
+                        <div className="window-controllers row">
+                            <button
+                                onClick={() => this.minimize()}
+                            >
+                                <img src={minimizeWindow} alt="minimize window" />
+                            </button>
+                            <button
+                                onClick={() => this.maximize()}
+                            >
+                                <img src={maximizeWindow} alt="maximize window" />
+                            </button>
+                            <button
+                                onClick={() => window.close()}
+                            >
+                                <img src={closeWindow} alt="close window" />
+                            </button>
+                        </div>
                     )}
                 </header>
-                <div className="content">
+                <div className={`content 
+                ${(!this.state.wallet || !this.state.wallet.seed) ? "relative overflow-hidden" : ""}`}>
+
                     {this.state.displayMode === "settings" && (
                         <Settings
+                            isDev={(process.env.NODE_ENV === "development" ? true : false)}
                             onClose={settings => this.setState({
                                 settings: settings ?? this.state.settings,
                                 displayMode: "wallet"
@@ -85,35 +124,8 @@ class App extends Component<AppProps, AppState> {
                             async () => this.setState({
                                 wallet: await this._walletService.get()
                             })
-                        } />
+                        } displayNodeMessage={(!this.state.wallet || (this.state.wallet && !this.state.wallet.seed))} />
                     )}
-                    {this.state.displayMode === "wallet" &&
-                        (!this.state.wallet || (this.state.wallet && !this.state.wallet.seed)) &&
-                        this.state.settings?.apiRegistryEndpoint === "http://asset-registry.tokenizedassetsdemo.iota.cafe" && (
-                            <div className="card margin-t-s">
-                                <div className="card--header">
-                                    <h2>Asset Registry Connection</h2>
-                                </div>
-                            </div>
-                        )}
-                    {this.state.displayMode === "wallet" &&
-                        (!this.state.wallet || (this.state.wallet && !this.state.wallet.seed)) &&
-                        this.state.settings?.apiEndpoint === "http://127.0.0.1:8080" && (
-                            <div className="card margin-t-s">
-                                <div className="card--header">
-                                    <h2>Node Connection</h2>
-                                </div>
-                                <div className="card--content">
-                                    <p>By default the wallet is configured to access the API of a Pollen node running on your local machine at http://127.0.0.1:8080</p>
-                                    <br />
-                                    <p>If you don&apos;t have a node running locally you can either:</p>
-                                    <ul className="margin-t-s">
-                                        <li>Configure and run a node locally.</li>
-                                        <li>Change the Settings to connect to a remote node.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        )}
                     {this.state.displayMode === "delete-wallet" && (
                         <div className="card">
                             <div className="card--header">
@@ -121,7 +133,7 @@ class App extends Component<AppProps, AppState> {
                             </div>
                             <div className="card--content">
                                 <p className="margin-b-s">
-                                    ARE YOU SURE YOU WANT TO DELETE THE WALLET ?
+                                    Are you sure you want to delete the wallet?
                                 </p>
                                 <button
                                     className="button--danger margin-r-s"
@@ -143,13 +155,7 @@ class App extends Component<AppProps, AppState> {
                 </div>
                 <footer className="row space-between middle">
                     <div>
-                        <button
-                            disabled={this.state.displayMode !== "wallet"}
-                            className="margin-r-s"
-                            onClick={() => this.setState({ displayMode: "settings" })}
-                        >
-                            Settings
-                        </button>
+                        <img src={settings} alt="Settings" onClick={() => this.setState({ displayMode: "settings" })} />
                     </div>
                     <span className="margin-r-s">v{process.env.REACT_APP_VERSION}</span>
                     <div>

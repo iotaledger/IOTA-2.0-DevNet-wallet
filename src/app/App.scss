@@ -1,7 +1,7 @@
-@import '../scss/fonts';
-@import '../scss/mixins';
-@import '../scss/media-queries';
-@import '../scss/variables';
+@import "../scss/fonts";
+@import "../scss/mixins";
+@import "../scss/media-queries";
+@import "../scss/variables";
 
 .app {
   display: flex;
@@ -9,12 +9,23 @@
   flex-direction: column;
   height: 100%;
 
+  &.bg-gradient {
+    background: radial-gradient(96.39% 96.39% at 50% 98.82%, #e8edf5 1.04%, #c3d0e4 100%);
+  }
+
+  img {
+    -webkit-user-drag: none;
+    user-drag: none;
+  }
+
   header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     padding: 10px 20px;
-    background-color: $dark-gray;
+    background-color: $white;
+    border-bottom: 1px solid $gray-2;
+    z-index: 10;
 
     // sass-lint:disable no-vendor-prefixes
     -webkit-app-region: drag;
@@ -28,16 +39,12 @@
       border-radius: 6px;
       outline: none;
       text-decoration: none;
-
+      cursor: initial;
       // sass-lint:disable no-vendor-prefixes
       -webkit-app-region: none;
 
-      &:focus {
-        box-shadow: 0 0 3px 0 $light-green;
-      }
-
       img {
-        height: 48px;
+        height: 40px;
       }
 
       h1 {
@@ -49,24 +56,26 @@
       }
     }
 
-    button {
-      @include font-size(28px);
+    .window-controllers {
+      position: absolute;
+      top: 12px;
+      right: 0px;
 
-      padding: 6px;
-      border: 0;
-      border-radius: 6px;
-      outline: none;
-      background: none;
-      color: $white;
-      font-family: $metropolis;
-      font-weight: bold;
-      cursor: pointer;
+      button {
+        padding: 0;
+        border: none;
+        background: none;
+        color: $gray-4;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        margin-right: 24px;
+        // sass-lint:disable no-vendor-prefixes
+        -webkit-app-region: none;
+      }
 
-      // sass-lint:disable no-vendor-prefixes
-      -webkit-app-region: none;
-
-      &:focus {
-        box-shadow: 0 0 3px 0 $light-green;
+      img {
+        width: 16px;
       }
     }
   }
@@ -75,21 +84,118 @@
     flex: 1;
     overflow: auto;
     padding: 40px;
-
+    display: flex;
+    flex-direction: column;
     @include font-size(16px);
-
     font-family: $metropolis;
+  }
+
+  .wallet {
+    &.wallet--homepage {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  .homepage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+
+    .content-wrapper {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      &.message-visible {
+        height: 100%;
+        justify-content: flex-end;
+      }
+      #landing-banner {
+        width: 80vw;
+        max-width: 880px;
+        z-index: 100;
+      }
+    }
+
+    .node-connection-message {
+      min-height: 23vh;
+      width: 100%;
+      display: flex;
+      align-items: flex-end;
+      padding-bottom: 50px;
+    }
+
+    .nectar-drops-bg {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+
+      img {
+        &.nectar-drop {
+          &#drop-1 {
+            position: absolute;
+            width: 716.63px;
+            left: -466px;
+            top: -245px;
+            animation: rotatePositive 160s infinite;
+          }
+          &#drop-2 {
+            width: 635px;
+            animation: rotateAndScale 140s infinite;
+          }
+
+          &#drop-3 {
+            position: absolute;
+            width: 716.63px;
+            height: 667.16px;
+            right: -375.01px;
+            bottom: -232.16px;
+            filter: blur(25px);
+            transform: rotate(-15deg);
+
+            animation: rotatePositive 100s infinite;
+          }
+        }
+        &#hexagon {
+          z-index: -1;
+          width: 500px;
+        }
+      }
+    }
+    .absolute-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
   }
 
   footer {
     display: flex;
     justify-content: flex-end;
+    z-index: 1;
 
     @include font-size(16px);
 
     padding: 20px 20px;
-    background-color: $dark-gray;
+    background-color: $white;
     color: $white;
+    border-top: 1px solid $gray-2;
     font-family: $metropolis;
+
+    img {
+      cursor: pointer;
+    }
   }
 }

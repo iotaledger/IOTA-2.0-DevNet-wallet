@@ -1,8 +1,9 @@
-@import './mixins';
-@import './variables';
+@import "./mixins";
+@import "./variables";
 
 table {
-  table-layout: fixed;
+  width: 100%;
+  table-layout: auto;
 
   thead {
     tr {
@@ -10,9 +11,9 @@ table {
         @include font-size(12px);
 
         padding: 10px;
-        color: $gray-header;
-        font-family: $metropolis;
-        font-weight: bold;
+        color: $gray-6;
+        font-family: $inter;
+        font-weight: 500;
         text-align: left;
         text-transform: uppercase;
         white-space: nowrap;
@@ -24,10 +25,12 @@ table {
     tr {
       td {
         padding: 10px;
+        color: $gray-6;
+        font-weight: 500;
 
-        @include font-size(12px);
+        @include font-size(14px);
 
-        font-family: $metropolis;
+        font-family: $inter;
 
         pre {
           @include font-size(12px);
@@ -44,6 +47,30 @@ table {
           // sass-lint:disable no-duplicate-properties
           word-break: break-word;
         }
+
+        button {
+          @include tablet-down {
+            margin: 5px;
+          }
+        }
+      }
+    }
+    .ellipsis-container {
+      position: relative;
+      .ellipsis-content {
+        position: absolute;
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: $gray-6;
+        font-weight: 500;
+        @include font-size(14px);
+        font-family: $inter;
+      }
+      .ellipsis-spacer {
+        height: 0;
+        overflow: hidden;
       }
     }
   }

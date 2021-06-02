@@ -1,12 +1,21 @@
 import classNames from "classnames";
 import React, { Component, ReactNode } from "react";
+import logo from "../../assets/iota-devnet-logo.svg";
+import nectarDrop1 from "../../assets/nectar-drop-1.svg";
+import nectarDrop2 from "../../assets/nectar-drop-2.svg";
+import nectarDrop3 from "../../assets/nectar-drop-3.svg";
+import hexagon from "../../assets/nectar-hexagon.svg";
+import seed from "../../assets/seed.svg";
 import { ServiceFactory } from "../../factories/serviceFactory";
 import { ClipboardHelper } from "../../helpers/clipboardHelper";
+import { MAX_ASSET_NAME_LENGTH, MAX_ASSET_SYMBOL_LENGTH } from "../../helpers/utils";
 import { IWalletAsset } from "../../models/IWalletAsset";
 import { IWalletService } from "../../models/services/IWalletService";
 import Spinner from "./Spinner";
 import { WalletProps } from "./WalletProps";
 import { WalletState } from "./WalletState";
+
+let timer: NodeJS.Timeout;
 
 /**
  * Component which will display wallet.
@@ -32,6 +41,7 @@ class Wallet extends Component<WalletProps, WalletState> {
         this._walletService = ServiceFactory.get<IWalletService>("wallet");
 
         this.state = {
+            walletServiceLoaded: false,
             isBusy: true,
             justCreated: false,
             isBusyFaucet: false,
@@ -55,7 +65,8 @@ class Wallet extends Component<WalletProps, WalletState> {
                 isBusy: false,
                 balances: this._walletService.getWalletBalances(),
                 addresses: this._walletService.getWalletAddresses(),
-                receiveAddress: this._walletService.getReceiveAddress()
+                receiveAddress: this._walletService.getReceiveAddress(),
+                walletServiceLoaded: true
             },
             () => {
                 this._subscriptionId = this._walletService.subscribe(() => {
@@ -76,6 +87,7 @@ class Wallet extends Component<WalletProps, WalletState> {
             this._walletService.unsubscribe(this._subscriptionId);
             this._subscriptionId = undefined;
         }
+        clearTimeout(timer);
     }
 
     /**
@@ -84,54 +96,81 @@ class Wallet extends Component<WalletProps, WalletState> {
      */
     public render(): ReactNode {
         return (
-            <div className="wallet col">
-                {this.state.isBusy && (
-                    <Spinner />
-                )}
-                {(!this.state.wallet || !this.state.wallet.seed) && (
-                    <div className="card">
-                        <div className="card--header">
-                            <h2>Wallet</h2>
+            <div
+                className={`wallet col ${(this.state.walletServiceLoaded && (!this.state.wallet || !this.state.wallet.seed)) ? "wallet--homepage" : "relative fill"}`}>
+
+                {(this.state.walletServiceLoaded && (!this.state.wallet || !this.state.wallet.seed)) && (
+                    <div className="homepage">
+                        <div className="nectar-drops-bg">
+                            <img src={nectarDrop1} className="nectar-drop" id="drop-1" alt="Nectar drop" />
+                            <div className="absolute-center scale-rotate">
+                                <img src={nectarDrop2} className="nectar-drop" id="drop-2" alt="Nectar drop" />
+                            </div>
+                            <img src={nectarDrop3} className="nectar-drop" id="drop-3" alt="Nectar drop" />
+                            <img src={hexagon} className="absolute-center" id="hexagon" alt="Nectar hexagon" />
                         </div>
-                        <div className="card--content">
-                            <p className="margin-b-s">You do not currently have a wallet.</p>
+                        <div className={`content-wrapper ${this.props.displayNodeMessage && "message-visible"}`}>
+                            <img src={logo} alt="IOTA 2.0 Devnet Logo" id="landing-banner" />
                             <button
-                                className="margin-b-s"
+                                className="button--landing z-10"
                                 disabled={this.state.isBusy}
                                 onClick={() => this.createWallet()}
                             >
-                                Create New Wallet
-                            </button>
+                                New Wallet
+                                </button>
+                            {this.props.displayNodeMessage && <div className="row center middle margin-t-m z-1 node-connection-message">
+                                <div className="col w-40 sm-w-40 text-center body-small">
+                                    <h4>Node Connection</h4>
+                                    <p className="margin-t-2">By default the wallet is configured to access the API of an IOTA 2.0 DevNet node running on http://nodes.nectar.iota.cafe</p>
+                                    <br />
+                                    <p className="margin-t-2">To make it communicate with another node you can change the endpoint in the settings page.</p>
+                                </div>
+                            </div>}
                         </div>
                     </div>
                 )}
-                {this.state.wallet && this.state.wallet.seed && this.state.justCreated && (
-                    <div className="card">
-                        <div className="card--header">
-                            <h2>Created</h2>
-                        </div>
-                        <div className="card--content">
-                            <p className="margin-b-s">
-                                Your new wallet has been created, please copy the seed for future use.
-                            </p>
-                            <React.Fragment>
-                                <div className="card--label">
-                                    Seed
-                                </div>
-                                <div className="card--value margin-b-s">
-                                    {this.state.wallet.seed}
-                                </div>
-                            </React.Fragment>
-                            <button
-                                className="margin-t-s"
-                                onClick={() => this.setState({ justCreated: false })}
-                            >
-                                OK
-                            </button>
-                        </div>
+                {(this.state.isBusy || !this.state.walletServiceLoaded) && (
+                    <div className="absolute t-40 r-20">
+                        <Spinner className="spinner spinner-landing" />
                     </div>
                 )}
-                {this.state.wallet && this.state.wallet.seed && !this.state.justCreated && (
+                {this.state.walletServiceLoaded && this.state.wallet && this.state.wallet.seed && this.state.justCreated && (
+                    <div className="row fill z-10">
+                        <div className="col fill center middle">
+                            <div className="card card--modal">
+                                <div className="card--header">
+                                    <h2>Wallet created</h2>
+                                </div>
+                                <div className="card--content">
+                                    <p className="margin-b-s padding-r-m padding-l-m">
+                                        Your new wallet has been created, please copy the seed for future use.
+                                        </p>
+                                    <React.Fragment>
+                                        <div className="row middle">
+                                            <img src={seed} alt="Seed" />
+                                            <div className="margin-l-t">
+                                                <div className="card--label">
+                                                    Seed
+                                                    </div>
+                                                <div className="card--value margin-b-s">
+                                                    {this.state.wallet.seed}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </React.Fragment>
+                                    <button
+                                        className="margin-t-s"
+                                        onClick={() => this.setState({ justCreated: false })}
+                                    >
+                                        OK
+                                        </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                )}
+                {this.state.walletServiceLoaded && this.state.wallet && this.state.wallet.seed && !this.state.justCreated && (
                     <React.Fragment>
                         <div className="card margin-b-s">
                             <div className="card--header">
@@ -193,7 +232,9 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                 </button>
                                             </div>
                                             {this.state.isBusySendFunds && (
-                                                <Spinner className="margin-t-s" />
+                                                <div className="relative l-20 t-20">
+                                                    <Spinner className="margin-t-s spinner--secondary" />
+                                                </div>
                                             )}
                                             {this.state.errorSendFunds && (
                                                 <p className="margin-t-s danger">{this.state.errorSendFunds}</p>
@@ -209,6 +250,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                                         <table>
                                             <thead>
                                                 <tr>
+                                                    <th>Symbol</th>
                                                     <th>Token Name</th>
                                                     <th>Color</th>
                                                     <th>Confirmed</th>
@@ -222,11 +264,18 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                     .sort((a, b) => a.asset.name.localeCompare(b.asset.name))
                                                     .map((balance, idx) => (
                                                         <tr key={idx}>
-                                                            <td className="break">
+                                                            <td className="no-break">
+                                                                {balance.asset && balance.asset.symbol}
+                                                            </td>
+                                                            <td className="no-break">
                                                                 {balance.asset && balance.asset.name}
                                                             </td>
-                                                            <td className="break">
-                                                                {balance.asset && balance.asset.color}
+                                                            <td className="w-100 break">
+                                                                <div className="ellipsis-container">
+                                                                    <div className="ellipsis-content">{balance.asset && balance.asset.color}</div>
+                                                                    <div className="ellipsis-spacer">{balance.asset && balance.asset.color}</div>
+                                                                    <span>&nbsp;</span>
+                                                                </div>
                                                             </td>
                                                             <td className="success">
                                                                 {balance.confirmed.toString()}
@@ -261,12 +310,22 @@ class Wallet extends Component<WalletProps, WalletState> {
                         <div className="card margin-b-s">
                             <div className="card--header row space-between">
                                 <h2>Addresses</h2>
-                                {this.state.newAssetName === undefined && (
-                                    <button
-                                        onClick={() => this.copyReceiveAddress()}>
-                                        Copy Receive Address
-                                    </button>
-                                )}
+                                <div className="row center middle">
+                                    {this.state.clipboardFeedback !== "" && (
+                                        <p className={`margin-r-s ${this.state.clipboardError && "danger"}`}>
+                                            {this.state.clipboardFeedback}
+                                        </p>
+                                    )}
+                                    {this.state.newAssetName === undefined && (
+                                        <button className="button--secondary"
+                                            onClick={() => {
+                                                this.copyReceiveAddress();
+                                            }}
+                                        >
+                                            Copy Address
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                             <div className="card--content">
                                 {(!this.state.addresses || this.state.addresses.length === 0) && (
@@ -286,7 +345,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                                             {this.state.addresses && this.state.addresses.map((address, idx) => (
                                                 <tr key={idx}>
                                                     <td>{address.index.toString()}</td>
-                                                    <td className="break">{address.address}</td>
+                                                    <td className="w-100 break">{address.address}</td>
                                                     <td>{address.isSpent ? "Yes" : "No"}</td>
                                                     <td>{address.address === this.state.receiveAddress
                                                         ? "Yes" : "No"}</td>
@@ -302,14 +361,16 @@ class Wallet extends Component<WalletProps, WalletState> {
                             <div className="card--header row space-between">
                                 <h2>Assets</h2>
                                 {this.state.newAssetName === undefined && (
-                                    <button
-                                        onClick={() => this.setState({
-                                            newAssetName: "",
-                                            newAssetSymbol: "",
-                                            newAssetColor: "",
-                                            newAssetAmount: "100",
-                                            errorNewAsset: ""
-                                        })}
+                                    <button className="button--secondary"
+                                        onClick={() =>
+                                            this.setState({
+                                                newAssetName: "",
+                                                newAssetSymbol: "",
+                                                newAssetColor: "",
+                                                newAssetAmount: "100",
+                                                errorNewAsset: ""
+                                            })
+                                        }
                                     >
                                         Create Asset
                                     </button>
@@ -328,6 +389,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                     type="text"
                                                     disabled={this.state.isBusyNewAsset}
                                                     value={this.state.newAssetName}
+                                                    maxLength={MAX_ASSET_NAME_LENGTH}
                                                     onChange={e => this.setState({
                                                         newAssetName: e.target.value
                                                     })}
@@ -342,6 +404,7 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                     type="text"
                                                     disabled={this.state.isBusyNewAsset}
                                                     value={this.state.newAssetSymbol}
+                                                    maxLength={MAX_ASSET_SYMBOL_LENGTH}
                                                     onChange={e => this.setState({
                                                         newAssetSymbol: e.target.value
                                                     })}
@@ -390,7 +453,9 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                 </button>
                                             </div>
                                             {this.state.isBusyNewAsset && (
-                                                <Spinner className="margin-t-s" />
+                                                <div className="relative l-20 t-20">
+                                                    <Spinner className="margin-t-s spinner--secondary" />
+                                                </div>
                                             )}
                                             {this.state.errorNewAsset && (
                                                 <p className="margin-t-s danger">{this.state.errorNewAsset}</p>
@@ -408,9 +473,9 @@ class Wallet extends Component<WalletProps, WalletState> {
                                         <table>
                                             <thead>
                                                 <tr>
-                                                    <th>Color</th>
-                                                    <th>Name</th>
                                                     <th>Symbol</th>
+                                                    <th>Name</th>
+                                                    <th>Color</th>
                                                     <th>&nbsp;</th>
                                                 </tr>
                                             </thead>
@@ -418,13 +483,19 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                 {this.state.wallet.assets &&
                                                     this.state.wallet.assets.map((asset, idx) => (
                                                         <tr key={idx} className="middle">
-                                                            <td className="break">{asset.color}</td>
-                                                            <td className="break">{asset.name}</td>
-                                                            <td>{asset.symbol}</td>
-                                                            <td>
+                                                            <td className="no-break">{asset.symbol}</td>
+                                                            <td className="no-break">{asset.name}</td>
+                                                            <td className="w-100 break">
+                                                                <div className="ellipsis-container">
+                                                                    <div className="ellipsis-content">{asset.color}</div>
+                                                                    <div className="ellipsis-spacer">{asset.color}</div>
+                                                                    <span>&nbsp;</span>
+                                                                </div>
+                                                            </td>
+                                                            <td className="flex">
                                                                 <button
                                                                     type="button"
-                                                                    className="margin-r-t"
+                                                                    className="margin-r-t button--secondary"
                                                                     onClick={() => this.setState({
                                                                         newAssetName: asset.name,
                                                                         newAssetSymbol: asset.symbol,
@@ -453,20 +524,26 @@ class Wallet extends Component<WalletProps, WalletState> {
                         </div>
 
                         <div className="card margin-b-s">
-                            <div className="card--header">
+                            <div className="card--header card--header__space-between">
                                 <h2>Faucet</h2>
-                            </div>
-                            <div className="card--content">
                                 <button
                                     disabled={this.state.isBusyFaucet}
-                                    onClick={() => this.requestFunds()}
+                                    onClick={() => {
+                                        this.requestFunds();
+                                    }}
                                 >
                                     Request Funds
                                 </button>
+                            </div>
+                            <div className="card--content">
+
                                 <div className="row middle margin-t-s">
                                     {this.state.isBusyFaucet && (
-                                        <Spinner />
+                                        <div className="relative l-20 t-20">
+                                            <Spinner className="spinner--secondary" />
+                                        </div>
                                     )}
+
                                     {this.state.faucetStatus && (
                                         <p className={
                                             classNames(
@@ -658,8 +735,30 @@ class Wallet extends Component<WalletProps, WalletState> {
      * Copy the receive address to the clipboard.
      */
     private copyReceiveAddress(): void {
-        ClipboardHelper.copy(this.state.receiveAddress);
+        const copied = ClipboardHelper.copy(this.state.receiveAddress);
+        if (copied) {
+            this.updateClipboardFeedback("Address copied to clipboard", false);
+        } else {
+            this.updateClipboardFeedback("There was an error copying to clipboard", true);
+        }
     }
+
+    /**
+     * Update Copy Adress to Clipboard feedback 
+     * @param feedback The string to show
+     * @param error An error happened
+     */
+    private updateClipboardFeedback(feedback: string, error: boolean): void {
+        this.setState({
+            clipboardFeedback: feedback,
+            clipboardError: error
+        });
+        clearTimeout(timer);        
+        timer = setTimeout(
+            () => this.setState({ clipboardFeedback: "" }), 5000
+        );
+    }
+
 }
 
 export default Wallet;
