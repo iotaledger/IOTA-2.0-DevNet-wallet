@@ -8,10 +8,6 @@ export interface IWalletOutputInclusionState {
      */
     confirmed?: boolean;
     /**
-     * Is the output rejected.
-     */
-    rejected?: boolean;
-    /**
      * Is the output liked.
      */
     liked?: boolean;

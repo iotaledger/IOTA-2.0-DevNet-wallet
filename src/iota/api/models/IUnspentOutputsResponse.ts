@@ -57,10 +57,6 @@ export interface IUnspentOutputsResponse extends IResponse {
                  */
                 confirmed?: boolean;
                 /**
-                 * Is the output rejected.
-                 */
-                rejected?: boolean;
-                /**
                  * Is the output conflicting.
                  */
                 conflicting?: boolean;

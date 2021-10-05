@@ -894,15 +894,12 @@ export class WalletService implements IWalletService {
                             colorMap[balance.color] = {
                                 asset: assetsMap[balance.color],
                                 confirmed: BigInt(0),
-                                unConfirmed: BigInt(0),
-                                rejected: BigInt(0)
+                                unConfirmed: BigInt(0)
                             };
                             this._balances.push(colorMap[balance.color]);
                         }
                         if (output.inclusionState.confirmed) {
                             colorMap[balance.color].confirmed += balance.value;
-                        } else if (output.inclusionState.rejected) {
-                            colorMap[balance.color].rejected += balance.value;
                         } else {
                             colorMap[balance.color].unConfirmed += balance.value;
                         }
