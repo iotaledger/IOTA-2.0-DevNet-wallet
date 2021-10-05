@@ -49,22 +49,10 @@ export interface IUnspentOutputsResponse extends IResponse {
             };
 
             /**
-             *  InclusionState represents the different states of an OutputID.
+             *  GradeOfFinality represents the confirmation level. 0 is not confirmed.
+             *  3 is the maximum confirmation level.
              */
-            inclusionState: {
-                /**
-                 * Is the output confirmed.
-                 */
-                confirmed?: boolean;
-                /**
-                 * Is the output rejected.
-                 */
-                rejected?: boolean;
-                /**
-                 * Is the output conflicting.
-                 */
-                conflicting?: boolean;
-            };
+            gradeOfFinality: number;
         }[];
     }[];
 }

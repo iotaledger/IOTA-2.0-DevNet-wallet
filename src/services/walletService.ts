@@ -358,10 +358,10 @@ export class WalletService implements IWalletService {
 
             const version = 0;
             const time = Date.now();
-            const timestamp = BigInt(time * 1000000);
+            const timestamp = BigInt(time * 1_000_000);
 
             // Calculate the spending requirements
-            const consumedOutputs = this.determineOutputsToConsume(sendFundsOptions);
+            const consumedOutputs = this.determineOutputsToConsume(sendFundsOptions, settings.gofConfThreshold);
 
             const { inputs, consumedFunds } = this.buildInputs(consumedOutputs);
             const outputs = this.buildOutputs(sendFundsOptions, consumedFunds);
@@ -575,7 +575,7 @@ export class WalletService implements IWalletService {
                     outputs: uo.outputs.filter(o => o.output.type === "SigLockedColoredOutputType").map(uid => ({
                         id: uid.output.outputID.base58,
                         balances: this.mapToArray(uid.output.output.balances),
-                        inclusionState: uid.inclusionState
+                        gof: uid.gradeOfFinality
                     }))
                 })));
             } while (spentAddresses.length > BLOCK_COUNT - 2);
@@ -607,10 +607,11 @@ export class WalletService implements IWalletService {
 
     /**
      * From all the inputs determine which ones we need to consume.
-     * @param sendFundOptions The request funds.
+     * @param sendFundOptions The request funds options.
+     * @param gofConfThreshold the grade of finality needed to consider the outputs as approved
      * @returns The output that we need to consume.
      */
-    private determineOutputsToConsume(sendFundOptions: ISendFundsOptions): {
+    private determineOutputsToConsume(sendFundOptions: ISendFundsOptions, gofConfThreshold : number): {
         [address: string]: { [outputID: string]: IWalletOutput };
     } {
         const outputsToConsume: { [address: string]: { [outputID: string]: IWalletOutput } } = {};
@@ -637,9 +638,7 @@ export class WalletService implements IWalletService {
                 const confirmedUnspentOutputs = unspentOutput.outputs.filter(o =>
                     (!this._spentOutputTransactions ||
                         !this._spentOutputTransactions.includes(o.id)) &&
-                    o.inclusionState.confirmed);
-
-
+                    o.gof >= gofConfThreshold);
                 // scan the outputs on this address for required funds
                 for (const output of confirmedUnspentOutputs) {
                     // keeps track if the output contains any usable funds
@@ -895,6 +894,8 @@ export class WalletService implements IWalletService {
             const assetsMap: { [id: string]: IWalletAsset } = {};
             const addedAssets: IWalletAsset[] = [];
             const apiRegistryClient = await this.buildApiRegistryClient();
+            const settingsService = ServiceFactory.get<SettingsService>("settings");
+            const settings = await settingsService.get();
 
             for (let i = 0; i <= this._wallet.lastAddressIndex; i++) {
                 const addr = Seed.generateAddress(Base58.decode(this._wallet.seed), BigInt(i));
@@ -902,7 +903,7 @@ export class WalletService implements IWalletService {
                     index: BigInt(i),
                     address: addr,
                     isSpent: this._wallet &&
-                        this._wallet.spentAddresses.includes(addr) ? true : false
+                    this._wallet.spentAddresses.includes(addr) ? true : false
                 };
                 addressMap[address.address] = address;
                 this._addresses.push(address);
@@ -948,15 +949,13 @@ export class WalletService implements IWalletService {
                             colorMap[balance.color] = {
                                 asset: assetsMap[balance.color],
                                 confirmed: BigInt(0),
-                                unConfirmed: BigInt(0),
-                                rejected: BigInt(0)
+                                unConfirmed: BigInt(0)
                             };
                             this._balances.push(colorMap[balance.color]);
                         }
-                        if (output.inclusionState.confirmed) {
+
+                        if (output.gof >= settings.gofConfThreshold) {
                             colorMap[balance.color].confirmed += balance.value;
-                        } else if (output.inclusionState.rejected) {
-                            colorMap[balance.color].rejected += balance.value;
                         } else {
                             colorMap[balance.color].unConfirmed += balance.value;
                         }

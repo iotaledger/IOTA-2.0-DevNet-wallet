@@ -255,7 +255,6 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                     <th>Color</th>
                                                     <th>Confirmed</th>
                                                     <th>Pending</th>
-                                                    <th>Rejected</th>
                                                     <th>&nbsp;</th>
                                                 </tr>
                                             </thead>
@@ -282,9 +281,6 @@ class Wallet extends Component<WalletProps, WalletState> {
                                                             </td>
                                                             <td className="warning">
                                                                 {balance.unConfirmed.toString()}
-                                                            </td>
-                                                            <td className="danger">
-                                                                {balance.rejected.toString()}
                                                             </td>
                                                             <td>
                                                                 <button

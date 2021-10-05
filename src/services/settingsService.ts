@@ -3,6 +3,8 @@ import { ISettings } from "../models/ISettings";
 import { IJsonStorageService } from "../models/services/IJsonStorageService";
 import { ISettingsService } from "../models/services/ISettingsService";
 
+const defaultGofConfThreshold = 3;
+
 /**
  * Service to manage settings.
  */
@@ -40,7 +42,8 @@ export class SettingsService implements ISettingsService {
                 user: "",
                 password: "",
                 accessManaPledgeID: "",
-                consensusManaPledgeID: ""
+                consensusManaPledgeID: "",
+                gofConfThreshold: defaultGofConfThreshold
             };
         }
 
