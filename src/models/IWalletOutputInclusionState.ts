@@ -6,7 +6,7 @@ export interface IWalletOutputInclusionState {
     /**
      * Is the output confirmed.
      */
-    confirmed?: boolean;
+    gof?: number;
     /**
      * Is the output liked.
      */

@@ -40,6 +40,7 @@ class Settings extends Component<SettingsProps, SettingsState> {
             password: settings.password,
             accessManaPledgeID: settings.accessManaPledgeID,
             consensusManaPledgeID: settings.consensusManaPledgeID,
+            gofConfThreshold: settings.gofConfThreshold,
             isBusy: false
         });
     }
@@ -111,6 +112,19 @@ class Settings extends Component<SettingsProps, SettingsState> {
                                 onChange={e => this.setState({ consensusManaPledgeID: e.target.value })}
                             />
                         </div>
+                        <div className="card--label">
+                            Grade Of Finality for confirmation
+                        </div>
+                        <div className="card--value">
+                            <input
+                                className="fill"
+                                type="number"
+                                min="0"
+                                max="3"
+                                value={this.state.gofConfThreshold}
+                                onChange={e => this.setState({ gofConfThreshold: e.target.valueAsNumber })}
+                            />
+                        </div>
                         <div className="margin-t-s">
                             <button
                                 onClick={() => this.save()}
@@ -144,7 +158,8 @@ class Settings extends Component<SettingsProps, SettingsState> {
             user: this.state.user ?? "",
             password: this.state.password ?? "",
             accessManaPledgeID: this.state.accessManaPledgeID ?? "",
-            consensusManaPledgeID: this.state.consensusManaPledgeID ?? ""
+            consensusManaPledgeID: this.state.consensusManaPledgeID ?? "",
+            gofConfThreshold: this.state.gofConfThreshold ?? 0
         };
         await this._settingsService.set(newSettings);
 

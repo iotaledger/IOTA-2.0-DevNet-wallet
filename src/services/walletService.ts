@@ -326,9 +326,9 @@ export class WalletService implements IWalletService {
             const version = 0;
             const time = Date.now();
             const timestamp = BigInt(time*1000000);
- 
+
             // Calculate the spending requirements
-            const consumedOutputs = this.determineOutputsToConsume(sendFundsOptions);
+            const consumedOutputs = this.determineOutputsToConsume(sendFundsOptions, settings.gofConfThreshold);
 
             const { inputs, consumedFunds } = this.buildInputs(consumedOutputs);
             const outputs = this.buildOutputs(sendFundsOptions, consumedFunds);
@@ -533,7 +533,7 @@ export class WalletService implements IWalletService {
                     outputs: uo.outputs.filter(o => o.output.type === "SigLockedColoredOutputType").map(uid => ({
                         id: uid.output.outputID.base58,
                         balances: this.mapToArray(uid.output.output.balances),
-                        inclusionState: uid.inclusionState
+                        gof: uid.gradeOfFinality
                     }))
                 })));
             } while (spentAddresses.length > BLOCK_COUNT - 2);
@@ -565,10 +565,11 @@ export class WalletService implements IWalletService {
 
     /**
      * From all the inputs determine which ones we need to consume.
-     * @param sendFundOptions The request funds.
+     * @param sendFundOptions The request funds options.
+     * @param gofConfThreshold the grade of finality needed to consider the outputs as approved
      * @returns The output that we need to consume.
      */
-    private determineOutputsToConsume(sendFundOptions: ISendFundsOptions): {
+    private determineOutputsToConsume(sendFundOptions: ISendFundsOptions, gofConfThreshold : number): {
         [address: string]: { [outputID: string]: IWalletOutput };
     } {
         const outputsToConsume: { [address: string]: { [outputID: string]: IWalletOutput } } = {};
@@ -591,11 +592,11 @@ export class WalletService implements IWalletService {
         if (this._unspentOutputs) {
             for (const unspentOutput of this._unspentOutputs) {
                 let outputsFromAddressSpent = false;
-               
+
                 const confirmedUnspentOutputs = unspentOutput.outputs.filter(o =>
                     (!this._spentOutputTransactions ||
                     !this._spentOutputTransactions.includes(o.id)) && 
-                    o.inclusionState.confirmed);
+                    o.gof >= gofConfThreshold);
                
                 // scan the outputs on this address for required funds
                 for (const output of confirmedUnspentOutputs) {
@@ -851,6 +852,8 @@ export class WalletService implements IWalletService {
             const addressMap: { [id: string]: IWalletAddress } = {};
             const assetsMap: { [id: string]: IWalletAsset } = {};
             const addedAssets: IWalletAsset[] = [];
+            const settingsService = ServiceFactory.get<SettingsService>("settings");
+            const settings = await settingsService.get();
 
             for (let i = 0; i <= this._wallet.lastAddressIndex; i++) {
                 const addr = Seed.generateAddress(Base58.decode(this._wallet.seed), BigInt(i));
@@ -898,7 +901,8 @@ export class WalletService implements IWalletService {
                             };
                             this._balances.push(colorMap[balance.color]);
                         }
-                        if (output.inclusionState.confirmed) {
+
+                        if (output.gof >= settings.gofConfThreshold) {
                             colorMap[balance.color].confirmed += balance.value;
                         } else {
                             colorMap[balance.color].unConfirmed += balance.value;

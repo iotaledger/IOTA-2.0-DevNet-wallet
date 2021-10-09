@@ -13,7 +13,7 @@ export interface IWalletOutput {
     balances: IWalletOutputBalance[];
 
     /**
-     * Inclusion state.
+     * Grade of finality.
      */
-    inclusionState: IWalletOutputInclusionState;
+    gof: number;
 }

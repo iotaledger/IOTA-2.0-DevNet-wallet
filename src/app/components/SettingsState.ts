@@ -35,4 +35,9 @@ export interface SettingsState {
      * The nodeID of the consensus Mana pledge.
      */
     consensusManaPledgeID?: string;
+
+    /**
+     * The minimal grade of finality needed for an output to be confirmed
+     */
+    gofConfThreshold?: number
 }
