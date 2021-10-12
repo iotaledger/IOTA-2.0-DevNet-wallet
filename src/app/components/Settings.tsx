@@ -45,6 +45,17 @@ class Settings extends Component<SettingsProps, SettingsState> {
         });
     }
 
+    private static imposeMinMax(el: HTMLInputElement): void {
+        if (el.value !== "") {
+            if (parseInt(el.value) < parseInt(el.min)) {
+                el.value = el.min;
+            }
+            if (parseInt(el.value) > parseInt(el.max)) {
+                el.value = el.max;
+            }
+        }
+    }
+
     /**
      * Render the component.
      * @returns The node to render.
@@ -122,7 +133,11 @@ class Settings extends Component<SettingsProps, SettingsState> {
                                 min="0"
                                 max="3"
                                 value={this.state.gofConfThreshold}
-                                onChange={e => this.setState({ gofConfThreshold: e.target.valueAsNumber })}
+                                onChange={e => {
+                                    Settings.imposeMinMax(e.target);
+                                    this.setState({ gofConfThreshold: e.target.valueAsNumber });
+                                    }
+                                }
                             />
                         </div>
                         <div className="margin-t-s">
