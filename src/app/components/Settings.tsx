@@ -130,7 +130,7 @@ class Settings extends Component<SettingsProps, SettingsState> {
                             <input
                                 className="fill"
                                 type="number"
-                                min="0"
+                                min="1"
                                 max="3"
                                 value={this.state.gofConfThreshold}
                                 onChange={e => {
