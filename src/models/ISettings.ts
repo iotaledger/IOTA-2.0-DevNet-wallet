@@ -23,4 +23,9 @@ export interface ISettings {
      * Access Mana Pledge ID.
      */
     consensusManaPledgeID: string;
+
+    /**
+     * Grade of Finality Confirmation threshold
+     */
+    gofConfThreshold: number;
 }
