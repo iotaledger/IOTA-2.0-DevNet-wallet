@@ -846,7 +846,7 @@ export class WalletService implements IWalletService {
         this.stopUpdates();
         this._timerId = setInterval(
             async () => this.doUpdates(),
-            10000);
+            500);
     }
 
     /**
